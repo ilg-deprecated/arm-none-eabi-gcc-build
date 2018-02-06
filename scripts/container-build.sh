@@ -56,8 +56,12 @@ container_lib_functions_script_path="${script_folder_path}/${CONTAINER_LIB_FUNCT
 echo "Container lib functions source script: \"${container_lib_functions_script_path}\"."
 source "${container_lib_functions_script_path}"
 
+container_app_functions_script_path="${script_folder_path}/${CONTAINER_APP_FUNCTIONS_SCRIPT_NAME}"
+echo "Container app functions source script: \"${container_app_functions_script_path}\"."
+source "${container_app_functions_script_path}"
+
 container_functions_script_path="${script_folder_path}/helper/container-functions-source.sh"
-echo "Container functions source script: \"${container_functions_script_path}\"."
+echo "Container helper functions source script: \"${container_functions_script_path}\"."
 source "${container_functions_script_path}"
 
 # -----------------------------------------------------------------------------
@@ -134,11 +138,13 @@ export PKG_CONFIG_LIBDIR="${INSTALL_FOLDER_PATH}/lib/pkgconfig"
 
 # -----------------------------------------------------------------------------
 
+do_zlib
 do_gmp
 do_mpfr
 do_mpc
 do_isl
 
+do_libelf
 do_expat
 do_libiconv
 do_xz

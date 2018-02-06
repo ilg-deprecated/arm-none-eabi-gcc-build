@@ -6,14 +6,84 @@
 
 # -----------------------------------------------------------------------------
 
+
+function do_zlib() 
+{
+  # http://zlib.net
+  # http://zlib.net/fossils/
+  # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=zlib-static
+  # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=zlib-git
+
+  # 2013-04-28
+  local zlib_version="1.2.8"
+  # 2017-01-15
+  # local zlib_version="1.2.11"
+
+  local zlib_folder="zlib-${zlib_version}"
+  local zlib_archive="${zlib_folder}.tar.gz"
+  # local zlib_url="http://zlib.net/fossils/${zlib_archive}"
+  local zlib_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${zlib_archive}"
+
+  local zlib_stamp_file="${BUILD_FOLDER_PATH}/${zlib_folder}/stamp-install-completed"
+  if [ ! -f "${zlib_stamp_file}" ]
+  then
+
+    cd "${WORK_FOLDER_PATH}"
+
+    download_and_extract "${zlib_url}" "${zlib_archive}" "${zlib_folder}"
+
+    (
+      if [ ! -d "${BUILD_FOLDER_PATH}/${zlib_folder}" ]
+      then
+        mkdir -p "${BUILD_FOLDER_PATH}/${zlib_folder}"
+        cp -r "${WORK_FOLDER_PATH}/${zlib_folder}"/* "${BUILD_FOLDER_PATH}/${zlib_folder}"
+      fi
+      cd "${BUILD_FOLDER_PATH}/${zlib_folder}"
+
+      xbb_activate
+
+      echo
+      echo "Running zlib configure..."
+
+      bash "./configure" --help
+
+      export CFLAGS="${EXTRA_CFLAGS} -Wno-shift-negative-value"
+      # export LDFLAGS="${EXTRA_LDFLAGS}"
+    
+      bash "./configure" \
+        --prefix="${INSTALL_FOLDER_PATH}" \
+        \
+        --static \
+      | tee "${INSTALL_FOLDER_PATH}/configure-zlib-output.txt"
+      cp "configure.log" "${INSTALL_FOLDER_PATH}"/configure-zlib-log.txt
+
+      echo
+      echo "Running zlib make..."
+
+      (
+        # Build.
+        make ${JOBS}
+        make install
+      ) | tee "${INSTALL_FOLDER_PATH}/make-zlib-output.txt"
+    )
+
+    touch "${zlib_stamp_file}"
+
+  else
+    echo "Library zlib already installed."
+  fi
+}
+
 function do_gmp() 
 {
   # https://gmplib.org
   # https://gmplib.org/download/gmp/
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=gmp-hg
 
-  # gmp_version="6.1.0"
-  local gmp_version="6.1.2"
+  # 01-Nov-2015
+  local gmp_version="6.1.0"
+  # 16-Dec-2016
+  # local gmp_version="6.1.2"
 
   local gmp_folder="gmp-${gmp_version}"
   local gmp_archive="${gmp_folder}.tar.xz"
@@ -56,6 +126,8 @@ function do_gmp()
         \
         --disable-shared \
         --enable-static \
+        --enable-cxx \
+        --disable-nls \
       | tee "${INSTALL_FOLDER_PATH}/configure-gmp-output.txt"
       cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gmp-log.txt
 
@@ -79,11 +151,13 @@ function do_gmp()
 function do_mpfr()
 {
   # http://www.mpfr.org
-  # http://www.mpfr.org/mpfr-3.1.6
+  # http://www.mpfr.org/history.html
   # https://git.archlinux.org/svntogit/packages.git/tree/trunk/PKGBUILD?h=packages/mpfr
 
-  # mpfr_version="3.1.4"
-  local mpfr_version="3.1.6"
+  # 6 March 2016
+  local mpfr_version="3.1.4"
+  # 7 September 2017
+  # local mpfr_version="3.1.6"
 
   local mpfr_folder="mpfr-${mpfr_version}"
   local mpfr_archive="${mpfr_folder}.tar.xz"
@@ -123,6 +197,7 @@ function do_mpfr()
         --disable-warnings \
         --disable-shared \
         --enable-static \
+        --disable-nls \
       | tee "${INSTALL_FOLDER_PATH}/configure-mpfr-output.txt"
       cp "config.log" "${INSTALL_FOLDER_PATH}"/config-mpfr-log.txt
 
@@ -148,6 +223,7 @@ function do_mpc()
   # ftp://ftp.gnu.org/gnu/mpc
   # https://git.archlinux.org/svntogit/packages.git/tree/trunk/PKGBUILD?h=packages/libmpc
 
+  # 20 Feb 2015
   local mpc_version="1.0.3"
 
   local mpc_folder="mpc-${mpc_version}"
@@ -186,6 +262,7 @@ function do_mpc()
         \
         --disable-shared \
         --enable-static \
+        --disable-nls \
       | tee "${INSTALL_FOLDER_PATH}/configure-mpc-output.txt"
       cp "config.log" "${INSTALL_FOLDER_PATH}"/config-mpc-log.txt
 
@@ -210,8 +287,12 @@ function do_isl()
   # http://isl.gforge.inria.fr
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=isl
 
-  # isl_version="0.16.1"
-  local isl_version="0.18"
+  # 2015-06-12
+  local isl_version="0.15"
+  # 2016-01-15
+  # local isl_version="0.16.1"
+  # 2016-12-20
+  # local isl_version="0.18"
 
   local isl_folder="isl-${isl_version}"
   local isl_archive="${isl_folder}.tar.xz"
@@ -250,6 +331,7 @@ function do_isl()
         \
         --disable-shared \
         --enable-static \
+        --disable-nls \
       | tee "${INSTALL_FOLDER_PATH}/configure-isl-output.txt"
       cp "config.log" "${INSTALL_FOLDER_PATH}"/config-isl-log.txt
 
@@ -270,13 +352,81 @@ function do_isl()
   fi
 }
 
+function do_libelf()
+{
+  # http://www.mr511.de/
+  # http://www.mr511.de/software/
+
+  local libelf_version="0.8.13"
+
+  local libelf_folder="libelf-${libelf_version}"
+  local libelf_archive="${libelf_folder}.tar.gz"
+  # local libelf_url="http://www.mr511.de/software/${libelf_archive}"
+  local libelf_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${libelf_archive}"
+
+  local libelf_stamp_file="${BUILD_FOLDER_PATH}/${libelf_folder}/stamp-install-completed"
+  if [ ! -f "${libelf_stamp_file}" ]
+  then
+
+    cd "${WORK_FOLDER_PATH}"
+
+    download_and_extract "${libelf_url}" "${libelf_archive}" "${libelf_folder}"
+
+    (
+      mkdir -p "${BUILD_FOLDER_PATH}/${libelf_folder}"
+      cd "${BUILD_FOLDER_PATH}/${libelf_folder}"
+
+      xbb_activate
+
+      echo
+      echo "Running libelf configure..."
+
+      bash "${WORK_FOLDER_PATH}/${libelf_folder}/configure" --help
+
+      export CFLAGS="${EXTRA_CFLAGS} -Wno-tautological-compare"
+      export CPPFLAGS="${EXTRA_CPPFLAGS}"
+      export LDFLAGS="${EXTRA_LDFLAGS}"
+
+      bash "${WORK_FOLDER_PATH}/${libelf_folder}/configure" \
+        --prefix="${INSTALL_FOLDER_PATH}" \
+        \
+        --build=${BUILD} \
+        --host=${HOST} \
+        --target=${TARGET} \
+        \
+        --disable-shared \
+        --enable-static \
+        --disable-nls \
+      | tee "${INSTALL_FOLDER_PATH}/configure-libelf-output.txt"
+      cp "config.log" "${INSTALL_FOLDER_PATH}"/config-libelf-log.txt
+
+      echo
+      echo "Running libelf make..."
+
+      (
+        # Build.
+        make ${JOBS}
+        make install
+      ) | tee "${INSTALL_FOLDER_PATH}/make-libelf-output.txt"
+    )
+
+    touch "${libelf_stamp_file}"
+
+  else
+    echo "Library libelf already installed."
+  fi
+}
+
 function do_expat()
 {
   # https://libexpat.github.io
   # https://github.com/libexpat/libexpat/releases
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=expat-git
 
-  local expat_version="2.2.5"
+  # Oct 21, 2017
+  local expat_version="2.1.1"
+  # Nov 1, 2017
+  # local expat_version="2.2.5"
 
   local expat_folder="expat-${expat_version}"
   local expat_archive="${expat_folder}.tar.bz2"
@@ -315,6 +465,7 @@ function do_expat()
         \
         --disable-shared \
         --enable-static \
+        --disable-nls \
       | tee "${INSTALL_FOLDER_PATH}/configure-expat-output.txt"
       cp "config.log" "${INSTALL_FOLDER_PATH}"/config-expat-log.txt
 
@@ -324,7 +475,7 @@ function do_expat()
       (
         # Build.
         make ${JOBS}
-        make install-strip
+        make install
       ) | tee "${INSTALL_FOLDER_PATH}/make-expat-output.txt"
 
     )
@@ -342,8 +493,10 @@ function do_libiconv()
   # https://ftp.gnu.org/pub/gnu/libiconv/
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=libiconv
 
+  # 2011-08-07
+  local libiconv_version="1.14"
   # 2017-02-02
-  local libiconv_version="1.15"
+  # local libiconv_version="1.15"
 
   local libiconv_folder="libiconv-${libiconv_version}"
   local libiconv_archive="${libiconv_folder}.tar.gz"
@@ -381,6 +534,7 @@ function do_libiconv()
         \
         --disable-shared \
         --enable-static \
+        --disable-nls \
       | tee "${INSTALL_FOLDER_PATH}/configure-libiconv-output.txt"
       cp "config.log" "${INSTALL_FOLDER_PATH}"/config-libiconv-log.txt
 
@@ -448,6 +602,7 @@ function do_xz()
         --disable-shared \
         --enable-static \
         --disable-rpath \
+        --disable-nls \
       | tee "${INSTALL_FOLDER_PATH}/configure-xz-output.txt"
       cp "config.log" "${INSTALL_FOLDER_PATH}"/config-xz-log.txt
 

@@ -8,7 +8,7 @@
 
 # -----------------------------------------------------------------------------
 
-# Mandatory definition.
+# Used to display the application name.
 APP_NAME=${APP_NAME:-"ARM Embedded GCC"}
 
 # Used as part of file/folder paths.
@@ -19,7 +19,7 @@ BRANDING=${BRANDING:-"GNU MCU Eclipse ARM Embedded GCC"}
 
 GCC_TARGET=${GCC_TARGET:-"arm-none-eabi-gcc"}
 
-# Default to 2. Attempts to use 8 occasionally failed.
+# Attempts to use 8 occasionally failed.
 JOBS="--jobs=4"
 
 CONTAINER_SCRIPT_NAME=${CONTAINER_SCRIPT_NAME:-"container-build.sh"}

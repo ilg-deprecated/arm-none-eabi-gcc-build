@@ -47,7 +47,7 @@ HOST_WORK_FOLDER_PATH=${HOST_WORK_FOLDER_PATH:-"${HOME}/Work/${APP_LC_NAME}"}
 CONTAINER_WORK_FOLDER_PATH="/Host/Work/${APP_LC_NAME}"
 
 host_functions_script_path="${script_folder_path}/helper/host-functions-source.sh"
-echo "Host functions source script: \"${host_functions_script_path}\"."
+echo "Host helper functions source script: \"${host_functions_script_path}\"."
 source "${host_functions_script_path}"
 
 # Copy the current scripts to the Work area, to later copy them into 

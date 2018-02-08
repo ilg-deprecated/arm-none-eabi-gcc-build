@@ -167,14 +167,6 @@ fi
 # Set the DISTRIBUTION_FILE_DATE.
 host_get_current_date
 
-# Be sure the changes in the build.git are commited.
-# otherwise the copied git may use the previous version.
-
-RELEASE_VERSION=${RELEASE_VERSION:-"7.2.0-1-20180201"}
-
-echo
-echo "Preparing release ${RELEASE_VERSION}..."
-
 # -----------------------------------------------------------------------------
 
 host_start_timer

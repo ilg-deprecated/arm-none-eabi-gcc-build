@@ -17,12 +17,13 @@ APP_LC_NAME=${APP_LC_NAME:-"arm-none-eabi-gcc"}
 
 BRANDING=${BRANDING:-"GNU MCU Eclipse ARM Embedded GCC"}
 
-GCC_TARGET=${GCC_TARGET:-"arm-none-eabi-gcc"}
+GCC_TARGET=${GCC_TARGET:-"arm-none-eabi"}
 
 # Attempts to use 8 occasionally failed.
 JOBS="--jobs=4"
 
 CONTAINER_SCRIPT_NAME=${CONTAINER_SCRIPT_NAME:-"container-build.sh"}
 CONTAINER_LIB_FUNCTIONS_SCRIPT_NAME=${CONTAINER_LIB_FUNCTIONS_SCRIPT_NAME:-"container-lib-functions-source.sh"}
+CONTAINER_APP_FUNCTIONS_SCRIPT_NAME=${CONTAINER_APP_FUNCTIONS_SCRIPT_NAME:-"container-gcc-functions-source.sh"}
 
 # -----------------------------------------------------------------------------

@@ -19,7 +19,7 @@ function do_zlib()
   # 2017-01-15
   # local zlib_version="1.2.11"
 
-  local zlib_folder="zlib-${zlib_version}"
+  zlib_folder="zlib-${zlib_version}"
   local zlib_archive="${zlib_folder}.tar.gz"
   # local zlib_url="http://zlib.net/fossils/${zlib_archive}"
   local zlib_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${zlib_archive}"
@@ -36,6 +36,7 @@ function do_zlib()
       if [ ! -d "${BUILD_FOLDER_PATH}/${zlib_folder}" ]
       then
         mkdir -p "${BUILD_FOLDER_PATH}/${zlib_folder}"
+        # Copy the sources in the build folder.
         cp -r "${WORK_FOLDER_PATH}/${zlib_folder}"/* "${BUILD_FOLDER_PATH}/${zlib_folder}"
       fi
       cd "${BUILD_FOLDER_PATH}/${zlib_folder}"
@@ -85,7 +86,7 @@ function do_gmp()
   # 16-Dec-2016
   # local gmp_version="6.1.2"
 
-  local gmp_folder="gmp-${gmp_version}"
+  gmp_folder="gmp-${gmp_version}"
   local gmp_archive="${gmp_folder}.tar.xz"
   # local gmp_url="https://gmplib.org/download/gmp/${gmp_archive}"
   local gmp_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${gmp_archive}"
@@ -104,32 +105,37 @@ function do_gmp()
 
       xbb_activate
 
-      echo
-      echo "Running gmp configure..."
+      if [ ! -f "config.status" ]
+      then 
 
-      # ABI is mandatory, otherwise configure fails on 32-bits.
-      # (see https://gmplib.org/manual/ABI-and-ISA.html)
+        echo
+        echo "Running gmp configure..."
 
-      bash "${WORK_FOLDER_PATH}/${gmp_folder}/configure" --help
+        # ABI is mandatory, otherwise configure fails on 32-bits.
+        # (see https://gmplib.org/manual/ABI-and-ISA.html)
 
-      export CFLAGS="-Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare"
-      export CPPFLAGS="${EXTRA_CPPFLAGS}"
-      export LDFLAGS="${EXTRA_LDFLAGS}"
-      export ABI="${TARGET_BITS}"
-    
-      bash "${WORK_FOLDER_PATH}/${gmp_folder}/configure" \
-        --prefix="${INSTALL_FOLDER_PATH}" \
-        \
-        --build=${BUILD} \
-        --host=${HOST} \
-        --target=${TARGET} \
-        \
-        --disable-shared \
-        --enable-static \
-        --enable-cxx \
-        --disable-nls \
-      | tee "${INSTALL_FOLDER_PATH}/configure-gmp-output.txt"
-      cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gmp-log.txt
+        bash "${WORK_FOLDER_PATH}/${gmp_folder}/configure" --help
+
+        export CFLAGS="-Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare"
+        export CPPFLAGS="${EXTRA_CPPFLAGS}"
+        export LDFLAGS="${EXTRA_LDFLAGS}"
+        export ABI="${TARGET_BITS}"
+      
+        bash "${WORK_FOLDER_PATH}/${gmp_folder}/configure" \
+          --prefix="${INSTALL_FOLDER_PATH}" \
+          \
+          --build=${BUILD} \
+          --host=${HOST} \
+          --target=${TARGET} \
+          \
+          --disable-shared \
+          --enable-static \
+          --enable-cxx \
+          --disable-nls \
+        | tee "${INSTALL_FOLDER_PATH}/configure-gmp-output.txt"
+        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gmp-log.txt
+
+      fi
 
       echo
       echo "Running gmp make..."
@@ -159,7 +165,7 @@ function do_mpfr()
   # 7 September 2017
   # local mpfr_version="3.1.6"
 
-  local mpfr_folder="mpfr-${mpfr_version}"
+  mpfr_folder="mpfr-${mpfr_version}"
   local mpfr_archive="${mpfr_folder}.tar.xz"
   # local mpfr_url="http://www.mpfr.org/${mpfr_folder}/${mpfr_archive}"
   local mpfr_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${mpfr_archive}"
@@ -178,28 +184,33 @@ function do_mpfr()
 
       xbb_activate
 
-      echo
-      echo "Running mpfr configure..."
+      if [ ! -f "config.status" ]
+      then 
 
-      bash "${WORK_FOLDER_PATH}/${mpfr_folder}/configure" --help
+        echo
+        echo "Running mpfr configure..."
 
-      export CFLAGS="${EXTRA_CFLAGS}"
-      export CPPFLAGS="${EXTRA_CPPFLAGS}"
-      export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
+        bash "${WORK_FOLDER_PATH}/${mpfr_folder}/configure" --help
 
-      bash "${WORK_FOLDER_PATH}/${mpfr_folder}/configure" \
-        --prefix="${INSTALL_FOLDER_PATH}" \
-        \
-        --build=${BUILD} \
-        --host=${HOST} \
-        --target=${TARGET} \
-        \
-        --disable-warnings \
-        --disable-shared \
-        --enable-static \
-        --disable-nls \
-      | tee "${INSTALL_FOLDER_PATH}/configure-mpfr-output.txt"
-      cp "config.log" "${INSTALL_FOLDER_PATH}"/config-mpfr-log.txt
+        export CFLAGS="${EXTRA_CFLAGS}"
+        export CPPFLAGS="${EXTRA_CPPFLAGS}"
+        export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
+
+        bash "${WORK_FOLDER_PATH}/${mpfr_folder}/configure" \
+          --prefix="${INSTALL_FOLDER_PATH}" \
+          \
+          --build=${BUILD} \
+          --host=${HOST} \
+          --target=${TARGET} \
+          \
+          --disable-warnings \
+          --disable-shared \
+          --enable-static \
+          --disable-nls \
+        | tee "${INSTALL_FOLDER_PATH}/configure-mpfr-output.txt"
+        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-mpfr-log.txt
+
+      fi
 
       echo
       echo "Running mpfr make..."
@@ -226,7 +237,7 @@ function do_mpc()
   # 20 Feb 2015
   local mpc_version="1.0.3"
 
-  local mpc_folder="mpc-${mpc_version}"
+  mpc_folder="mpc-${mpc_version}"
   local mpc_archive="${mpc_folder}.tar.gz"
   local mpc_url="ftp://ftp.gnu.org/gnu/mpc/${mpc_archive}"
 
@@ -244,27 +255,32 @@ function do_mpc()
 
       xbb_activate
 
-      echo
-      echo "Running mpc configure..."
-    
-      bash "${WORK_FOLDER_PATH}/${mpc_folder}/configure" --help
+      if [ ! -f "config.status" ]
+      then 
 
-      export CFLAGS="${EXTRA_CFLAGS} -Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare"
-      export CPPFLAGS="${EXTRA_CPPFLAGS}"
-      export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
+        echo
+        echo "Running mpc configure..."
+      
+        bash "${WORK_FOLDER_PATH}/${mpc_folder}/configure" --help
 
-      bash "${WORK_FOLDER_PATH}/${mpc_folder}/configure" \
-        --prefix="${INSTALL_FOLDER_PATH}" \
-        \
-        --build=${BUILD} \
-        --host=${HOST} \
-        --target=${TARGET} \
-        \
-        --disable-shared \
-        --enable-static \
-        --disable-nls \
-      | tee "${INSTALL_FOLDER_PATH}/configure-mpc-output.txt"
-      cp "config.log" "${INSTALL_FOLDER_PATH}"/config-mpc-log.txt
+        export CFLAGS="${EXTRA_CFLAGS} -Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare"
+        export CPPFLAGS="${EXTRA_CPPFLAGS}"
+        export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
+
+        bash "${WORK_FOLDER_PATH}/${mpc_folder}/configure" \
+          --prefix="${INSTALL_FOLDER_PATH}" \
+          \
+          --build=${BUILD} \
+          --host=${HOST} \
+          --target=${TARGET} \
+          \
+          --disable-shared \
+          --enable-static \
+          --disable-nls \
+        | tee "${INSTALL_FOLDER_PATH}/configure-mpc-output.txt"
+        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-mpc-log.txt
+
+      fi
 
       echo
       echo "Running mpc make..."
@@ -294,7 +310,7 @@ function do_isl()
   # 2016-12-20
   # local isl_version="0.18"
 
-  local isl_folder="isl-${isl_version}"
+  isl_folder="isl-${isl_version}"
   local isl_archive="${isl_folder}.tar.xz"
   # local isl_url="http://isl.gforge.inria.fr/${isl_archive}"
   local isl_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${isl_archive}"
@@ -313,27 +329,32 @@ function do_isl()
 
       xbb_activate
 
-      echo
-      echo "Running isl configure..."
+      if [ ! -f "config.status" ]
+      then 
 
-      bash "${WORK_FOLDER_PATH}/${isl_folder}/configure" --help
+        echo
+        echo "Running isl configure..."
 
-      export CFLAGS="${EXTRA_CFLAGS} -Wno-dangling-else"
-      export CPPFLAGS="${EXTRA_CPPFLAGS}"
-      export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
+        bash "${WORK_FOLDER_PATH}/${isl_folder}/configure" --help
 
-      bash "${WORK_FOLDER_PATH}/${isl_folder}/configure" \
-        --prefix="${INSTALL_FOLDER_PATH}" \
-        \
-        --build=${BUILD} \
-        --host=${HOST} \
-        --target=${TARGET} \
-        \
-        --disable-shared \
-        --enable-static \
-        --disable-nls \
-      | tee "${INSTALL_FOLDER_PATH}/configure-isl-output.txt"
-      cp "config.log" "${INSTALL_FOLDER_PATH}"/config-isl-log.txt
+        export CFLAGS="${EXTRA_CFLAGS} -Wno-dangling-else"
+        export CPPFLAGS="${EXTRA_CPPFLAGS}"
+        export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
+
+        bash "${WORK_FOLDER_PATH}/${isl_folder}/configure" \
+          --prefix="${INSTALL_FOLDER_PATH}" \
+          \
+          --build=${BUILD} \
+          --host=${HOST} \
+          --target=${TARGET} \
+          \
+          --disable-shared \
+          --enable-static \
+          --disable-nls \
+        | tee "${INSTALL_FOLDER_PATH}/configure-isl-output.txt"
+        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-isl-log.txt
+
+      fi
 
       echo
       echo "Running isl make..."
@@ -359,7 +380,7 @@ function do_libelf()
 
   local libelf_version="0.8.13"
 
-  local libelf_folder="libelf-${libelf_version}"
+  libelf_folder="libelf-${libelf_version}"
   local libelf_archive="${libelf_folder}.tar.gz"
   # local libelf_url="http://www.mr511.de/software/${libelf_archive}"
   local libelf_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${libelf_archive}"
@@ -378,27 +399,32 @@ function do_libelf()
 
       xbb_activate
 
-      echo
-      echo "Running libelf configure..."
+      if [ ! -f "config.status" ]
+      then 
 
-      bash "${WORK_FOLDER_PATH}/${libelf_folder}/configure" --help
+        echo
+        echo "Running libelf configure..."
 
-      export CFLAGS="${EXTRA_CFLAGS} -Wno-tautological-compare"
-      export CPPFLAGS="${EXTRA_CPPFLAGS}"
-      export LDFLAGS="${EXTRA_LDFLAGS}"
+        bash "${WORK_FOLDER_PATH}/${libelf_folder}/configure" --help
 
-      bash "${WORK_FOLDER_PATH}/${libelf_folder}/configure" \
-        --prefix="${INSTALL_FOLDER_PATH}" \
-        \
-        --build=${BUILD} \
-        --host=${HOST} \
-        --target=${TARGET} \
-        \
-        --disable-shared \
-        --enable-static \
-        --disable-nls \
-      | tee "${INSTALL_FOLDER_PATH}/configure-libelf-output.txt"
-      cp "config.log" "${INSTALL_FOLDER_PATH}"/config-libelf-log.txt
+        export CFLAGS="${EXTRA_CFLAGS} -Wno-tautological-compare"
+        export CPPFLAGS="${EXTRA_CPPFLAGS}"
+        export LDFLAGS="${EXTRA_LDFLAGS}"
+
+        bash "${WORK_FOLDER_PATH}/${libelf_folder}/configure" \
+          --prefix="${INSTALL_FOLDER_PATH}" \
+          \
+          --build=${BUILD} \
+          --host=${HOST} \
+          --target=${TARGET} \
+          \
+          --disable-shared \
+          --enable-static \
+          --disable-nls \
+        | tee "${INSTALL_FOLDER_PATH}/configure-libelf-output.txt"
+        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-libelf-log.txt
+
+      fi
 
       echo
       echo "Running libelf make..."
@@ -428,7 +454,7 @@ function do_expat()
   # Nov 1, 2017
   # local expat_version="2.2.5"
 
-  local expat_folder="expat-${expat_version}"
+  expat_folder="expat-${expat_version}"
   local expat_archive="${expat_folder}.tar.bz2"
   local expat_release="R_$(echo ${expat_version} | sed -e 's|[.]|_|g')"
   local expat_url="https://github.com/libexpat/libexpat/releases/download/${expat_release}/${expat_archive}"
@@ -447,27 +473,32 @@ function do_expat()
 
       xbb_activate
 
-      echo
-      echo "Running expat configure..."
+      if [ ! -f "config.status" ]
+      then 
 
-      bash "${WORK_FOLDER_PATH}/${expat_folder}/configure" --help
+        echo
+        echo "Running expat configure..."
 
-      export CFLAGS="${EXTRA_CFLAGS}"
-      export CPPFLAGS="${EXTRA_CPPFLAGS}"
-      export LDFLAGS="${EXTRA_LDFLAGS}"
+        bash "${WORK_FOLDER_PATH}/${expat_folder}/configure" --help
 
-      bash "${WORK_FOLDER_PATH}/${expat_folder}/configure" \
-        --prefix="${INSTALL_FOLDER_PATH}" \
-        \
-        --build=${BUILD} \
-        --host=${HOST} \
-        --target=${TARGET} \
-        \
-        --disable-shared \
-        --enable-static \
-        --disable-nls \
-      | tee "${INSTALL_FOLDER_PATH}/configure-expat-output.txt"
-      cp "config.log" "${INSTALL_FOLDER_PATH}"/config-expat-log.txt
+        export CFLAGS="${EXTRA_CFLAGS}"
+        export CPPFLAGS="${EXTRA_CPPFLAGS}"
+        export LDFLAGS="${EXTRA_LDFLAGS}"
+
+        bash "${WORK_FOLDER_PATH}/${expat_folder}/configure" \
+          --prefix="${INSTALL_FOLDER_PATH}" \
+          \
+          --build=${BUILD} \
+          --host=${HOST} \
+          --target=${TARGET} \
+          \
+          --disable-shared \
+          --enable-static \
+          --disable-nls \
+        | tee "${INSTALL_FOLDER_PATH}/configure-expat-output.txt"
+        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-expat-log.txt
+
+      fi
 
       echo
       echo "Running expat make..."
@@ -498,7 +529,7 @@ function do_libiconv()
   # 2017-02-02
   # local libiconv_version="1.15"
 
-  local libiconv_folder="libiconv-${libiconv_version}"
+  libiconv_folder="libiconv-${libiconv_version}"
   local libiconv_archive="${libiconv_folder}.tar.gz"
   local libiconv_url="https://ftp.gnu.org/pub/gnu/libiconv/${libiconv_archive}"
 
@@ -516,27 +547,32 @@ function do_libiconv()
 
       xbb_activate
 
-      echo
-      echo "Running libiconv configure..."
+      if [ ! -f "config.status" ]
+      then 
 
-      bash "${WORK_FOLDER_PATH}/${libiconv_folder}/configure" --help
+        echo
+        echo "Running libiconv configure..."
 
-      export CFLAGS="${EXTRA_CFLAGS} -Wno-tautological-compare -Wno-parentheses-equality -Wno-static-in-inline"
-      export CPPFLAGS="${EXTRA_CPPFLAGS}"
-      export LDFLAGS="${EXTRA_LDFLAGS}"
+        bash "${WORK_FOLDER_PATH}/${libiconv_folder}/configure" --help
 
-      bash "${WORK_FOLDER_PATH}/${libiconv_folder}/configure" \
-        --prefix="${INSTALL_FOLDER_PATH}" \
-        \
-        --build=${BUILD} \
-        --host=${HOST} \
-        --target=${TARGET} \
-        \
-        --disable-shared \
-        --enable-static \
-        --disable-nls \
-      | tee "${INSTALL_FOLDER_PATH}/configure-libiconv-output.txt"
-      cp "config.log" "${INSTALL_FOLDER_PATH}"/config-libiconv-log.txt
+        export CFLAGS="${EXTRA_CFLAGS} -Wno-tautological-compare -Wno-parentheses-equality -Wno-static-in-inline"
+        export CPPFLAGS="${EXTRA_CPPFLAGS}"
+        export LDFLAGS="${EXTRA_LDFLAGS}"
+
+        bash "${WORK_FOLDER_PATH}/${libiconv_folder}/configure" \
+          --prefix="${INSTALL_FOLDER_PATH}" \
+          \
+          --build=${BUILD} \
+          --host=${HOST} \
+          --target=${TARGET} \
+          \
+          --disable-shared \
+          --enable-static \
+          --disable-nls \
+        | tee "${INSTALL_FOLDER_PATH}/configure-libiconv-output.txt"
+        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-libiconv-log.txt
+
+      fi
 
       echo
       echo "Running libiconv make..."
@@ -564,7 +600,7 @@ function do_xz()
   # 2016-12-30
   local xz_version="5.2.3"
 
-  local xz_folder="xz-${xz_version}"
+  xz_folder="xz-${xz_version}"
   local xz_archive="${xz_folder}.tar.xz"
   # local xz_url="https://sourceforge.net/projects/lzmautils/files/${xz_archive}"
   local xz_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${xz_archive}"
@@ -583,28 +619,33 @@ function do_xz()
 
       xbb_activate
 
-      echo
-      echo "Running xz configure..."
+      if [ ! -f "config.status" ]
+      then 
 
-      bash "${WORK_FOLDER_PATH}/${xz_folder}/configure" --help
+        echo
+        echo "Running xz configure..."
 
-      export CFLAGS="${EXTRA_CFLAGS} -Wno-implicit-fallthrough"
-      export CPPFLAGS="${EXTRA_CPPFLAGS}"
-      export LDFLAGS="${EXTRA_LDFLAGS}"
+        bash "${WORK_FOLDER_PATH}/${xz_folder}/configure" --help
 
-      bash "${WORK_FOLDER_PATH}/${xz_folder}/configure" \
-        --prefix="${INSTALL_FOLDER_PATH}" \
-        \
-        --build=${BUILD} \
-        --host=${HOST} \
-        --target=${TARGET} \
-        \
-        --disable-shared \
-        --enable-static \
-        --disable-rpath \
-        --disable-nls \
-      | tee "${INSTALL_FOLDER_PATH}/configure-xz-output.txt"
-      cp "config.log" "${INSTALL_FOLDER_PATH}"/config-xz-log.txt
+        export CFLAGS="${EXTRA_CFLAGS} -Wno-implicit-fallthrough"
+        export CPPFLAGS="${EXTRA_CPPFLAGS}"
+        export LDFLAGS="${EXTRA_LDFLAGS}"
+
+        bash "${WORK_FOLDER_PATH}/${xz_folder}/configure" \
+          --prefix="${INSTALL_FOLDER_PATH}" \
+          \
+          --build=${BUILD} \
+          --host=${HOST} \
+          --target=${TARGET} \
+          \
+          --disable-shared \
+          --enable-static \
+          --disable-rpath \
+          --disable-nls \
+        | tee "${INSTALL_FOLDER_PATH}/configure-xz-output.txt"
+        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-xz-log.txt
+
+      fi
 
       echo
       echo "Running xz make..."

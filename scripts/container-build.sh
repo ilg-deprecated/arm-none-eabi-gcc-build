@@ -47,6 +47,12 @@ TARGET_OS=""
 TARGET_BITS=""
 HOST_UNAME=""
 
+# Keep them updated with combo archive content.
+binutils_version="2.29"
+gcc_version="7.2.1"
+newlib_version="2.5.0"
+gdb_version="8.0"
+
 # Be sure the changes in the build.git are commited.
 # otherwise the copied git may use the previous version.
 
@@ -74,10 +80,11 @@ source "${container_functions_script_path}"
 
 # -----------------------------------------------------------------------------
 
-WITHOUT_STRIP=""
-MULTILIB_FLAGS="" # by default multilib is enabled
-WITHOUT_PDF=""
+WITH_STRIP="y"
+MULTILIB_FLAGS="--with-multilib-list=rmprofile"
+WITH_PDF="y"
 IS_DEVELOP=""
+IS_DEBUG=""
 
 while [ $# -gt 0 ]
 do
@@ -85,12 +92,12 @@ do
   case "$1" in
 
     --disable-strip)
-      WITHOUT_STRIP="y"
+      WITH_STRIP="n"
       shift
       ;;
 
     --without-pdf)
-      WITHOUT_PDF="y"
+      WITH_PDF="n"
       shift
       ;;
 
@@ -109,6 +116,11 @@ do
       shift
       ;;
 
+    --debug)
+      IS_DEBUG="y"
+      shift
+      ;;
+
     *)
       echo "Unknown action/option $1"
       exit 1
@@ -120,11 +132,11 @@ done
 
 # -----------------------------------------------------------------------------
 
-container_start_timer
+start_timer
 
-container_detect
+detect
 
-container_prepare_prerequisites
+prepare_prerequisites
 
 # -----------------------------------------------------------------------------
 
@@ -132,21 +144,49 @@ container_prepare_prerequisites
 export CC=gcc
 export CXX=g++
 
-EXTRA_CFLAGS="-ffunction-sections -fdata-sections -m${TARGET_BITS} -pipe"
-EXTRA_CXXFLAGS="-ffunction-sections -fdata-sections -m${TARGET_BITS} -pipe"
-EXTRA_CPPFLAGS="-I${INSTALL_FOLDER_PATH}/include"
-EXTRA_LDFLAGS_LIB="-L${INSTALL_FOLDER_PATH}/lib"
-EXTRA_LDFLAGS="${EXTRA_LDFLAGS_LIB} -static-libstdc++"
+UNAME="$(uname)"
+
+EXTRA_CFLAGS="-ffunction-sections -fdata-sections -m${TARGET_BITS} -pipe -O2"
+EXTRA_CXXFLAGS="-ffunction-sections -fdata-sections -m${TARGET_BITS} -pipe -O2"
+
+if [ "${IS_DEBUG}" == "y" ]
+then
+  EXTRA_CFLAGS+=" -g"
+  EXTRA_CXXFLAGS+=" -g"
+fi
+
+EXTRA_CPPFLAGS="-I${INSTALL_FOLDER_PATH}"/include
+EXTRA_LDFLAGS_LIB="-L${INSTALL_FOLDER_PATH}"/lib
+EXTRA_LDFLAGS="${EXTRA_LDFLAGS_LIB}"
+EXTRA_LDFLAGS_APP="${EXTRA_LDFLAGS} -static-libstdc++"
+if [ "${UNAME}" == "Darwin" ]
+then
+  EXTRA_LDFLAGS_APP+=" -Wl,-dead_strip"
+else
+  EXTRA_LDFLAGS_APP+=" -Wl,--gc-sections"
+fi
 
 export PKG_CONFIG=pkg-config-verbose
-export PKG_CONFIG_LIBDIR="${INSTALL_FOLDER_PATH}/lib/pkgconfig"
+export PKG_CONFIG_LIBDIR="${INSTALL_FOLDER_PATH}"/lib/pkgconfig
+
+APP_PREFIX="${INSTALL_FOLDER_PATH}/${APP_LC_NAME}"
+APP_PREFIX_DOC="${APP_PREFIX}"/share/doc
+
+APP_PREFIX_NANO="${INSTALL_FOLDER_PATH}/${APP_LC_NAME}"-nano
+
+# The \x2C is a comma in hex; without this trick the regular expression
+# that processes this string in the Makefile, silently fails and the 
+# bfdver.h file remains empty.
+BRANDING="${BRANDING}\x2C ${TARGET_BITS}-bits"
+CFLAGS_OPTIMIZATIONS_FOR_TARGET="-ffunction-sections -fdata-sections -O2"
 
 # -----------------------------------------------------------------------------
+# Libraries
 
-
-# -----------------------------------------------------------------------------
-
+# For just in case, usually it should pick the lib packed inside the archive.
 do_zlib
+
+# The classical GCC libraries.
 do_gmp
 do_mpfr
 do_mpc
@@ -159,7 +199,56 @@ do_xz
 
 # -----------------------------------------------------------------------------
 
-container_stop_timer
+# Download the combo package from ARM.
+do_gcc_download
+
+# The task numbers are from the ARM build script.
+
+# Task [III-0] /$HOST_NATIVE/binutils/
+do_binutils
+# copy_dir to libs included above
+
+# Task [III-1] /$HOST_NATIVE/gcc-first/
+do_gcc_first
+
+# Task [III-2] /$HOST_NATIVE/newlib/
+do_newlib ""
+# Task [III-3] /$HOST_NATIVE/newlib-nano/
+do_newlib "-nano"
+
+# Task [III-4] /$HOST_NATIVE/gcc-final/
+do_gcc_final ""
+
+# Task [III-5] /$HOST_NATIVE/gcc-size-libstdcxx/
+do_gcc_final "-nano"
+
+# Task [III-6] /$HOST_NATIVE/gdb/
+do_gdb ""
+do_gdb "-py"
+
+# Task [III-7] /$HOST_NATIVE/build-manual
+
+# Task [III-8] /$HOST_NATIVE/pretidy/
+do_pretidy
+
+# Task [III-9] /$HOST_NATIVE/strip_host_objects/
+do_strip_binaries
+
+# Task [III-10] /$HOST_NATIVE/strip_target_objects/
+do_strip_libs
+
+do_check_binaries
+do_copy_license_files
+do_copy_scripts
+
+# Task [III-11] /$HOST_NATIVE/package_tbz2/
+do_create_archive
+
+fix_ownership
+
+# -----------------------------------------------------------------------------
+
+stop_timer
 
 exit 0
 

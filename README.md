@@ -10,3 +10,10 @@ Compared to the original ARM version, there are no functional changes; the **sam
 
 The main difference is that the binaries generated cover all modern platforms, Windows 32/64-bits, GNU/Linux 32/64-bits, macOS 64-bits.
 
+## How to build?
+
+```console
+$ git clone --recurse-submodules https://github.com/gnu-mcu-eclipse/arm-none-eabi-gcc-build.git \
+  ~/Downloads/arm-none-eabi-gcc-build.git
+```
+

@@ -968,21 +968,6 @@ function do_copy_license_files()
   fi
 }
 
-function do_check_binary()
-{
-  local file=$1
-
-  set +e
-  if [ "${TARGET_OS}" == "linux" ]
-  then
-    readelf -d "${file}" | egrep -i 'library|dynamic'
-  elif [ "${TARGET_OS}" == "osx" ]
-  then
-    otool -L "${file}"
-  fi
-  set -e
-}
-
 function do_check_binaries()
 {
   local stamp_file_path="${BUILD_FOLDER_PATH}/stamp-check-binaries-completed"
@@ -994,13 +979,13 @@ function do_check_binaries()
       local binaries=$(find "${INSTALL_FOLDER_PATH}"/bin -name ${GCC_TARGET}-\*)
       for bin in ${binaries} 
       do
-          do_check_binary ${bin}
+          check_binary ${bin}
       done
 
       binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*)
       for bin in ${binaries} 
       do
-          do_check_binary ${bin}
+          check_binary ${bin}
       done
 
       set +e
@@ -1013,7 +998,7 @@ function do_check_binaries()
 
       for bin in ${binaries}
       do
-        do_check_binary ${bin}
+        check_binary ${bin}
       done
     fi
 

@@ -86,6 +86,7 @@ WITH_PDF="y"
 WITH_HTML="n"
 IS_DEVELOP=""
 IS_DEBUG=""
+LINUX_BINARIES_PATH=""
 
 while [ $# -gt 0 ]
 do
@@ -137,6 +138,11 @@ do
       shift
       ;;
 
+    --linux-binaries-path)
+      LINUX_BINARIES_PATH="$2"
+      shift 2
+      ;;
+
     *)
       echo "Unknown action/option $1"
       exit 1
@@ -181,6 +187,12 @@ then
     echo "${XBB_FOLDER}"/lib/libfl.la
     cat "${XBB_FOLDER}"/lib/libfl.la
   )
+fi
+
+if [ -x "${WORK_FOLDER_PATH}/${LINUX_BINARIES_PATH}/${GCC_TARGET}-gcc" ]
+then
+  PATH="${WORK_FOLDER_PATH}/${LINUX_BINARIES_PATH}":${PATH}
+  echo ${PATH}
 fi
 
 # -----------------------------------------------------------------------------

@@ -88,7 +88,7 @@ function do_binutils()
           --enable-static \
           --disable-build-warnings \
           --disable-rpath \
-          --without-system-zlib \
+          --with-system-zlib \
           \
         | tee "${INSTALL_FOLDER_PATH}/configure-binutils-output.txt"
         cp "config.log" "${INSTALL_FOLDER_PATH}"/config-binutils-log.txt
@@ -226,7 +226,7 @@ function do_gcc_first()
           ${MULTILIB_FLAGS} \
           \
           --disable-rpath \
-          --without-system-zlib \
+          --with-system-zlib \
           WARN_PEDANTIC='' \
           \
         | tee "${INSTALL_FOLDER_PATH}/configure-gcc-first-output.txt"
@@ -607,7 +607,7 @@ function do_gcc_final()
             ${MULTILIB_FLAGS} \
             \
             --disable-rpath \
-            --without-system-zlib \
+            --with-system-zlib \
             WARN_PEDANTIC= \
             \
           | tee "${INSTALL_FOLDER_PATH}/configure-gcc$1-last-output.txt"
@@ -646,7 +646,7 @@ function do_gcc_final()
             ${MULTILIB_FLAGS} \
             \
             --disable-rpath \
-            --without-system-zlib \
+            --with-system-zlib \
             WARN_PEDANTIC= \
             \
           | tee "${INSTALL_FOLDER_PATH}/configure-gcc$1-last-output.txt"
@@ -791,7 +791,7 @@ function do_gdb()
           \
           --disable-werror \
           --disable-rpath \
-          --without-system-zlib \
+          --with-system-zlib \
           --without-guile \
           --without-babeltrace \
           --without-libunwind-ia64 \

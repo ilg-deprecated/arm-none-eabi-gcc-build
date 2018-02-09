@@ -83,6 +83,7 @@ source "${container_functions_script_path}"
 WITH_STRIP="y"
 MULTILIB_FLAGS="--with-multilib-list=rmprofile"
 WITH_PDF="y"
+WITH_HTML="n"
 IS_DEVELOP=""
 IS_DEBUG=""
 
@@ -98,6 +99,21 @@ do
 
     --without-pdf)
       WITH_PDF="n"
+      shift
+      ;;
+
+    --with-pdf)
+      WITH_PDF="y"
+      shift
+      ;;
+
+    --without-html)
+      WITH_HTML="n"
+      shift
+      ;;
+
+    --with-html)
+      WITH_HTML="y"
       shift
       ;;
 

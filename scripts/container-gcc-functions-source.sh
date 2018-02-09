@@ -104,8 +104,14 @@ function do_binutils()
 
         if [ "${WITH_PDF}" == "y" ]
         then
-          make ${JOBS} html pdf
-          make install-html install-pdf
+          make ${JOBS} pdf
+          make install-pdf
+        fi
+
+        if [ "${WITH_HTML}" == "y" ]
+        then
+          make ${JOBS} html
+          make install-html
         fi
 
         # Without this copy, the build for the nano version of the GCC second 
@@ -406,9 +412,9 @@ function do_newlib()
           if [ "${WITH_PDF}" == "y" ]
           then
 
-            # Do not use parallel build here, it fails on Debian 32-bits.
+            # Waning, parallel build failed on Debian 32-bits.
 
-            make pdf
+            make ${JOBS} pdf
 
             /usr/bin/install -v -d "${APP_PREFIX_DOC}"/pdf
 
@@ -419,7 +425,12 @@ function do_newlib()
             /usr/bin/install -v -c -m 644 \
               "${GCC_TARGET}"/newlib/libm/libm.pdf "${APP_PREFIX_DOC}"/pdf
 
-            make html
+          fi
+
+          if [ "${WITH_HTML}" == "y" ]
+          then
+
+            make ${JOBS} html
 
             /usr/bin/install -v -d "${APP_PREFIX_DOC}"/html
 
@@ -663,7 +674,14 @@ function do_gcc_final()
           # Full build, with documentation.
           if [ "${WITH_PDF}" == "y" ]
           then
-            make install-pdf install-html
+            make ${JOBS} pdf
+            make install-pdf
+          fi
+
+          if [ "${WITH_HTML}" == "y" ]
+          then
+            make ${JOBS} html
+            make install-html
           fi
 
         elif [ "$1" == "-nano" ]
@@ -793,19 +811,32 @@ function do_gdb()
 
         if [ "$1" == "" ]
         then
+
           if [ "${WITH_PDF}" == "y" ]
           then
-            make ${JOBS} html pdf
-            make install-html install-pdf
+            make ${JOBS} pdf
+            make install-pdf
           fi
+
+          if [ "${WITH_HTML}" == "y" ]
+          then
+            make ${JOBS} html 
+            make install-html 
+          fi
+          
         fi
       ) | tee "${INSTALL_FOLDER_PATH}/make-gdb$1-output.txt"
     )
 
     if [ "${TARGET_OS}" != "win" ]
     then
-      "${APP_PREFIX}/bin/${GCC_TARGET}-gdb$1" --version
-      "${APP_PREFIX}/bin/${GCC_TARGET}-gdb$1" --config
+      (
+        # Required by gdb-py to access the python shared library.
+        xbb_activate
+
+        "${APP_PREFIX}/bin/${GCC_TARGET}-gdb$1" --version
+        "${APP_PREFIX}/bin/${GCC_TARGET}-gdb$1" --config
+      )
     fi
 
     touch "${gdb_stamp_file_path}"

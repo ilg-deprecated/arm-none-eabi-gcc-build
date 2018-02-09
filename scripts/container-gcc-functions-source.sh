@@ -771,6 +771,7 @@ function do_gdb()
           --program-prefix="${GCC_TARGET}-" \
           --program-suffix="$1" \
           \
+          --disable-werror \
           --disable-rpath \
           --without-system-zlib \
           --without-guile \

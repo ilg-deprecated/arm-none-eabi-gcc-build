@@ -152,6 +152,21 @@ start_timer
 
 detect
 
+# Fix the texinfo path in XBB v1.
+if [ -f "/.dockerenv" -a -f "/opt/xbb/xbb.sh" ]
+then
+  if [ "${TARGET_BITS}" == "64" ]
+  then
+    sed -e "s|texlive/bin/\$\(uname -p\)-linux|texlive/bin/x86_64-linux|" /opt/xbb/xbb.sh > /opt/xbb/xbb-source.sh
+  elif [ "${TARGET_BITS}" == "32" ]
+  then
+    sed -e "s|texlive/bin/[$][(]uname -p[)]-linux|texlive/bin/i386-linux|" /opt/xbb/xbb.sh > /opt/xbb/xbb-source.sh
+  fi
+
+  echo /opt/xbb/xbb-source.sh
+  cat /opt/xbb/xbb-source.sh
+fi
+
 prepare_prerequisites
 
 # -----------------------------------------------------------------------------

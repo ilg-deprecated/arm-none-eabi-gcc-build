@@ -308,7 +308,11 @@ do_copy_scripts
 # Task [III-11] /$HOST_NATIVE/package_tbz2/
 do_create_archive
 
+# Change ownership to non-root Linux user.
 fix_ownership
+
+# Copy install to shared folder.
+copy_install
 
 # -----------------------------------------------------------------------------
 

@@ -715,7 +715,7 @@ function do_gdb()
 
     cd "${WORK_FOLDER_PATH}"
 
-    extract "${gcc_combo_folder}"/src/gdb.tar.bz2 "${gdb_src_folder_name}"
+    extract "${gcc_combo_folder}"/src/gdb.tar.bz2 "${gdb_src_folder_name}" "${gdb_version}"
 
     (
       mkdir -p "${BUILD_FOLDER_PATH}/${gdb_folder_name}"

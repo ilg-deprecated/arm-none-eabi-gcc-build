@@ -140,11 +140,18 @@ prepare_prerequisites
 
 # -----------------------------------------------------------------------------
 
-# Make all tools choose gcc, not the old cc.
-export CC=gcc
-export CXX=g++
-
 UNAME="$(uname)"
+
+# Make all tools choose gcc, not the old cc.
+if [ "${UNAME}" == "Darwin" ]
+then
+  export CC=clang
+  export CXX=clang++
+elif [ "${TARGET_OS}" == "linux" ]
+then
+  export CC=gcc
+  export CXX=g++
+fi
 
 EXTRA_CFLAGS="-ffunction-sections -fdata-sections -m${TARGET_BITS} -pipe -O2"
 EXTRA_CXXFLAGS="-ffunction-sections -fdata-sections -m${TARGET_BITS} -pipe -O2"

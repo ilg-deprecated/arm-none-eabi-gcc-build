@@ -169,6 +169,20 @@ fi
 
 prepare_prerequisites
 
+if [ -f "/.dockerenv" ]
+then
+  (
+    xbb_activate
+
+    # Remove references to libfl.so, to force a static link and
+    # avoid references to unwanted shared libraries in binutils.
+    sed -i -e "s/dlname=.*/dlname=''/" -e "s/library_names=.*/library_names=''/" "${XBB_FOLDER}"/lib/libfl.la
+
+    echo "${XBB_FOLDER}"/lib/libfl.la
+    cat "${XBB_FOLDER}"/lib/libfl.la
+  )
+fi
+
 # -----------------------------------------------------------------------------
 
 UNAME="$(uname)"

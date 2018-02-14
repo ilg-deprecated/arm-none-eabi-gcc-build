@@ -267,7 +267,18 @@ then
   LIBICONV_VERSION="1.14"
   XZ_VERSION="5.2.3"
 
+  PYTHON_WIN_VERSION="2.7.13"
 fi
+
+if [ "${TARGET_BITS}" == "32" ]
+then
+  PYTHON_WIN=python-"${PYTHON_WIN_VERSION}"
+else
+  PYTHON_WIN=python-"${PYTHON_WIN_VERSION}".amd64
+fi
+
+PYTHON_WIN_PACK="${PYTHON_WIN}".msi
+PYTHON_WIN_URL="https://www.python.org/ftp/python/${PYTHON_WIN_VERSION}/${PYTHON_WIN_PACK}"
 
 # -----------------------------------------------------------------------------
 # Libraries

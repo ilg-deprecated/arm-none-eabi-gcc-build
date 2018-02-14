@@ -25,7 +25,40 @@ function do_python_download()
 
   cd "${WORK_FOLDER_PATH}"
 
-  download_and_extract "${gcc_combo_url}" "${gcc_combo_archive}" "${gcc_combo_folder}"
+  download "${PYTHON_WIN_URL}" "${PYTHON_WIN_PACK}"
+
+  if [ ! -d "${PYTHON_WIN}" ]
+  then
+    # Hack to install a tool able to unpack .MSI setups.
+    # TODO: move to XBB.
+    # https://sourceforge.net/projects/p7zip/files/p7zip/16.02/p7zip_16.02_src_all.tar.bz2/download
+    p7zip_version="16.02"
+    p7zip_folder_name="p7zip_${p7zip_version}"
+    p7zip_archive="${p7zip_folder_name}_src_all.tar.bz2"
+    p7zip_url="https://sourceforge.net/projects/p7zip/files/p7zip/${p7zip_version}/${p7zip_archive}"
+
+    cd "${BUILD_FOLDER_PATH}"
+    download_and_extract "${p7zip_url}" "${p7zip_archive}" "${p7zip_folder_name}"
+
+    cd "${p7zip_folder_name}"
+    # Test only 7za
+    make test
+
+    cd "${WORK_FOLDER_PATH}"
+    # Include only the headers and the python library and executable.
+    echo '*.h' >/tmp/included
+    echo 'python*.dll' >>/tmp/included
+    echo 'python*.lib' >>/tmp/included
+    "${BUILD_FOLDER_PATH}/${p7zip_folder_name}"/bin/7za x -o"${PYTHON_WIN}" "${DOWNLOAD_FOLDER_PATH}/${PYTHON_WIN_PACK}" -i@/tmp/included
+
+    # Patch to disable the macro that renames hypot.
+    if [ -f "${WORK_FOLDER_PATH}/patches/${PYTHON_WIN}.patch" ]
+    then
+      patch -p0 <"${WORK_FOLDER_PATH}/patches/${PYTHON_WIN}.patch" 
+    fi
+  else
+    echo "Folder ${PYTHON_WIN} already present."
+  fi
 }
 
 BINUTILS_SRC_FOLDER_NAME="binutils"
@@ -745,6 +778,12 @@ function do_gdb()
 
       xbb_activate
 
+      if [ "${TARGET_OS}" == "win" ]
+      then
+        # Definition required by python-config.sh.
+        export GNURM_PYTHON_WIN_DIR="${WORK_FOLDER_PATH}/${PYTHON_WIN}"
+      fi
+
       if [ ! -f "config.status" ]
       then
 
@@ -763,7 +802,12 @@ function do_gdb()
         local extra_python_opts="--with-python=no"
         if [ "$1" == "-py" ]
         then
-          extra_python_opts="--with-python=yes"
+          if [ "${TARGET_OS}" == "win" ]
+          then
+            extra_python_opts="--with-python=${WORK_FOLDER_PATH}/${GCC_COMBO_FOLDER_NAME}/python-config.sh"
+          else
+            extra_python_opts="--with-python=yes"
+          fi
         fi
 
         bash "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}/configure" \

@@ -556,7 +556,9 @@ function do_libiconv()
 
         bash "${WORK_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}/configure" --help
 
-        export CFLAGS="${EXTRA_CFLAGS} -Wno-tautological-compare -Wno-parentheses-equality -Wno-static-in-inline"
+        # -fgnu89-inline fixes "undefined reference to `aliases2_lookup'"
+        #  https://savannah.gnu.org/bugs/?47953
+        export CFLAGS="${EXTRA_CFLAGS} -fgnu89-inline -Wno-tautological-compare -Wno-parentheses-equality -Wno-static-in-inline"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
         export LDFLAGS="${EXTRA_LDFLAGS}"
 

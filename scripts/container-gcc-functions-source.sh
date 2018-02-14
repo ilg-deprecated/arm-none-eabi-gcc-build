@@ -6,25 +6,29 @@
 
 # -----------------------------------------------------------------------------
 
-# https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2017q4/gcc-arm-none-eabi-7-2017-q4-major-src.tar.bz2
-
-gcc_combo_version="7-2017-q4-major"
-gcc_combo_folder="gcc-arm-none-eabi-${gcc_combo_version}"
-gcc_combo_archive="${gcc_combo_folder}-src.tar.bz2"
-
 function do_gcc_download() 
 {
   # https://developer.arm.com/open-source/gnu-toolchain/gnu-rm
   # https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
 
-  local gcc_combo_url="https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2017q4/gcc-arm-none-eabi-7-2017-q4-major-src.tar.bz2"
+  cd "${WORK_FOLDER_PATH}"
+
+  download_and_extract "${GCC_COMBO_URL}" "${GCC_COMBO_ARCHIVE}" "${GCC_COMBO_FOLDER_NAME}"
+}
+
+function do_python_download() 
+{
+  # https://www.python.org/downloads/release/python-2714/
+  # https://www.python.org/ftp/python/2.7.14/python-2.7.14.msi
+  # https://www.python.org/ftp/python/2.7.14/python-2.7.14.amd64.msi
+
 
   cd "${WORK_FOLDER_PATH}"
 
   download_and_extract "${gcc_combo_url}" "${gcc_combo_archive}" "${gcc_combo_folder}"
 }
 
-binutils_src_folder_name="binutils"
+BINUTILS_SRC_FOLDER_NAME="binutils"
 
 function do_binutils()
 {
@@ -32,19 +36,19 @@ function do_binutils()
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=binutils-git
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=gdb-git
 
-  binutils_folder_name="binutils"
-  local binutils_stamp_file_path="${BUILD_FOLDER_PATH}/${binutils_folder_name}/stamp-install-completed"
+  BINUTILS_FOLDER_NAME="binutils-${BINUTILS_VERSION}"
+  local binutils_stamp_file_path="${BUILD_FOLDER_PATH}/${BINUTILS_FOLDER_NAME}/stamp-install-completed"
 
   if [ ! -f "${binutils_stamp_file_path}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
 
-    extract "${gcc_combo_folder}"/src/binutils.tar.bz2 "${binutils_src_folder_name}"
+    extract "${GCC_COMBO_FOLDER_NAME}"/src/binutils.tar.bz2 "${BINUTILS_SRC_FOLDER_NAME}"
 
     (
-      mkdir -p "${BUILD_FOLDER_PATH}/${binutils_folder_name}"
-      cd "${BUILD_FOLDER_PATH}/${binutils_folder_name}"
+      mkdir -p "${BUILD_FOLDER_PATH}/${BINUTILS_FOLDER_NAME}"
+      cd "${BUILD_FOLDER_PATH}/${BINUTILS_FOLDER_NAME}"
 
       xbb_activate
 
@@ -54,7 +58,7 @@ function do_binutils()
         echo
         echo "Running binutils configure..."
       
-        bash "${WORK_FOLDER_PATH}/${binutils_src_folder_name}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}/configure" --help
 
         export CFLAGS="${EXTRA_CFLAGS} -Wno-unknown-warning-option -Wno-extended-offsetof -Wno-deprecated-declarations -Wno-incompatible-pointer-types-discards-qualifiers -Wno-implicit-function-declaration -Wno-parentheses -Wno-format-nonliteral -Wno-shift-count-overflow -Wno-constant-logical-operand -Wno-shift-negative-value -Wno-format"
         export CXXFLAGS="${EXTRA_CXXFLAGS} -Wno-format-nonliteral -Wno-format-security -Wno-deprecated -Wno-unknown-warning-option -Wno-c++11-narrowing"
@@ -63,7 +67,7 @@ function do_binutils()
 
         # ? --without-python --without-curses, --with-expat
 
-        bash "${WORK_FOLDER_PATH}/${binutils_src_folder_name}/configure" \
+        bash "${WORK_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}/configure" \
           --prefix="${APP_PREFIX}" \
           --infodir="${APP_PREFIX_DOC}/info" \
           --mandir="${APP_PREFIX_DOC}/man" \
@@ -142,11 +146,11 @@ function do_binutils()
   fi
 }
 
-gcc_src_folder_name="gcc"
+GCC_SRC_FOLDER_NAME="gcc"
 
 function do_gcc_first()
 {
-  local gcc_first_folder_name="gcc-first"
+  local gcc_first_folder_name="gcc-${GCC_VERSION}-first"
   local gcc_first_stamp_file_path="${BUILD_FOLDER_PATH}/${gcc_first_folder_name}/stamp-install-completed"
 
   if [ ! -f "${gcc_first_stamp_file_path}" ]
@@ -154,7 +158,7 @@ function do_gcc_first()
 
     cd "${WORK_FOLDER_PATH}"
 
-    extract "${gcc_combo_folder}"/src/gcc.tar.bz2 "${gcc_src_folder_name}"
+    extract "${GCC_COMBO_FOLDER_NAME}"/src/gcc.tar.bz2 "${GCC_SRC_FOLDER_NAME}"
 
     (
       mkdir -p "${BUILD_FOLDER_PATH}/${gcc_first_folder_name}"
@@ -168,7 +172,7 @@ function do_gcc_first()
         echo
         echo "Running gcc first stage configure..."
       
-        bash "${WORK_FOLDER_PATH}/${gcc_src_folder_name}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" --help
 
         export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-unused-value -Wno-extended-offsetof -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-mismatched-tags"
         export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
@@ -191,7 +195,7 @@ function do_gcc_first()
 
         # --enable-checking=no ???
 
-        bash "${WORK_FOLDER_PATH}/${gcc_src_folder_name}/configure" \
+        bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" \
           --prefix="${APP_PREFIX}"  \
           --libexecdir="${APP_PREFIX}/lib" \
           --infodir="${APP_PREFIX_DOC}/info" \
@@ -257,13 +261,13 @@ function do_gcc_first()
   fi
 }
 
-newlib_src_folder_name="newlib"
+NEWLIB_SRC_FOLDER_NAME="newlib"
 
 # For the nano build, call it with "-nano".
 # $1="" or $1="-nano"
 function do_newlib()
 {
-  local newlib_folder_name="newlib$1"
+  local newlib_folder_name="newlib-${NEWLIB_VERSION}$1"
   local newlib_stamp_file_path="${BUILD_FOLDER_PATH}/${newlib_folder_name}/stamp-install-completed"
 
   if [ ! -f "${newlib_stamp_file_path}" ]
@@ -271,7 +275,7 @@ function do_newlib()
 
     cd "${WORK_FOLDER_PATH}"
 
-    extract "${gcc_combo_folder}"/src/newlib.tar.bz2 "${newlib_src_folder_name}"
+    extract "${GCC_COMBO_FOLDER_NAME}"/src/newlib.tar.bz2 "${NEWLIB_SRC_FOLDER_NAME}"
 
     (
       mkdir -p "${BUILD_FOLDER_PATH}/${newlib_folder_name}"
@@ -307,7 +311,7 @@ function do_newlib()
         echo
         echo "Running newlib$1 configure..."
       
-        bash "${WORK_FOLDER_PATH}/${newlib_src_folder_name}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${NEWLIB_SRC_FOLDER_NAME}/configure" --help
 
         local optimize="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}"
         if [ "$1" == "-nano" ]
@@ -332,7 +336,7 @@ function do_newlib()
         then
 
           # TODO: Check if long-long and c990formats are ok.
-          bash "${WORK_FOLDER_PATH}/${newlib_src_folder_name}/configure" \
+          bash "${WORK_FOLDER_PATH}/${NEWLIB_SRC_FOLDER_NAME}/configure" \
             --prefix="${APP_PREFIX}"  \
             --infodir="${APP_PREFIX_DOC}/info" \
             --mandir="${APP_PREFIX_DOC}/man" \
@@ -359,7 +363,7 @@ function do_newlib()
 
           # TODO: Check if long-long and c990formats are ok.
           # TODO: Check if register-fini is needed.
-          bash "${WORK_FOLDER_PATH}/${newlib_src_folder_name}/configure" \
+          bash "${WORK_FOLDER_PATH}/${NEWLIB_SRC_FOLDER_NAME}/configure" \
             --prefix="${APP_PREFIX_NANO}"  \
             \
             --build=${BUILD} \
@@ -515,7 +519,7 @@ function do_copy_multi_libs()
 # $1="" or $1="-nano"
 function do_gcc_final()
 {
-  local gcc_final_folder_name="gcc-final$1"
+  local gcc_final_folder_name="gcc-${GCC_VERSION}-final$1"
   local gcc_final_stamp_file_path="${BUILD_FOLDER_PATH}/${gcc_final_folder_name}/stamp-install-completed"
 
   if [ ! -f "${gcc_final_stamp_file_path}" ]
@@ -523,7 +527,7 @@ function do_gcc_final()
 
     cd "${WORK_FOLDER_PATH}"
 
-    extract "${gcc_combo_folder}"/src/gcc.tar.bz2 "${gcc_src_folder_name}"
+    extract "${GCC_COMBO_FOLDER_NAME}"/src/gcc.tar.bz2 "${GCC_SRC_FOLDER_NAME}"
 
     (
       mkdir -p "${BUILD_FOLDER_PATH}/${gcc_final_folder_name}"
@@ -537,7 +541,7 @@ function do_gcc_final()
         echo
         echo "Running gcc$1 final stage configure..."
       
-        bash "${WORK_FOLDER_PATH}/${gcc_src_folder_name}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" --help
 
         export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-unused-value -Wno-extended-offsetof -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-mismatched-tags"
         export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
@@ -571,7 +575,7 @@ function do_gcc_final()
         if [ "$1" == "" ]
         then
 
-          bash "${WORK_FOLDER_PATH}/${gcc_src_folder_name}/configure" \
+          bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" \
             --prefix="${APP_PREFIX}"  \
             --libexecdir="${APP_PREFIX}/lib" \
             --infodir="${APP_PREFIX_DOC}/info" \
@@ -615,7 +619,7 @@ function do_gcc_final()
 
         else
 
-          bash "${WORK_FOLDER_PATH}/${gcc_src_folder_name}/configure" \
+          bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" \
             --prefix="${APP_PREFIX_NANO}"  \
             \
             --build=${BUILD} \
@@ -719,13 +723,13 @@ function do_gcc_final()
   fi
 }
 
-gdb_src_folder_name="gdb"
+GDB_SRC_FOLDER_NAME="gdb"
 
 # Called twice, with and without python support.
 # $1="" or $1="-py"
 function do_gdb()
 {
-  local gdb_folder_name="gdb$1"
+  local gdb_folder_name="gdb-${GDB_VERSION}$1"
   local gdb_stamp_file_path="${BUILD_FOLDER_PATH}/${gdb_folder_name}/stamp-install-completed"
 
   if [ ! -f "${gdb_stamp_file_path}" ]
@@ -733,7 +737,7 @@ function do_gdb()
 
     cd "${WORK_FOLDER_PATH}"
 
-    extract "${gcc_combo_folder}"/src/gdb.tar.bz2 "${gdb_src_folder_name}" "${gdb_version}"
+    extract "${GCC_COMBO_FOLDER_NAME}"/src/gdb.tar.bz2 "${GDB_SRC_FOLDER_NAME}" "${GDB_VERSION}"
 
     (
       mkdir -p "${BUILD_FOLDER_PATH}/${gdb_folder_name}"
@@ -747,7 +751,7 @@ function do_gdb()
         echo
         echo "Running gdb$1 configure..."
       
-        bash "${WORK_FOLDER_PATH}/${gdb_src_folder_name}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}/configure" --help
 
         export GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-incompatible-pointer-types-discards-qualifiers -Wno-extended-offsetof -Wno-deprecated-declarations"
         export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
@@ -762,7 +766,7 @@ function do_gdb()
           extra_python_opts="--with-python=yes"
         fi
 
-        bash "${WORK_FOLDER_PATH}/${gdb_src_folder_name}/configure" \
+        bash "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}/configure" \
           --prefix="${APP_PREFIX}"  \
           --infodir="${APP_PREFIX_DOC}/info" \
           --mandir="${APP_PREFIX_DOC}/man" \
@@ -934,32 +938,32 @@ function do_copy_license_files()
     echo "Copying license files..."
 
     copy_license \
-      "${WORK_FOLDER_PATH}/${zlib_folder}" "${zlib_folder}"
+      "${WORK_FOLDER_PATH}/${ZLIB_FOLDER_NAME}" "${ZLIB_FOLDER_NAME}"
     copy_license \
-      "${WORK_FOLDER_PATH}/${gmp_folder}" "${gmp_folder}"
+      "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}" "${GMP_FOLDER_NAME}"
     copy_license \
-      "${WORK_FOLDER_PATH}/${mpfr_folder}" "${mpfr_folder}"
+      "${WORK_FOLDER_PATH}/${MPFR_FOLDER_NAME}" "${MPFR_FOLDER_NAME}"
     copy_license \
-      "${WORK_FOLDER_PATH}/${mpc_folder}" "${mpc_folder}"
+      "${WORK_FOLDER_PATH}/${MPC_FOLDER_NAME}" "${MPC_FOLDER_NAME}"
     copy_license \
-      "${WORK_FOLDER_PATH}/${isl_folder}" "${isl_folder}"
+      "${WORK_FOLDER_PATH}/${ISL_FOLDER_NAME}" "${ISL_FOLDER_NAME}"
     copy_license \
-      "${WORK_FOLDER_PATH}/${libelf_folder}" "${libelf_folder}"
+      "${WORK_FOLDER_PATH}/${LIBELF_FOLDER_NAME}" "${LIBELF_FOLDER_NAME}"
     copy_license \
-      "${WORK_FOLDER_PATH}/${expat_folder}" "${expat_folder}"
+      "${WORK_FOLDER_PATH}/${EXPAT_FOLDER_NAME}" "${EXPAT_FOLDER_NAME}"
     copy_license \
-      "${WORK_FOLDER_PATH}/${libiconv_folder}" "${libiconv_folder}"
+      "${WORK_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}" "${LIBICONV_FOLDER_NAME}"
     copy_license \
-      "${WORK_FOLDER_PATH}/${xz_folder}" "${xz_folder}"
+      "${WORK_FOLDER_PATH}/${XZ_FOLDER_NAME}" "${XZ_FOLDER_NAME}"
 
     copy_license \
-      "${WORK_FOLDER_PATH}/${binutils_src_folder_name}" "${binutils_src_folder_name}-${binutils_version}"
+      "${WORK_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}" "${BINUTILS_SRC_FOLDER_NAME}-${BINUTILS_VERSION}"
     copy_license \
-      "${WORK_FOLDER_PATH}/${gcc_src_folder_name}" "${gcc_src_folder_name}-${gcc_version}"
+      "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}" "${GCC_SRC_FOLDER_NAME}-${GCC_VERSION}"
     copy_license \
-      "${WORK_FOLDER_PATH}/${newlib_src_folder_name}" "${newlib_src_folder_name}-${newlib_version}"
+      "${WORK_FOLDER_PATH}/${NEWLIB_SRC_FOLDER_NAME}" "${NEWLIB_SRC_FOLDER_NAME}-${NEWLIB_VERSION}"
     copy_license \
-      "${WORK_FOLDER_PATH}/${gdb_src_folder_name}" "${gdb_src_folder_name}-${gdb_version}"
+      "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}" "${GDB_SRC_FOLDER_NAME}-${GDB_VERSION}"
 
     touch "${stamp_file_path}"
 

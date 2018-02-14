@@ -47,12 +47,6 @@ TARGET_OS=""
 TARGET_BITS=""
 HOST_UNAME=""
 
-# Keep them updated with combo archive content.
-binutils_version="2.29"
-gcc_version="7.2.1"
-newlib_version="2.5.0"
-gdb_version="8.0"
-
 # Be sure the changes in the build.git are commited.
 # otherwise the copied git may use the previous version.
 
@@ -243,6 +237,37 @@ APP_PREFIX_NANO="${INSTALL_FOLDER_PATH}/${APP_LC_NAME}"-nano
 # bfdver.h file remains empty.
 BRANDING="${BRANDING}\x2C ${TARGET_BITS}-bits"
 CFLAGS_OPTIMIZATIONS_FOR_TARGET="-ffunction-sections -fdata-sections -O2"
+
+# Keep them updated with combo archive content.
+if [[ "${RELEASE_VERSION}" =~ 7\.2\.1-* ]]
+then
+
+  GCC_COMBO_VERSION_MAJOR="7"
+  GCC_COMBO_VERSION_YEAR="2017"
+  GCC_COMBO_VERSION_QUARTER="q4"
+  GCC_COMBO_VERSION="${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}-${GCC_COMBO_VERSION_QUARTER}-major"
+  GCC_COMBO_FOLDER_NAME="gcc-arm-none-eabi-${GCC_COMBO_VERSION}"
+  GCC_COMBO_ARCHIVE="${GCC_COMBO_FOLDER_NAME}-src.tar.bz2"
+
+  # https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2017q4/gcc-arm-none-eabi-7-2017-q4-major-src.tar.bz2
+  GCC_COMBO_URL="https://developer.arm.com/-/media/Files/downloads/gnu-rm/${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}${GCC_COMBO_VERSION_QUARTER}/${GCC_COMBO_ARCHIVE}"
+
+  BINUTILS_VERSION="2.29"
+  GCC_VERSION="7.2.1"
+  NEWLIB_VERSION="2.5.0"
+  GDB_VERSION="8.0"
+
+  ZLIB_VERSION="1.2.8"
+  GMP_VERSION="6.1.0"
+  MPFR_VERSION="3.1.4"
+  MPC_VERSION="1.0.3"
+  ISL_VERSION="0.15"
+  LIBELF_VERSION="0.8.13"
+  EXPAT_VERSION="2.1.1"
+  LIBICONV_VERSION="1.14"
+  XZ_VERSION="5.2.3"
+
+fi
 
 # -----------------------------------------------------------------------------
 # Libraries

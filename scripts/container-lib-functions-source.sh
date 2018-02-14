@@ -13,33 +13,34 @@ function do_zlib()
   # http://zlib.net/fossils/
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=zlib-static
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=zlib-git
+  # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=mingw-w64-zlib
 
   # 2013-04-28
-  local zlib_version="1.2.8"
+  # ZLIB_VERSION="1.2.8"
   # 2017-01-15
-  # local zlib_version="1.2.11"
+  # ZLIB_VERSION="1.2.11"
 
-  zlib_folder="zlib-${zlib_version}"
-  local zlib_archive="${zlib_folder}.tar.gz"
+  ZLIB_FOLDER_NAME="zlib-${ZLIB_VERSION}"
+  local zlib_archive="${ZLIB_FOLDER_NAME}.tar.gz"
   # local zlib_url="http://zlib.net/fossils/${zlib_archive}"
   local zlib_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${zlib_archive}"
 
-  local zlib_stamp_file="${BUILD_FOLDER_PATH}/${zlib_folder}/stamp-install-completed"
+  local zlib_stamp_file="${BUILD_FOLDER_PATH}/${ZLIB_FOLDER_NAME}/stamp-install-completed"
   if [ ! -f "${zlib_stamp_file}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
 
-    download_and_extract "${zlib_url}" "${zlib_archive}" "${zlib_folder}"
+    download_and_extract "${zlib_url}" "${zlib_archive}" "${ZLIB_FOLDER_NAME}"
 
     (
-      if [ ! -d "${BUILD_FOLDER_PATH}/${zlib_folder}" ]
+      if [ ! -d "${BUILD_FOLDER_PATH}/${ZLIB_FOLDER_NAME}" ]
       then
-        mkdir -p "${BUILD_FOLDER_PATH}/${zlib_folder}"
+        mkdir -p "${BUILD_FOLDER_PATH}/${ZLIB_FOLDER_NAME}"
         # Copy the sources in the build folder.
-        cp -r "${WORK_FOLDER_PATH}/${zlib_folder}"/* "${BUILD_FOLDER_PATH}/${zlib_folder}"
+        cp -r "${WORK_FOLDER_PATH}/${ZLIB_FOLDER_NAME}"/* "${BUILD_FOLDER_PATH}/${ZLIB_FOLDER_NAME}"
       fi
-      cd "${BUILD_FOLDER_PATH}/${zlib_folder}"
+      cd "${BUILD_FOLDER_PATH}/${ZLIB_FOLDER_NAME}"
 
       xbb_activate
 
@@ -82,26 +83,26 @@ function do_gmp()
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=gmp-hg
 
   # 01-Nov-2015
-  local gmp_version="6.1.0"
+  # GMP_VERSION="6.1.0"
   # 16-Dec-2016
-  # local gmp_version="6.1.2"
+  # GMP_VERSION="6.1.2"
 
-  gmp_folder="gmp-${gmp_version}"
-  local gmp_archive="${gmp_folder}.tar.xz"
+  GMP_FOLDER_NAME="gmp-${GMP_VERSION}"
+  local gmp_archive="${GMP_FOLDER_NAME}.tar.xz"
   # local gmp_url="https://gmplib.org/download/gmp/${gmp_archive}"
   local gmp_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${gmp_archive}"
 
-  local gmp_stamp_file="${BUILD_FOLDER_PATH}/${gmp_folder}/stamp-install-completed"
+  local gmp_stamp_file="${BUILD_FOLDER_PATH}/${GMP_FOLDER_NAME}/stamp-install-completed"
   if [ ! -f "${gmp_stamp_file}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
 
-    download_and_extract "${gmp_url}" "${gmp_archive}" "${gmp_folder}"
+    download_and_extract "${gmp_url}" "${gmp_archive}" "${GMP_FOLDER_NAME}"
 
     (
-      mkdir -p "${BUILD_FOLDER_PATH}/${gmp_folder}"
-      cd "${BUILD_FOLDER_PATH}/${gmp_folder}"
+      mkdir -p "${BUILD_FOLDER_PATH}/${GMP_FOLDER_NAME}"
+      cd "${BUILD_FOLDER_PATH}/${GMP_FOLDER_NAME}"
 
       xbb_activate
 
@@ -114,14 +115,14 @@ function do_gmp()
         # ABI is mandatory, otherwise configure fails on 32-bits.
         # (see https://gmplib.org/manual/ABI-and-ISA.html)
 
-        bash "${WORK_FOLDER_PATH}/${gmp_folder}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}/configure" --help
 
         export CFLAGS="-Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
         export LDFLAGS="${EXTRA_LDFLAGS}"
         export ABI="${TARGET_BITS}"
       
-        bash "${WORK_FOLDER_PATH}/${gmp_folder}/configure" \
+        bash "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}/configure" \
           --prefix="${INSTALL_FOLDER_PATH}" \
           \
           --build=${BUILD} \
@@ -161,26 +162,26 @@ function do_mpfr()
   # https://git.archlinux.org/svntogit/packages.git/tree/trunk/PKGBUILD?h=packages/mpfr
 
   # 6 March 2016
-  local mpfr_version="3.1.4"
+  # MPFR_VERSION="3.1.4"
   # 7 September 2017
-  # local mpfr_version="3.1.6"
+  # MPFR_VERSION="3.1.6"
 
-  mpfr_folder="mpfr-${mpfr_version}"
-  local mpfr_archive="${mpfr_folder}.tar.xz"
-  # local mpfr_url="http://www.mpfr.org/${mpfr_folder}/${mpfr_archive}"
+  MPFR_FOLDER_NAME="mpfr-${MPFR_VERSION}"
+  local mpfr_archive="${MPFR_FOLDER_NAME}.tar.xz"
+  # local mpfr_url="http://www.mpfr.org/${MPFR_FOLDER_NAME}/${mpfr_archive}"
   local mpfr_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${mpfr_archive}"
 
-  local mpfr_stamp_file="${BUILD_FOLDER_PATH}/${mpfr_folder}/stamp-install-completed"
+  local mpfr_stamp_file="${BUILD_FOLDER_PATH}/${MPFR_FOLDER_NAME}/stamp-install-completed"
   if [ ! -f "${mpfr_stamp_file}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
 
-    download_and_extract "${mpfr_url}" "${mpfr_archive}" "${mpfr_folder}"
+    download_and_extract "${mpfr_url}" "${mpfr_archive}" "${MPFR_FOLDER_NAME}"
 
     (
-      mkdir -p "${BUILD_FOLDER_PATH}/${mpfr_folder}"
-      cd "${BUILD_FOLDER_PATH}/${mpfr_folder}"
+      mkdir -p "${BUILD_FOLDER_PATH}/${MPFR_FOLDER_NAME}"
+      cd "${BUILD_FOLDER_PATH}/${MPFR_FOLDER_NAME}"
 
       xbb_activate
 
@@ -190,13 +191,13 @@ function do_mpfr()
         echo
         echo "Running mpfr configure..."
 
-        bash "${WORK_FOLDER_PATH}/${mpfr_folder}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${MPFR_FOLDER_NAME}/configure" --help
 
         export CFLAGS="${EXTRA_CFLAGS}"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
         export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
 
-        bash "${WORK_FOLDER_PATH}/${mpfr_folder}/configure" \
+        bash "${WORK_FOLDER_PATH}/${MPFR_FOLDER_NAME}/configure" \
           --prefix="${INSTALL_FOLDER_PATH}" \
           \
           --build=${BUILD} \
@@ -235,23 +236,23 @@ function do_mpc()
   # https://git.archlinux.org/svntogit/packages.git/tree/trunk/PKGBUILD?h=packages/libmpc
 
   # 20 Feb 2015
-  local mpc_version="1.0.3"
+  # MPC_VERSION="1.0.3"
 
-  mpc_folder="mpc-${mpc_version}"
-  local mpc_archive="${mpc_folder}.tar.gz"
+  MPC_FOLDER_NAME="mpc-${MPC_VERSION}"
+  local mpc_archive="${MPC_FOLDER_NAME}.tar.gz"
   local mpc_url="ftp://ftp.gnu.org/gnu/mpc/${mpc_archive}"
 
-  local mpc_stamp_file="${BUILD_FOLDER_PATH}/${mpc_folder}/stamp-install-completed"
+  local mpc_stamp_file="${BUILD_FOLDER_PATH}/${MPC_FOLDER_NAME}/stamp-install-completed"
   if [ ! -f "${mpc_stamp_file}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
 
-    download_and_extract "${mpc_url}" "${mpc_archive}" "${mpc_folder}"
+    download_and_extract "${mpc_url}" "${mpc_archive}" "${MPC_FOLDER_NAME}"
 
     (
-      mkdir -p "${BUILD_FOLDER_PATH}/${mpc_folder}"
-      cd "${BUILD_FOLDER_PATH}/${mpc_folder}"
+      mkdir -p "${BUILD_FOLDER_PATH}/${MPC_FOLDER_NAME}"
+      cd "${BUILD_FOLDER_PATH}/${MPC_FOLDER_NAME}"
 
       xbb_activate
 
@@ -261,13 +262,13 @@ function do_mpc()
         echo
         echo "Running mpc configure..."
       
-        bash "${WORK_FOLDER_PATH}/${mpc_folder}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${MPC_FOLDER_NAME}/configure" --help
 
         export CFLAGS="${EXTRA_CFLAGS} -Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
         export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
 
-        bash "${WORK_FOLDER_PATH}/${mpc_folder}/configure" \
+        bash "${WORK_FOLDER_PATH}/${MPC_FOLDER_NAME}/configure" \
           --prefix="${INSTALL_FOLDER_PATH}" \
           \
           --build=${BUILD} \
@@ -304,28 +305,28 @@ function do_isl()
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=isl
 
   # 2015-06-12
-  local isl_version="0.15"
+  # ISL_VERSION="0.15"
   # 2016-01-15
-  # local isl_version="0.16.1"
+  # ISL_VERSION="0.16.1"
   # 2016-12-20
-  # local isl_version="0.18"
+  # ISL_VERSION="0.18"
 
-  isl_folder="isl-${isl_version}"
-  local isl_archive="${isl_folder}.tar.xz"
+  ISL_FOLDER_NAME="isl-${ISL_VERSION}"
+  local isl_archive="${ISL_FOLDER_NAME}.tar.xz"
   # local isl_url="http://isl.gforge.inria.fr/${isl_archive}"
   local isl_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${isl_archive}"
 
-  local isl_stamp_file="${BUILD_FOLDER_PATH}/${isl_folder}/stamp-install-completed"
+  local isl_stamp_file="${BUILD_FOLDER_PATH}/${ISL_FOLDER_NAME}/stamp-install-completed"
   if [ ! -f "${isl_stamp_file}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
 
-    download_and_extract "${isl_url}" "${isl_archive}" "${isl_folder}"
+    download_and_extract "${isl_url}" "${isl_archive}" "${ISL_FOLDER_NAME}"
 
     (
-      mkdir -p "${BUILD_FOLDER_PATH}/${isl_folder}"
-      cd "${BUILD_FOLDER_PATH}/${isl_folder}"
+      mkdir -p "${BUILD_FOLDER_PATH}/${ISL_FOLDER_NAME}"
+      cd "${BUILD_FOLDER_PATH}/${ISL_FOLDER_NAME}"
 
       xbb_activate
 
@@ -335,13 +336,13 @@ function do_isl()
         echo
         echo "Running isl configure..."
 
-        bash "${WORK_FOLDER_PATH}/${isl_folder}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${ISL_FOLDER_NAME}/configure" --help
 
         export CFLAGS="${EXTRA_CFLAGS} -Wno-dangling-else"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
         export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
 
-        bash "${WORK_FOLDER_PATH}/${isl_folder}/configure" \
+        bash "${WORK_FOLDER_PATH}/${ISL_FOLDER_NAME}/configure" \
           --prefix="${INSTALL_FOLDER_PATH}" \
           \
           --build=${BUILD} \
@@ -378,24 +379,24 @@ function do_libelf()
   # http://www.mr511.de/
   # http://www.mr511.de/software/
 
-  local libelf_version="0.8.13"
+  # LIBELF_VERSION="0.8.13"
 
-  libelf_folder="libelf-${libelf_version}"
-  local libelf_archive="${libelf_folder}.tar.gz"
+  LIBELF_FOLDER_NAME="libelf-${LIBELF_VERSION}"
+  local libelf_archive="${LIBELF_FOLDER_NAME}.tar.gz"
   # local libelf_url="http://www.mr511.de/software/${libelf_archive}"
   local libelf_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${libelf_archive}"
 
-  local libelf_stamp_file="${BUILD_FOLDER_PATH}/${libelf_folder}/stamp-install-completed"
+  local libelf_stamp_file="${BUILD_FOLDER_PATH}/${LIBELF_FOLDER_NAME}/stamp-install-completed"
   if [ ! -f "${libelf_stamp_file}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
 
-    download_and_extract "${libelf_url}" "${libelf_archive}" "${libelf_folder}"
+    download_and_extract "${libelf_url}" "${libelf_archive}" "${LIBELF_FOLDER_NAME}"
 
     (
-      mkdir -p "${BUILD_FOLDER_PATH}/${libelf_folder}"
-      cd "${BUILD_FOLDER_PATH}/${libelf_folder}"
+      mkdir -p "${BUILD_FOLDER_PATH}/${LIBELF_FOLDER_NAME}"
+      cd "${BUILD_FOLDER_PATH}/${LIBELF_FOLDER_NAME}"
 
       xbb_activate
 
@@ -405,13 +406,13 @@ function do_libelf()
         echo
         echo "Running libelf configure..."
 
-        bash "${WORK_FOLDER_PATH}/${libelf_folder}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${LIBELF_FOLDER_NAME}/configure" --help
 
         export CFLAGS="${EXTRA_CFLAGS} -Wno-tautological-compare"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
         export LDFLAGS="${EXTRA_LDFLAGS}"
 
-        bash "${WORK_FOLDER_PATH}/${libelf_folder}/configure" \
+        bash "${WORK_FOLDER_PATH}/${LIBELF_FOLDER_NAME}/configure" \
           --prefix="${INSTALL_FOLDER_PATH}" \
           \
           --build=${BUILD} \
@@ -450,26 +451,26 @@ function do_expat()
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=expat-git
 
   # Oct 21, 2017
-  local expat_version="2.1.1"
+  # EXPAT_VERSION="2.1.1"
   # Nov 1, 2017
-  # local expat_version="2.2.5"
+  # EXPAT_VERSION="2.2.5"
 
-  expat_folder="expat-${expat_version}"
-  local expat_archive="${expat_folder}.tar.bz2"
-  local expat_release="R_$(echo ${expat_version} | sed -e 's|[.]|_|g')"
+  EXPAT_FOLDER_NAME="expat-${EXPAT_VERSION}"
+  local expat_archive="${EXPAT_FOLDER_NAME}.tar.bz2"
+  local expat_release="R_$(echo ${EXPAT_VERSION} | sed -e 's|[.]|_|g')"
   local expat_url="https://github.com/libexpat/libexpat/releases/download/${expat_release}/${expat_archive}"
 
-  local expat_stamp_file="${BUILD_FOLDER_PATH}/${expat_folder}/stamp-install-completed"
+  local expat_stamp_file="${BUILD_FOLDER_PATH}/${EXPAT_FOLDER_NAME}/stamp-install-completed"
   if [ ! -f "${expat_stamp_file}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
 
-    download_and_extract "${expat_url}" "${expat_archive}" "${expat_folder}"
+    download_and_extract "${expat_url}" "${expat_archive}" "${EXPAT_FOLDER_NAME}"
 
     (
-      mkdir -p "${BUILD_FOLDER_PATH}/${expat_folder}"
-      cd "${BUILD_FOLDER_PATH}/${expat_folder}"
+      mkdir -p "${BUILD_FOLDER_PATH}/${EXPAT_FOLDER_NAME}"
+      cd "${BUILD_FOLDER_PATH}/${EXPAT_FOLDER_NAME}"
 
       xbb_activate
 
@@ -479,13 +480,13 @@ function do_expat()
         echo
         echo "Running expat configure..."
 
-        bash "${WORK_FOLDER_PATH}/${expat_folder}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${EXPAT_FOLDER_NAME}/configure" --help
 
         export CFLAGS="${EXTRA_CFLAGS}"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
         export LDFLAGS="${EXTRA_LDFLAGS}"
 
-        bash "${WORK_FOLDER_PATH}/${expat_folder}/configure" \
+        bash "${WORK_FOLDER_PATH}/${EXPAT_FOLDER_NAME}/configure" \
           --prefix="${INSTALL_FOLDER_PATH}" \
           \
           --build=${BUILD} \
@@ -525,25 +526,25 @@ function do_libiconv()
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=libiconv
 
   # 2011-08-07
-  local libiconv_version="1.14"
+  # LIBICONV_VERSION="1.14"
   # 2017-02-02
-  # local libiconv_version="1.15"
+  # LIBICONV_VERSION="1.15"
 
-  libiconv_folder="libiconv-${libiconv_version}"
-  local libiconv_archive="${libiconv_folder}.tar.gz"
+  LIBICONV_FOLDER_NAME="libiconv-${LIBICONV_VERSION}"
+  local libiconv_archive="${LIBICONV_FOLDER_NAME}.tar.gz"
   local libiconv_url="https://ftp.gnu.org/pub/gnu/libiconv/${libiconv_archive}"
 
-  local libiconv_stamp_file="${BUILD_FOLDER_PATH}/${libiconv_folder}/stamp-install-completed"
+  local libiconv_stamp_file="${BUILD_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}/stamp-install-completed"
   if [ ! -f "${libiconv_stamp_file}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
 
-    download_and_extract "${libiconv_url}" "${libiconv_archive}" "${libiconv_folder}"
+    download_and_extract "${libiconv_url}" "${libiconv_archive}" "${LIBICONV_FOLDER_NAME}"
 
     (
-      mkdir -p "${BUILD_FOLDER_PATH}/${libiconv_folder}"
-      cd "${BUILD_FOLDER_PATH}/${libiconv_folder}"
+      mkdir -p "${BUILD_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}"
+      cd "${BUILD_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}"
 
       xbb_activate
 
@@ -553,13 +554,13 @@ function do_libiconv()
         echo
         echo "Running libiconv configure..."
 
-        bash "${WORK_FOLDER_PATH}/${libiconv_folder}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}/configure" --help
 
         export CFLAGS="${EXTRA_CFLAGS} -Wno-tautological-compare -Wno-parentheses-equality -Wno-static-in-inline"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
         export LDFLAGS="${EXTRA_LDFLAGS}"
 
-        bash "${WORK_FOLDER_PATH}/${libiconv_folder}/configure" \
+        bash "${WORK_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}/configure" \
           --prefix="${INSTALL_FOLDER_PATH}" \
           \
           --build=${BUILD} \
@@ -598,24 +599,24 @@ function do_xz()
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=xz-git
 
   # 2016-12-30
-  local xz_version="5.2.3"
+  # XZ_VERSION="5.2.3"
 
-  xz_folder="xz-${xz_version}"
-  local xz_archive="${xz_folder}.tar.xz"
+  XZ_FOLDER_NAME="xz-${XZ_VERSION}"
+  local xz_archive="${XZ_FOLDER_NAME}.tar.xz"
   # local xz_url="https://sourceforge.net/projects/lzmautils/files/${xz_archive}"
   local xz_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${xz_archive}"
 
-  local xz_stamp_file="${BUILD_FOLDER_PATH}/${xz_folder}/stamp-install-completed"
+  local xz_stamp_file="${BUILD_FOLDER_PATH}/${XZ_FOLDER_NAME}/stamp-install-completed"
   if [ ! -f "${xz_stamp_file}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
 
-    download_and_extract "${xz_url}" "${xz_archive}" "${xz_folder}"
+    download_and_extract "${xz_url}" "${xz_archive}" "${XZ_FOLDER_NAME}"
 
     (
-      mkdir -p "${BUILD_FOLDER_PATH}/${xz_folder}"
-      cd "${BUILD_FOLDER_PATH}/${xz_folder}"
+      mkdir -p "${BUILD_FOLDER_PATH}/${XZ_FOLDER_NAME}"
+      cd "${BUILD_FOLDER_PATH}/${XZ_FOLDER_NAME}"
 
       xbb_activate
 
@@ -625,13 +626,13 @@ function do_xz()
         echo
         echo "Running xz configure..."
 
-        bash "${WORK_FOLDER_PATH}/${xz_folder}/configure" --help
+        bash "${WORK_FOLDER_PATH}/${XZ_FOLDER_NAME}/configure" --help
 
         export CFLAGS="${EXTRA_CFLAGS} -Wno-implicit-fallthrough"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
         export LDFLAGS="${EXTRA_LDFLAGS}"
 
-        bash "${WORK_FOLDER_PATH}/${xz_folder}/configure" \
+        bash "${WORK_FOLDER_PATH}/${XZ_FOLDER_NAME}/configure" \
           --prefix="${INSTALL_FOLDER_PATH}" \
           \
           --build=${BUILD} \

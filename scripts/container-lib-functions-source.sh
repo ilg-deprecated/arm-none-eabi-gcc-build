@@ -355,7 +355,7 @@ function do_isl()
 
         bash "${WORK_FOLDER_PATH}/${ISL_FOLDER_NAME}/configure" --help
 
-        export CFLAGS="${EXTRA_CFLAGS} -Wno-dangling-else"
+        export CFLAGS="${EXTRA_CFLAGS} -Wno-dangling-else -Wno-header-guard"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
         export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
 

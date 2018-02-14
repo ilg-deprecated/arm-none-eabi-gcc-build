@@ -214,7 +214,7 @@ function do_gcc_first()
 
         export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-unused-value -Wno-extended-offsetof -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-mismatched-tags -Wno-unused-but-set-variable"
         export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
-        export GCC_WARN_CXXFLAGS="-Wno-keyword-macro -Wno-unused-private-field -Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-gnu-zero-variadic-macro-arguments -Wno-mismatched-tags -Wno-c99-extensions -Wno-array-bounds -Wno-extended-offsetof -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-mismatched-tags -Wno-format-security -Wno-suggest-attribute=format -Wno-format-extra-args -Wno-format" 
+        export GCC_WARN_CXXFLAGS="-Wno-keyword-macro -Wno-unused-private-field -Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-gnu-zero-variadic-macro-arguments -Wno-mismatched-tags -Wno-c99-extensions -Wno-array-bounds -Wno-extended-offsetof -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-mismatched-tags -Wno-format-security -Wno-suggest-attribute=format -Wno-format-extra-args -Wno-format -Wno-mismatched-tags -Wno-varargs -Wno-shift-count-overflow -Wno-ignored-attributes -Wno-tautological-compare -Wno-unused-label -Wno-format-pedantic -Wno-unused-parameter" 
         export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
         export CPPFLAGS="${EXTRA_CPPFLAGS}" 
         export LDFLAGS="${EXTRA_LDFLAGS_APP}" 

@@ -257,7 +257,12 @@ function do_mpc()
 
   MPC_FOLDER_NAME="mpc-${MPC_VERSION}"
   local mpc_archive="${MPC_FOLDER_NAME}.tar.gz"
+
   local mpc_url="ftp://ftp.gnu.org/gnu/mpc/${mpc_archive}"
+  if [[ "${MPC_VERSION}" =~ 0\.* ]]
+  then
+    mpc_url="http://www.multiprecision.org/downloads/${mpc_archive}"
+  fi
 
   local mpc_stamp_file="${BUILD_FOLDER_PATH}/${MPC_FOLDER_NAME}/stamp-install-completed"
   if [ ! -f "${mpc_stamp_file}" ]
@@ -330,6 +335,11 @@ function do_isl()
 
   ISL_FOLDER_NAME="isl-${ISL_VERSION}"
   local isl_archive="${ISL_FOLDER_NAME}.tar.xz"
+  if [[ "${ISL_VERSION}" =~ 0\.12\.* ]]
+  then
+    isl_archive="${ISL_FOLDER_NAME}.tar.gz"
+  fi
+
   # local isl_url="http://isl.gforge.inria.fr/${isl_archive}"
   local isl_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${isl_archive}"
 
@@ -474,6 +484,11 @@ function do_expat()
 
   EXPAT_FOLDER_NAME="expat-${EXPAT_VERSION}"
   local expat_archive="${EXPAT_FOLDER_NAME}.tar.bz2"
+  if [[ "${EXPAT_VERSION}" =~ 2\.0\.* ]]
+  then
+    expat_archive="${EXPAT_FOLDER_NAME}.tar.gz"
+  fi
+  
   local expat_release="R_$(echo ${EXPAT_VERSION} | sed -e 's|[.]|_|g')"
   local expat_url="https://github.com/libexpat/libexpat/releases/download/${expat_release}/${expat_archive}"
 

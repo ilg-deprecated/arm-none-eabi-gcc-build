@@ -247,23 +247,31 @@ APP_PREFIX_NANO="${INSTALL_FOLDER_PATH}/${APP_LC_NAME}"-nano
 BRANDING="${BRANDING}\x2C ${TARGET_BITS}-bits"
 CFLAGS_OPTIMIZATIONS_FOR_TARGET="-ffunction-sections -fdata-sections -O2"
 
+# https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
+# https://gcc.gnu.org/viewcvs/gcc/branches/ARM/
+
 # Keep them updated with combo archive content.
 if [[ "${RELEASE_VERSION}" =~ 7\.2\.1-* ]]
 then
 
+  # https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2017q4/gcc-arm-none-eabi-7-2017-q4-major-src.tar.bz2
+
   GCC_COMBO_VERSION_MAJOR="7"
   GCC_COMBO_VERSION_YEAR="2017"
   GCC_COMBO_VERSION_QUARTER="q4"
-  GCC_COMBO_VERSION="${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}-${GCC_COMBO_VERSION_QUARTER}-major"
+  GCC_COMBO_VERSION_KIND="major"
+
+  GCC_COMBO_VERSION="${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}-${GCC_COMBO_VERSION_QUARTER}-${GCC_COMBO_VERSION_KIND}"
   GCC_COMBO_FOLDER_NAME="gcc-arm-none-eabi-${GCC_COMBO_VERSION}"
   GCC_COMBO_ARCHIVE="${GCC_COMBO_FOLDER_NAME}-src.tar.bz2"
 
-  # https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2017q4/gcc-arm-none-eabi-7-2017-q4-major-src.tar.bz2
   GCC_COMBO_URL="https://developer.arm.com/-/media/Files/downloads/gnu-rm/${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}${GCC_COMBO_VERSION_QUARTER}/${GCC_COMBO_ARCHIVE}"
 
   BINUTILS_VERSION="2.29"
+  # From gcc/BASE_VER; svn: 255204.
   GCC_VERSION="7.2.1"
-  NEWLIB_VERSION="2.5.0"
+  # git: 76bd5cab331a873ac422fdcb7ba5fe79abea94f0, 28 Nov 2017.
+  NEWLIB_VERSION="2.9.1"
   GDB_VERSION="8.0"
 
   ZLIB_VERSION="1.2.8"
@@ -277,6 +285,82 @@ then
   XZ_VERSION="5.2.3"
 
   PYTHON_WIN_VERSION="2.7.13"
+
+elif [[ "${RELEASE_VERSION}" =~ 6\.3\.1-* ]]
+then
+
+  # https://developer.arm.com/-/media/Files/downloads/gnu-rm/6-2017q2/gcc-arm-none-eabi-6-2017-q2-update-src.tar.bz2
+
+  GCC_COMBO_VERSION_MAJOR="6"
+  GCC_COMBO_VERSION_YEAR="2017"
+  GCC_COMBO_VERSION_QUARTER="q2"
+  GCC_COMBO_VERSION_KIND="update"
+
+  GCC_COMBO_VERSION="${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}-${GCC_COMBO_VERSION_QUARTER}-${GCC_COMBO_VERSION_KIND}"
+  GCC_COMBO_FOLDER_NAME="gcc-arm-none-eabi-${GCC_COMBO_VERSION}"
+  GCC_COMBO_ARCHIVE="${GCC_COMBO_FOLDER_NAME}-src.tar.bz2"
+
+  GCC_COMBO_URL="https://developer.arm.com/-/media/Files/downloads/gnu-rm/${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}${GCC_COMBO_VERSION_QUARTER}/${GCC_COMBO_ARCHIVE}"
+
+  BINUTILS_VERSION="2.28"
+  # From gcc/BASE_VER; svn: 249437.
+  GCC_VERSION="6.3.1"
+  # git: 0d79b021a4ec4e6b9aa1a9f6db0e29a137005ce7, 14 June 2017.
+  NEWLIB_VERSION="2.8.0"
+  GDB_VERSION="7.12"
+
+  ZLIB_VERSION="1.2.8"
+  GMP_VERSION="6.1.0"
+  MPFR_VERSION="3.1.4"
+  MPC_VERSION="1.0.3"
+  ISL_VERSION="0.15"
+  LIBELF_VERSION="0.8.13"
+  EXPAT_VERSION="2.1.1"
+  LIBICONV_VERSION="1.14"
+  XZ_VERSION="5.2.3"
+
+  PYTHON_WIN_VERSION="2.7.13"
+
+elif [[ "${RELEASE_VERSION}" =~ 5\.4\.1-* ]]
+then
+
+  # WARNING: Build fails with 'bracket nesting level exceeded'.
+  # https://developer.arm.com/-/media/Files/downloads/gnu-rm/5_4-2016q3/gcc-arm-none-eabi-5_4-2016q3-20160926-src.tar.bz2
+
+  GCC_COMBO_VERSION_MAJOR="5_4"
+  GCC_COMBO_VERSION_YEAR="2016"
+  GCC_COMBO_VERSION_QUARTER="q3"
+  GCC_COMBO_VERSION_KIND="20160926"
+
+  GCC_COMBO_VERSION="${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}${GCC_COMBO_VERSION_QUARTER}-${GCC_COMBO_VERSION_KIND}"
+  GCC_COMBO_FOLDER_NAME="gcc-arm-none-eabi-${GCC_COMBO_VERSION}"
+  GCC_COMBO_ARCHIVE="${GCC_COMBO_FOLDER_NAME}-src.tar.bz2"
+
+  GCC_COMBO_URL="https://developer.arm.com/-/media/Files/downloads/gnu-rm/${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}${GCC_COMBO_VERSION_QUARTER}/${GCC_COMBO_ARCHIVE}"
+
+  BINUTILS_VERSION="2.26"
+  # From gcc/BASE_VER; svn: 240432.
+  GCC_VERSION="5.4.1"
+  # git: f763e2dc88d04430dd2524a529eef91a2e517e4e; 8 Sep 2016.
+  NEWLIB_VERSION="2.6.0"
+  GDB_VERSION="7.10"
+
+  ZLIB_VERSION="1.2.8"
+  GMP_VERSION="4.3.2"
+  MPFR_VERSION="2.4.2"
+  MPC_VERSION="0.8.1"
+  ISL_VERSION="0.12.2"
+  LIBELF_VERSION="0.8.13"
+  EXPAT_VERSION="2.0.1"
+  LIBICONV_VERSION="1.14"
+  XZ_VERSION="5.2.3"
+
+  # Assumed.
+  PYTHON_WIN_VERSION="2.7.13"
+
+else
+  echo "Unsupported version ${RELEASE_VERSION}."
+  exit 1
 fi
 
 if [ "${TARGET_BITS}" == "32" ]

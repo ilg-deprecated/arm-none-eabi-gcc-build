@@ -44,28 +44,45 @@ function do_zlib()
 
       xbb_activate
 
-      echo
-      echo "Running zlib configure..."
-
-      bash "./configure" --help
-
-      export CFLAGS="${EXTRA_CFLAGS} -Wno-shift-negative-value"
       # export LDFLAGS="${EXTRA_LDFLAGS}"
-    
-      bash "./configure" \
-        --prefix="${INSTALL_FOLDER_PATH}" \
-        \
-        --static \
-      | tee "${INSTALL_FOLDER_PATH}/configure-zlib-output.txt"
-      cp "configure.log" "${INSTALL_FOLDER_PATH}"/configure-zlib-log.txt
+      if [ "${TARGET_OS}" != "win" ]
+      then
 
+        echo
+        echo "Running zlib configure..."
+
+        bash "./configure" --help
+
+        export CFLAGS="${EXTRA_CFLAGS} -Wno-shift-negative-value"
+        bash "./configure" \
+          --prefix="${INSTALL_FOLDER_PATH}" \
+          \
+          --static \
+        | tee "${INSTALL_FOLDER_PATH}/configure-zlib-output.txt"
+        cp "configure.log" "${INSTALL_FOLDER_PATH}"/configure-zlib-log.txt
+
+      fi
+    
       echo
       echo "Running zlib make..."
 
       (
         # Build.
-        make ${JOBS}
-        make install
+        if [ "${TARGET_OS}" != "win" ]
+        then
+          make ${JOBS}
+          make install
+        else
+          make -f win32/Makefile.gcc \
+            PREFIX=${CROSS_COMPILE_PREFIX}- \
+            prefix="${INSTALL_FOLDER_PATH}" \
+            CFLAGS="${EXTRA_CFLAGS} -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4"
+          make -f win32/Makefile.gcc install \
+            DESTDIR="${INSTALL_FOLDER_PATH}/" \
+            INCLUDE_PATH="include" \
+            LIBRARY_PATH="lib" \
+            BINARY_PATH="bin"
+        fi
       ) | tee "${INSTALL_FOLDER_PATH}/make-zlib-output.txt"
     )
 

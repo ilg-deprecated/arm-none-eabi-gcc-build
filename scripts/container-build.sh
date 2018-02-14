@@ -290,6 +290,16 @@ PYTHON_WIN_PACK="${PYTHON_WIN}".msi
 PYTHON_WIN_URL="https://www.python.org/ftp/python/${PYTHON_WIN_VERSION}/${PYTHON_WIN_PACK}"
 
 # -----------------------------------------------------------------------------
+
+# Download the combo package from ARM.
+do_gcc_combo_download
+
+if [ "${TARGET_OS}" == "win" ]
+then
+  do_python_download
+fi
+
+# -----------------------------------------------------------------------------
 # Libraries
 
 # For just in case, usually it should pick the lib packed inside the archive.
@@ -307,14 +317,6 @@ do_libiconv
 do_xz
 
 # -----------------------------------------------------------------------------
-
-# Download the combo package from ARM.
-do_gcc_combo_download
-
-if [ "${TARGET_OS}" == "win" ]
-then
-  do_python_download
-fi
 
 # The task numbers are from the ARM build script.
 

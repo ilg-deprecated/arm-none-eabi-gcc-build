@@ -166,15 +166,25 @@ function do_binutils()
 
     if [ "${TARGET_OS}" != "win" ]
     then
+      echo
       "${APP_PREFIX}/bin/${GCC_TARGET}-ar" --version
+      echo
       "${APP_PREFIX}/bin/${GCC_TARGET}-as" --version
+      echo
       "${APP_PREFIX}/bin/${GCC_TARGET}-ld" --version
+      echo
       "${APP_PREFIX}/bin/${GCC_TARGET}-nm" --version
+      echo
       "${APP_PREFIX}/bin/${GCC_TARGET}-objcopy" --version
+      echo
       "${APP_PREFIX}/bin/${GCC_TARGET}-objdump" --version
+      echo
       "${APP_PREFIX}/bin/${GCC_TARGET}-ranlib" --version
+      echo
       "${APP_PREFIX}/bin/${GCC_TARGET}-size" --version
+      echo
       "${APP_PREFIX}/bin/${GCC_TARGET}-strings" --version
+      echo
       "${APP_PREFIX}/bin/${GCC_TARGET}-strip" --version
     fi
 

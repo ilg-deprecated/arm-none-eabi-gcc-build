@@ -96,7 +96,12 @@ function do_binutils()
         export CFLAGS="${EXTRA_CFLAGS} -Wno-unknown-warning-option -Wno-extended-offsetof -Wno-deprecated-declarations -Wno-incompatible-pointer-types-discards-qualifiers -Wno-implicit-function-declaration -Wno-parentheses -Wno-format-nonliteral -Wno-shift-count-overflow -Wno-constant-logical-operand -Wno-shift-negative-value -Wno-format"
         export CXXFLAGS="${EXTRA_CXXFLAGS} -Wno-format-nonliteral -Wno-format-security -Wno-deprecated -Wno-unknown-warning-option -Wno-c++11-narrowing"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
-        export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
+        LDFLAGS="${EXTRA_LDFLAGS_APP}" 
+        if [ "${TARGET_OS}" == "win" ]
+        then
+          LDFLAGS="${LDFLAGS} -Wl,${XBB_FOLDER}/${CROSS_COMPILE_PREFIX}/lib/CRT_glob.o"
+        fi
+        export LDFLAGS
 
         # ? --without-python --without-curses, --with-expat
 
@@ -207,9 +212,9 @@ function do_gcc_first()
       
         bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" --help
 
-        export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-unused-value -Wno-extended-offsetof -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-mismatched-tags"
+        export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-unused-value -Wno-extended-offsetof -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-mismatched-tags -Wno-unused-but-set-variable"
         export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
-        export GCC_WARN_CXXFLAGS="-Wno-keyword-macro -Wno-unused-private-field -Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-gnu-zero-variadic-macro-arguments -Wno-mismatched-tags -Wno-c99-extensions -Wno-array-bounds -Wno-extended-offsetof -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-mismatched-tags -Wno-format-security" 
+        export GCC_WARN_CXXFLAGS="-Wno-keyword-macro -Wno-unused-private-field -Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-gnu-zero-variadic-macro-arguments -Wno-mismatched-tags -Wno-c99-extensions -Wno-array-bounds -Wno-extended-offsetof -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-mismatched-tags -Wno-format-security -Wno-suggest-attribute=format -Wno-format-extra-args -Wno-format" 
         export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
         export CPPFLAGS="${EXTRA_CPPFLAGS}" 
         export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
@@ -277,13 +282,8 @@ function do_gcc_first()
 
       (
         # No need to make 'all', 'all-gcc' is enough to compile the libraries.
-        # Parallel build fails for win32.
-        if [ "${UNAME}" == "Darwin" ]
-        then
-          make all-gcc ${JOBS}
-        else
-          make all-gcc ${JOBS}
-        fi
+        # Parallel build failed once on win32.
+        make ${JOBS} all-gcc
         make install-gcc
       ) | tee "${INSTALL_FOLDER_PATH}/make-gcc-first-output.txt"
     )
@@ -576,12 +576,14 @@ function do_gcc_final()
       
         bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" --help
 
-        export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-unused-value -Wno-extended-offsetof -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-mismatched-tags"
+        export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unknown-warning-option -Wno-unused-value -Wno-extended-offsetof -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-mismatched-tags -Wno-unused-but-set-variable"
         export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
-        export GCC_WARN_CXXFLAGS="-Wno-keyword-macro -Wno-unused-private-field -Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-gnu-zero-variadic-macro-arguments -Wno-mismatched-tags -Wno-c99-extensions -Wno-array-bounds -Wno-extended-offsetof -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-mismatched-tags -Wno-format-security" 
+        export GCC_WARN_CXXFLAGS="-Wno-keyword-macro -Wno-unused-private-field -Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-gnu-zero-variadic-macro-arguments -Wno-mismatched-tags -Wno-c99-extensions -Wno-array-bounds -Wno-extended-offsetof -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-mismatched-tags -Wno-format-security -Wno-suggest-attribute=format -Wno-format-extra-args -Wno-format -Wno-unused-function -Wno-attributes" 
         export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
         export CPPFLAGS="${EXTRA_CPPFLAGS}" 
         export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
+        # Do not add CRT_glob.o here, it will fail with already defined,
+        # since it is already handled by --enable-mingw-wildcard.
 
         local optimize="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}"
         if [ "$1" == "-nano" ]
@@ -593,6 +595,21 @@ function do_gcc_final()
         # Note the intentional `-g`.
         export CFLAGS_FOR_TARGET="${optimize} -g" 
         export CXXFLAGS_FOR_TARGET="${optimize} -fno-exceptions -g" 
+
+        mingw_wildcard="--disable-mingw-wildcard"
+
+        if [ "${TARGET_OS}" == "win" ]
+        then
+          mingw_wildcard="--enable-mingw-wildcard"
+
+          export AR_FOR_TARGET=${GCC_TARGET}-ar
+          export NM_FOR_TARGET=${GCC_TARGET}-nm
+          export OBJDUMP_FOR_TARET=${GCC_TARGET}-objdump
+          export STRIP_FOR_TARGET=${GCC_TARGET}-strip
+          export CC_FOR_TARGET=${GCC_TARGET}-gcc
+          export GCC_FOR_TARGET=${GCC_TARGET}-gcc
+          export CXX_FOR_TARGET=${GCC_TARGET}-g++
+        fi
 
         # https://gcc.gnu.org/install/configure.html
         # --enable-shared[=package[,…]] build shared versions of libraries
@@ -623,6 +640,7 @@ function do_gcc_final()
             --with-pkgversion="${BRANDING}" \
             \
             --enable-languages=c,c++ \
+            ${mingw_wildcard} \
             --enable-plugins \
             --disable-decimal-float \
             --disable-libffi \
@@ -698,52 +716,74 @@ function do_gcc_final()
       echo "Running gcc$1 final stage make..."
 
       (
-        # Passing USE_TM_CLONE_REGISTRY=0 via INHIBIT_LIBC_CFLAGS to disable
-        # transactional memory related code in crtbegin.o.
-        # This is a workaround. Better approach is have a t-* to set this flag via
-        # CRTSTUFF_T_CFLAGS
-        make ${JOBS} INHIBIT_LIBC_CFLAGS="-DUSE_TM_CLONE_REGISTRY=0"
-        make install-strip
-
-        if [ "$1" == "" ]
+        if [ "${TARGET_OS}" != "win" ]
         then
 
-          # Full build, with documentation.
+          # Passing USE_TM_CLONE_REGISTRY=0 via INHIBIT_LIBC_CFLAGS to disable
+          # transactional memory related code in crtbegin.o.
+          # This is a workaround. Better approach is have a t-* to set this flag via
+          # CRTSTUFF_T_CFLAGS
+          make ${JOBS} INHIBIT_LIBC_CFLAGS="-DUSE_TM_CLONE_REGISTRY=0"
+          make install-strip
+
+          if [ "$1" == "" ]
+          then
+
+            # Full build, with documentation.
+            if [ "${WITH_PDF}" == "y" ]
+            then
+              make ${JOBS} pdf
+              make install-pdf
+            fi
+
+            if [ "${WITH_HTML}" == "y" ]
+            then
+              make ${JOBS} html
+              make install-html
+            fi
+
+          elif [ "$1" == "-nano" ]
+          then
+
+            local target_gcc=""
+            if [ "${TARGET_OS}" == "win" ]
+            then
+              target_gcc="${GCC_TARGET}-gcc"
+            else
+              target_gcc="${APP_PREFIX_NANO}/bin/${GCC_TARGET}-gcc"
+            fi
+
+            # Copy the libraries after appending the `_nano` suffix.
+            # Iterate through all multilib names.
+            do_copy_multi_libs \
+              "${APP_PREFIX_NANO}/${GCC_TARGET}/lib" \
+              "${APP_PREFIX}/${GCC_TARGET}/lib" \
+              "${target_gcc}"
+
+            # Copy the nano configured newlib.h file into the location that nano.specs
+            # expects it to be.
+            mkdir -p "${APP_PREFIX}/${GCC_TARGET}/include/newlib-nano"
+            cp -v -f "${APP_PREFIX_NANO}/${GCC_TARGET}/include/newlib.h" \
+              "${APP_PREFIX}/${GCC_TARGET}/include/newlib-nano/newlib.h"
+
+          fi
+
+        else
+
+          # For Windows build only the GCC binaries, the libraries were copied 
+          # from the Linux build.
+          make ${JOBS} all-gcc
+          make install-gcc
+
           if [ "${WITH_PDF}" == "y" ]
           then
-            make ${JOBS} pdf
-            make install-pdf
+            make install-pdf-gcc
           fi
 
           if [ "${WITH_HTML}" == "y" ]
           then
-            make ${JOBS} html
-            make install-html
+            make install-html-gcc
           fi
-
-        elif [ "$1" == "-nano" ]
-        then
-
-          local target_gcc=""
-          if [ "${TARGET_OS}" == "win" ]
-          then
-            target_gcc="${GCC_TARGET}-gcc"
-          else
-            target_gcc="${APP_PREFIX_NANO}/bin/${GCC_TARGET}-gcc"
-          fi
-
-          # Copy the libraries after appending the `_nano` suffix.
-          # Iterate through all multilib names.
-          do_copy_multi_libs \
-            "${APP_PREFIX_NANO}/${GCC_TARGET}/lib" \
-            "${APP_PREFIX}/${GCC_TARGET}/lib" \
-            "${target_gcc}"
-
-          # Copy the nano configured newlib.h file into the location that nano.specs
-          # expects it to be.
-          mkdir -p "${APP_PREFIX}/${GCC_TARGET}/include/newlib-nano"
-          cp -v -f "${APP_PREFIX_NANO}/${GCC_TARGET}/include/newlib.h" \
-            "${APP_PREFIX}/${GCC_TARGET}/include/newlib-nano/newlib.h"
 
         fi
 
@@ -792,13 +832,13 @@ function do_gdb()
       
         bash "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}/configure" --help
 
-        export GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-incompatible-pointer-types-discards-qualifiers -Wno-extended-offsetof -Wno-deprecated-declarations"
+        export GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-incompatible-pointer-types-discards-qualifiers -Wno-extended-offsetof -Wno-deprecated-declarations -Wno-maybe-uninitialized"
         export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
         export GCC_WARN_CXXFLAGS="-Wno-deprecated-declarations" 
         export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
         export CPPFLAGS="${EXTRA_CPPFLAGS}" 
         export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
-
+ 
         local extra_python_opts="--with-python=no"
         if [ "$1" == "-py" ]
         then

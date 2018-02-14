@@ -217,11 +217,21 @@ EXTRA_CPPFLAGS="-I${INSTALL_FOLDER_PATH}"/include
 EXTRA_LDFLAGS_LIB="-L${INSTALL_FOLDER_PATH}"/lib
 EXTRA_LDFLAGS="${EXTRA_LDFLAGS_LIB}"
 EXTRA_LDFLAGS_APP="${EXTRA_LDFLAGS} -static-libstdc++"
-if [ "${UNAME}" == "Darwin" ]
+
+if [ "${TARGET_OS}" == "osx" ]
 then
   EXTRA_LDFLAGS_APP+=" -Wl,-dead_strip"
-else
+elif [ "${TARGET_OS}" == "linux" ]
+then
+  # Do not add -static here, it fails.
+  # Do not try to link pthread statically, it should match system glibc.
   EXTRA_LDFLAGS_APP+=" -Wl,--gc-sections"
+elif [ "${TARGET_OS}" == "win" ]
+then
+  # CRT_glob is from ARM script
+  # -static avoids libwinpthread-1.dll 
+  # -static-libgcc avoids libgcc_s_sjlj-1.dll 
+  EXTRA_LDFLAGS_APP+=" -static -static-libgcc -Wl,--gc-sections"
 fi
 
 export PKG_CONFIG=pkg-config-verbose

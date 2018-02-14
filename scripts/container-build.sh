@@ -50,7 +50,7 @@ HOST_UNAME=""
 # Be sure the changes in the build.git are commited.
 # otherwise the copied git may use the previous version.
 
-RELEASE_VERSION=${RELEASE_VERSION:-"${gcc_version}-1"}
+RELEASE_VERSION=${RELEASE_VERSION:-"$(cat "${script_folder_path}"/VERSION)"}
 
 echo
 echo "Preparing release ${RELEASE_VERSION}..."

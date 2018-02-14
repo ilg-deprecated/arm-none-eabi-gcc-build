@@ -86,7 +86,7 @@ WITH_PDF="y"
 WITH_HTML="n"
 IS_DEVELOP=""
 IS_DEBUG=""
-LINUX_BINARIES_PATH=""
+LINUX_INSTALL_PATH=""
 
 while [ $# -gt 0 ]
 do
@@ -138,8 +138,8 @@ do
       shift
       ;;
 
-    --linux-binaries-path)
-      LINUX_BINARIES_PATH="$2"
+    --linux-install-path)
+      LINUX_INSTALL_PATH="$2"
       shift 2
       ;;
 
@@ -189,9 +189,9 @@ then
   )
 fi
 
-if [ -x "${WORK_FOLDER_PATH}/${LINUX_BINARIES_PATH}/${GCC_TARGET}-gcc" ]
+if [ -x "${WORK_FOLDER_PATH}/${LINUX_INSTALL_PATH}/bin/${GCC_TARGET}-gcc" ]
 then
-  PATH="${WORK_FOLDER_PATH}/${LINUX_BINARIES_PATH}":${PATH}
+  PATH="${WORK_FOLDER_PATH}/${LINUX_INSTALL_PATH}/bin":${PATH}
   echo ${PATH}
 fi
 

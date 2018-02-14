@@ -313,7 +313,7 @@ else
       --target-bits 64 \
       --docker-image "${docker_linux64_image}" \
       -- \
-      --linux-binaries-path "install/${linux_distribution}64/${APP_LC_NAME}/bin" \
+      --linux-install-path "install/${linux_distribution}64/${APP_LC_NAME}" \
       ${rest[@]-}
   fi
 
@@ -361,7 +361,7 @@ else
       --target-bits 32 \
       --docker-image "${docker_linux32_image}" \
       -- \
-      --linux-binaries-path "install/${linux_distribution}32/${APP_LC_NAME}/bin" \
+      --linux-install-path "install/${linux_distribution}32/${APP_LC_NAME}" \
       ${rest[@]-}
   fi
 

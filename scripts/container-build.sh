@@ -25,6 +25,8 @@ IFS=$'\n\t'
 # For native builds, it runs on the host (macOS build cases,
 # and development builds for GNU/Linux).
 
+# Credits: GNU Tools for Arm Embedded Processors, version 7, by ARM.
+
 # -----------------------------------------------------------------------------
 
 # ----- Identify helper scripts. -----
@@ -46,9 +48,6 @@ source "${defines_script_path}"
 TARGET_OS=""
 TARGET_BITS=""
 HOST_UNAME=""
-
-# Be sure the changes in the build.git are commited.
-# otherwise the copied git may use the previous version.
 
 RELEASE_VERSION=${RELEASE_VERSION:-"$(cat "${script_folder_path}"/VERSION)"}
 
@@ -171,7 +170,7 @@ prepare_prerequisites
 
 if [ -f "/.dockerenv" ]
 then
-  (
+  ( 
     xbb_activate
 
     # Remove references to libfl.so, to force a static link and
@@ -310,49 +309,79 @@ do_xz
 # -----------------------------------------------------------------------------
 
 # Download the combo package from ARM.
-do_gcc_download
+do_gcc_combo_download
+
+if [ "${TARGET_OS}" == "win" ]
+then
+  do_python_download
+fi
 
 # The task numbers are from the ARM build script.
 
 # Task [III-0] /$HOST_NATIVE/binutils/
+# Task [IV-1] /$HOST_MINGW/binutils/
 do_binutils
 # copy_dir to libs included above
 
-# Task [III-1] /$HOST_NATIVE/gcc-first/
-do_gcc_first
+if [ "${TARGET_OS}" != "win" ]
+then
 
-# Task [III-2] /$HOST_NATIVE/newlib/
-do_newlib ""
-# Task [III-3] /$HOST_NATIVE/newlib-nano/
-do_newlib "-nano"
+  # Task [III-1] /$HOST_NATIVE/gcc-first/
+  do_gcc_first
 
-# Task [III-4] /$HOST_NATIVE/gcc-final/
-do_gcc_final ""
+  # Task [III-2] /$HOST_NATIVE/newlib/
+  do_newlib ""
+  # Task [III-3] /$HOST_NATIVE/newlib-nano/
+  do_newlib "-nano"
 
-# Task [III-5] /$HOST_NATIVE/gcc-size-libstdcxx/
-do_gcc_final "-nano"
+  # Task [III-4] /$HOST_NATIVE/gcc-final/
+  do_gcc_final ""
+
+  # Task [III-5] /$HOST_NATIVE/gcc-size-libstdcxx/
+  do_gcc_final "-nano"
+
+else
+
+  # Task [IV-2] /$HOST_MINGW/copy_libs/
+  do_copy_linux_libs
+
+  # Task [IV-3] /$HOST_MINGW/gcc-final/
+  do_gcc_final ""
+
+fi
 
 # Task [III-6] /$HOST_NATIVE/gdb/
+# Task [IV-4] /$HOST_MINGW/gdb/
 do_gdb ""
 do_gdb "-py"
 
 # Task [III-7] /$HOST_NATIVE/build-manual
+# Nope, the build process is different.
 
 # Task [III-8] /$HOST_NATIVE/pretidy/
+# Task [IV-5] /$HOST_MINGW/pretidy/
 do_pretidy
 
 # Task [III-9] /$HOST_NATIVE/strip_host_objects/
+# Task [IV-6] /$HOST_MINGW/strip_host_objects/
 do_strip_binaries
 
-# Task [III-10] /$HOST_NATIVE/strip_target_objects/
-do_strip_libs
+if [ "${TARGET_OS}" != "win" ]
+then
+  # Task [III-10] /$HOST_NATIVE/strip_target_objects/
+  do_strip_libs
+fi
 
 do_check_binaries
 do_copy_license_files
 do_copy_scripts
 
+# Task [IV-7] /$HOST_MINGW/installation/
+# Nope, no setup.exe.
+
 # Task [III-11] /$HOST_NATIVE/package_tbz2/
-do_create_archive
+# Task [IV-8] /Package toolchain in zip format/
+create_archive
 
 # Change ownership to non-root Linux user.
 fix_ownership

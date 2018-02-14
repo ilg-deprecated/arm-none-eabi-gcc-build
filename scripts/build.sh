@@ -54,13 +54,21 @@ source "${host_functions_script_path}"
 # the install folder.
 rm -rf "${HOST_WORK_FOLDER_PATH}/scripts"
 mkdir -p "${HOST_WORK_FOLDER_PATH}/scripts/helper"
-cp -v "${script_folder_path}"/*.sh "${HOST_WORK_FOLDER_PATH}/scripts"
-cp -v "${script_folder_path}"/helper/container-functions-source.sh "${HOST_WORK_FOLDER_PATH}/scripts/helper"
-cp -v "${script_folder_path}"/helper/host-functions-source.sh "${HOST_WORK_FOLDER_PATH}/scripts/helper"
+cp -v "${script_folder_path}"/*.sh \
+  "${HOST_WORK_FOLDER_PATH}/scripts"
+cp -v "${script_folder_path}"/helper/container-functions-source.sh \
+  "${HOST_WORK_FOLDER_PATH}/scripts/helper"
+cp -v "${script_folder_path}"/helper/host-functions-source.sh \
+  "${HOST_WORK_FOLDER_PATH}/scripts/helper"
 
 # Copy the patches.
 rm -rf "${HOST_WORK_FOLDER_PATH}"/patches
-cp -r -v "$(dirname ${script_folder_path})"/gnu-mcu-eclipse/patches "${HOST_WORK_FOLDER_PATH}"
+cp -r -v "$(dirname ${script_folder_path})"/gnu-mcu-eclipse/patches \
+  "${HOST_WORK_FOLDER_PATH}"
+
+# Copy VERSION.
+cp -r -v "$(dirname ${script_folder_path})"/gnu-mcu-eclipse/VERSION \
+  "${HOST_WORK_FOLDER_PATH}"/scripts
 
 container_build_script_path="${script_folder_path}/helper/${CONTAINER_SCRIPT_NAME}"
 echo "Container build script: \"${container_build_script_path}\"."

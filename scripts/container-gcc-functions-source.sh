@@ -6,7 +6,7 @@
 
 # -----------------------------------------------------------------------------
 
-function do_gcc_download() 
+function do_gcc_combo_download() 
 {
   # https://developer.arm.com/open-source/gnu-toolchain/gnu-rm
   # https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
@@ -489,7 +489,7 @@ function do_newlib()
 
 # -----------------------------------------------------------------------------
 
-function do_copy_libs() 
+function do_copy_nano_libs() 
 {
   local src_folder="$1"
   local dst_folder="$2"
@@ -538,11 +538,40 @@ function do_copy_multi_libs()
     for multilib in "${multilibs[@]}"
     do
       multi_folder="${multilib%%;*}"
-      do_copy_libs "${src_folder}/${multi_folder}" \
+      do_copy_nano_libs "${src_folder}/${multi_folder}" \
         "${dst_folder}/${multi_folder}"
     done
   else
-    do_copy_libs "${src_folder}" "${dst_folder}"
+    do_copy_nano_libs "${src_folder}" "${dst_folder}"
+  fi
+}
+
+# -----------------------------------------------------------------------------
+
+function do_copy_linux_libs()
+{
+  local copy_linux_stamp_file_path="${BUILD_FOLDER_PATH}/stamp-copy-linux-completed"
+  if [ ! -f "${copy_linux_stamp_file_path}" ]
+  then
+
+    local linux_path="${LINUX_INSTALL_PATH}"
+
+    copy_dir "${linux_path}/${GCC_TARGET}"/lib "${APP_PREFIX}/${GCC_TARGET}"/lib
+    copy_dir "${linux_path}/${GCC_TARGET}"/include "${APP_PREFIX}/${GCC_TARGET}"/include
+    copy_dir "${linux_path}"/include "${APP_PREFIX}"/include
+    copy_dir "${linux_path}"/lib "${APP_PREFIX}"/lib
+    copy_dir "${linux_path}"/share "${APP_PREFIX}"/share
+
+    (
+      cd "${APP_PREFIX}"
+      find "${GCC_TARGET}"/lib "${GCC_TARGET}"/include include lib share \
+        -perm /111 -and ! -type d \
+        -exec rm '{}' ';'
+    )
+    touch "${copy_linux_stamp_file_path}"
+
+  else
+    echo "Step copy-linux-libs already done."
   fi
 }
 
@@ -935,53 +964,65 @@ function do_gdb()
 
 function do_pretidy() 
 {
-  local stamp_file_path="${BUILD_FOLDER_PATH}/stamp-pretidy-completed"
-
-  if [ ! -f "${stamp_file_path}" ]
-  then
-    find "${APP_PREFIX}" -name "libiberty.a" -exec rm -v '{}' ';'
-    find "${APP_PREFIX}" -name '*.la' -exec rm -v '{}' ';'
-
-    touch "${stamp_file_path}"
-  else
-    echo "Step pretidy already done."
-  fi
+  find "${APP_PREFIX}" -name "libiberty.a" -exec rm -v '{}' ';'
+  find "${APP_PREFIX}" -name '*.la' -exec rm -v '{}' ';'
 }
 
 function do_strip_binaries()
 {
-  local stamp_file_path="${BUILD_FOLDER_PATH}/stamp-strip-binaries-completed"
-  
-  if [ ! -f "${stamp_file_path}" ]
+  if [ "${WITH_STRIP}" == "y" ]
   then
-    if [ "${WITH_STRIP}" == "y" ]
+
+    if [ "${TARGET_OS}" != "win" ]
     then
+
       local binaries=$(find "${INSTALL_FOLDER_PATH}"/bin -name ${GCC_TARGET}-\*)
-      for bin in ${binaries} ; do
-          strip_binary strip ${bin}
+      for bin in ${binaries} 
+      do
+        strip_binary strip ${bin}
       done
 
       binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*)
-      for bin in ${binaries} ; do
-          strip_binary strip ${bin}
+      for bin in ${binaries} 
+      do
+        strip_binary strip ${bin}
       done
 
       set +e
       if [ "${UNAME}" == "Darwin" ]; then
-          binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm +111 -and ! -type d)
+        binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm +111 -and ! -type d)
       else
-          binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm /111 -and ! -type d)
+        binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm /111 -and ! -type d)
       fi
       set -e
 
-      for bin in ${binaries} ; do
-          strip_binary strip ${bin}
+      for bin in ${binaries} 
+      do
+        strip_binary strip ${bin}
       done
+
+    else
+
+      local binaries=$(find "${INSTALL_FOLDER_PATH}"/bin -name ${GCC_TARGET}-\*.exe)
+      for bin in ${binaries} 
+      do
+        strip_binary "${CROSS_COMPILE_PREFIX}"-strip ${bin}
+      done
+
+      binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*)
+      for bin in ${binaries} 
+      do
+        strip_binary "${CROSS_COMPILE_PREFIX}"-strip ${bin}
+      done
+
+      binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \*.exe)
+      for bin in ${binaries} 
+      do
+        strip_binary "${CROSS_COMPILE_PREFIX}"-strip ${bin}
+      done
+
     fi
 
-    touch "${stamp_file_path}"
-  else
-    echo "Step strip-binaries already done."
   fi
 }
 
@@ -999,8 +1040,8 @@ function do_strip_libs()
         local libs=$(find "${APP_PREFIX}" -name '*.[ao]')
         for lib in ${libs}
         do
-            echo ${GCC_TARGET}-objcopy -R ... ${lib}
-            ${GCC_TARGET}-objcopy -R .comment -R .note -R .debug_info -R .debug_aranges -R .debug_pubnames -R .debug_pubtypes -R .debug_abbrev -R .debug_line -R .debug_str -R .debug_ranges -R .debug_loc ${lib} || true
+          echo ${GCC_TARGET}-objcopy -R ... ${lib}
+          ${GCC_TARGET}-objcopy -R .comment -R .note -R .debug_info -R .debug_aranges -R .debug_pubnames -R .debug_pubtypes -R .debug_abbrev -R .debug_line -R .debug_str -R .debug_ranges -R .debug_loc ${lib} || true
         done
       )
     fi
@@ -1013,7 +1054,7 @@ function do_strip_libs()
 
 function do_copy_license_files()
 {
-  local stamp_file_path="${BUILD_FOLDER_PATH}/stamp-copy_license-completed"
+  local stamp_file_path="${BUILD_FOLDER_PATH}/stamp-copy-license-completed"
   
   if [ ! -f "${stamp_file_path}" ]
   then
@@ -1058,29 +1099,29 @@ function do_copy_license_files()
 
 function do_check_binaries()
 {
-  local stamp_file_path="${BUILD_FOLDER_PATH}/stamp-check-binaries-completed"
-  
-  if [ ! -f "${stamp_file_path}" ]
+  if [ "${WITH_STRIP}" == "y" ]
   then
-    if [ "${WITH_STRIP}" == "y" ]
+
+    if [ "${TARGET_OS}" != "win" ]
     then
+
       local binaries=$(find "${INSTALL_FOLDER_PATH}"/bin -name ${GCC_TARGET}-\*)
       for bin in ${binaries} 
       do
-          check_binary ${bin}
+        check_binary ${bin}
       done
 
       binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*)
       for bin in ${binaries} 
       do
-          check_binary ${bin}
+        check_binary ${bin}
       done
 
       set +e
       if [ "${UNAME}" == "Darwin" ]; then
-          binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm +111 -and ! -type d)
+        binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm +111 -and ! -type d)
       else
-          binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm /111 -and ! -type d)
+        binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm /111 -and ! -type d)
       fi
       set -e
 
@@ -1088,35 +1129,28 @@ function do_check_binaries()
       do
         check_binary ${bin}
       done
+
+    else
+
+      local binaries=$(find "${INSTALL_FOLDER_PATH}"/bin -name ${GCC_TARGET}-\*.exe)
+      for bin in ${binaries} 
+      do
+        check_binary ${bin}
+      done
+
+      binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*.exe)
+      for bin in ${binaries} 
+      do
+        check_binary ${bin}
+      done
+
+      binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \*.exe)
+      for bin in ${binaries}
+      do
+        check_binary ${bin}
+      done
+
     fi
 
-    # touch "${stamp_file_path}"
-  else
-    echo "Step strip-binaries already done."
   fi
-}
-
-function do_create_archive()
-{
-  (
-    xbb_activate
-
-    cd "${APP_PREFIX}"
-
-    local distribution_file_version="${RELEASE_VERSION}-${DISTRIBUTION_FILE_DATE}"
-    local distribution_file="${WORK_FOLDER_PATH}/${DEPLOY_FOLDER_NAME}/gnu-mcu-eclipse-${APP_LC_NAME}-${distribution_file_version}-${TARGET_FOLDER_NAME}.tgz"
-
-    local prefix
-    prefix_path="gnu-mcu-eclipse/${APP_LC_NAME}/${distribution_file_version}"
-    echo
-    echo "Creating \"${distribution_file}\" ..."
-    tar -c -z -f "${distribution_file}" \
-      --transform="s|^|${prefix_path}/|" \
-      --owner=0 \
-      --group=0 \
-      *
-
-    cd "${WORK_FOLDER_PATH}/${DEPLOY_FOLDER_NAME}"
-    compute_sha shasum -a 256 -p "$(basename ${distribution_file})"
-  )
 }

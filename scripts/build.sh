@@ -26,61 +26,6 @@ IFS=$'\n\t'
 
 # -----------------------------------------------------------------------------
 
-# Identify helper scripts.
-
-build_script_path=$0
-if [[ "${build_script_path}" != /* ]]
-then
-  # Make relative path absolute.
-  build_script_path=$(pwd)/$0
-fi
-
-script_folder_path="$(dirname ${build_script_path})"
-script_folder_name="$(basename ${script_folder_path})"
-
-defines_script_path="${script_folder_path}/defs-source.sh"
-echo "Definitions source script: \"${defines_script_path}\"."
-source "${defines_script_path}"
-
-# The Work folder is in HOME.
-HOST_WORK_FOLDER_PATH=${HOST_WORK_FOLDER_PATH:-"${HOME}/Work/${APP_LC_NAME}"}
-CONTAINER_WORK_FOLDER_PATH="/Host/Work/${APP_LC_NAME}"
-
-host_functions_script_path="${script_folder_path}/helper/host-functions-source.sh"
-echo "Host helper functions source script: \"${host_functions_script_path}\"."
-source "${host_functions_script_path}"
-
-# Copy the current scripts to the Work area, to later copy them into 
-# the install folder.
-rm -rf "${HOST_WORK_FOLDER_PATH}/scripts"
-mkdir -p "${HOST_WORK_FOLDER_PATH}/scripts/helper"
-cp "${script_folder_path}"/*.sh \
-  "${HOST_WORK_FOLDER_PATH}/scripts"
-cp "${script_folder_path}"/helper/container-functions-source.sh \
-  "${HOST_WORK_FOLDER_PATH}/scripts/helper"
-cp "${script_folder_path}"/helper/host-functions-source.sh \
-  "${HOST_WORK_FOLDER_PATH}/scripts/helper"
-
-# Copy the patches.
-rm -rf "${HOST_WORK_FOLDER_PATH}"/patches
-cp -r "$(dirname ${script_folder_path})"/gnu-mcu-eclipse/patches \
-  "${HOST_WORK_FOLDER_PATH}"
-
-# Copy VERSION.
-cp -r "$(dirname ${script_folder_path})"/gnu-mcu-eclipse/VERSION \
-  "${HOST_WORK_FOLDER_PATH}"/scripts
-
-container_build_script_path="${script_folder_path}/helper/${CONTAINER_SCRIPT_NAME}"
-echo "Container build script: \"${container_build_script_path}\"."
-
-
-# -----------------------------------------------------------------------------
-
-docker_linux64_image="ilegeul/centos:6-xbb-v1"
-docker_linux32_image="ilegeul/centos32:6-xbb-v1"
-
-# -----------------------------------------------------------------------------
-
 ACTION=""
 
 DO_BUILD_WIN32=""
@@ -149,7 +94,7 @@ do
       ;;
 
     --help)
-      echo "Build the GNU MCU Eclipse ${APP_NAME} distributions."
+      echo "Build the GNU MCU Eclipse ARM Embedded GCC distributions."
       echo "Usage:"
       # Some of the options are processed by the container script.
       echo "    bash $0 helper_script [--win32] [--win64] [--linux32] [--linux64] [--osx] [--all] [clean|cleanall|preload-images] [--env-file file] [--date YYYYmmdd-HHMM] [--disable-strip] [--without-pdf] [--with-html] [--disable-multilib] [--develop] [--use-gits] [--jobs N] [--help]"
@@ -173,6 +118,59 @@ if [ -n "${DEBUG}" ]
 then
   echo ${rest[@]-}
 fi
+
+# -----------------------------------------------------------------------------
+# Identify helper scripts.
+
+build_script_path=$0
+if [[ "${build_script_path}" != /* ]]
+then
+  # Make relative path absolute.
+  build_script_path=$(pwd)/$0
+fi
+
+script_folder_path="$(dirname ${build_script_path})"
+script_folder_name="$(basename ${script_folder_path})"
+
+defines_script_path="${script_folder_path}/defs-source.sh"
+echo "Definitions source script: \"${defines_script_path}\"."
+source "${defines_script_path}"
+
+# The Work folder is in HOME.
+HOST_WORK_FOLDER_PATH=${HOST_WORK_FOLDER_PATH:-"${HOME}/Work/${APP_LC_NAME}"}
+CONTAINER_WORK_FOLDER_PATH="/Host/Work/${APP_LC_NAME}"
+
+host_functions_script_path="${script_folder_path}/helper/host-functions-source.sh"
+echo "Host helper functions source script: \"${host_functions_script_path}\"."
+source "${host_functions_script_path}"
+
+# Copy the current scripts to the Work area, to later copy them into 
+# the install folder.
+rm -rf "${HOST_WORK_FOLDER_PATH}/scripts"
+mkdir -p "${HOST_WORK_FOLDER_PATH}/scripts/helper"
+cp "${script_folder_path}"/*.sh \
+  "${HOST_WORK_FOLDER_PATH}/scripts"
+cp "${script_folder_path}"/helper/container-functions-source.sh \
+  "${HOST_WORK_FOLDER_PATH}/scripts/helper"
+cp "${script_folder_path}"/helper/host-functions-source.sh \
+  "${HOST_WORK_FOLDER_PATH}/scripts/helper"
+
+# Copy the patches.
+rm -rf "${HOST_WORK_FOLDER_PATH}"/patches
+cp -r "$(dirname ${script_folder_path})"/gnu-mcu-eclipse/patches \
+  "${HOST_WORK_FOLDER_PATH}"
+
+# Copy VERSION.
+cp -r "$(dirname ${script_folder_path})"/gnu-mcu-eclipse/VERSION \
+  "${HOST_WORK_FOLDER_PATH}"/scripts
+
+container_build_script_path="${script_folder_path}/helper/${CONTAINER_SCRIPT_NAME}"
+echo "Container build script: \"${container_build_script_path}\"."
+
+# -----------------------------------------------------------------------------
+
+docker_linux64_image="ilegeul/centos:6-xbb-v1"
+docker_linux32_image="ilegeul/centos32:6-xbb-v1"
 
 # -----------------------------------------------------------------------------
 

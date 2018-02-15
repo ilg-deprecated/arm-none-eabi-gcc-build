@@ -134,7 +134,7 @@ function do_gmp()
 
         bash "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}/configure" --help
 
-        export CFLAGS="-Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare"
+        export CFLAGS="-Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare -Wno-overflow"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
         export LDFLAGS="${EXTRA_LDFLAGS}"
         export ABI="${TARGET_BITS}"

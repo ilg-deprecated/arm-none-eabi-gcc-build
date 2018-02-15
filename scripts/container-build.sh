@@ -195,8 +195,11 @@ UNAME="$(uname)"
 # Make all tools choose gcc, not the old cc.
 if [ "${UNAME}" == "Darwin" ]
 then
-  export CC=clang
-  export CXX=clang++
+  # For consistency, prefer GCC 7 over clang.
+  # (Also because all GCC pre 7 versions fail with 'bracket nesting level 
+  # exceeded' with clang; not to mention the too many warnings.)
+  export CC=gcc-7
+  export CXX=g++-7
 elif [ "${TARGET_OS}" == "linux" ]
 then
   export CC=gcc

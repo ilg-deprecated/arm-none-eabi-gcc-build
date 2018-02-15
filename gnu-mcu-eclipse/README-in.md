@@ -24,7 +24,7 @@ The binaries were built on slightly older systems and should be compatible with 
 
 - GNU/Linux: built with GCC 7.2, running on CentOS 6
 - Windows: built with mingw-w64 7.2, running on CentOS 6
-- macOS: built with Apple clang, running on macOS 10.10.5
+- macOS: built with GCC 7.2, running on macOS 10.10.5
 
 ## Build
 

@@ -459,9 +459,16 @@ function do_newlib()
           if [ "${WITH_PDF}" == "y" ]
           then
 
-            # Waning, parallel build failed on Debian 32-bits.
+            # Warning, parallel build failed on Debian 32-bits.
 
-            make ${JOBS} pdf
+            (
+              if [[ "${RELEASE_VERSION}" =~ 5\.4\.1-* ]]
+              then
+                hack_pdfetex
+              fi
+
+              make ${JOBS} pdf
+            )
 
             /usr/bin/install -v -d "${APP_PREFIX_DOC}"/pdf
 

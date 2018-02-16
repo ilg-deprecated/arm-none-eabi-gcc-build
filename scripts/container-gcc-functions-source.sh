@@ -368,7 +368,7 @@ function do_newlib()
         export CPPFLAGS="${EXTRA_CPPFLAGS}" 
 
         # Note the intentional `-g`.
-        export CFLAGS_FOR_TARGET="${optimize} -g -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-logical-not-parentheses -Wno-implicit-int" 
+        export CFLAGS_FOR_TARGET="${optimize} -g -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-logical-not-parentheses -Wno-implicit-int -Wno-expansion-to-defined" 
         export CXXFLAGS_FOR_TARGET="${optimize} -g" 
 
         # I still did not figure out how to define a variable with
@@ -615,9 +615,9 @@ function do_gcc_final()
       
         bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" --help
 
-        export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unused-value -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-unused-but-set-variable"
+        export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unused-value -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-unused-but-set-variable -Wno-shift-negative-value -Wno-expansion-to-defined"
         export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
-        export GCC_WARN_CXXFLAGS="-Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-array-bounds -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-format-security -Wno-suggest-attribute=format -Wno-format-extra-args -Wno-format -Wno-unused-function -Wno-attributes"
+        export GCC_WARN_CXXFLAGS="-Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-array-bounds -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-format-security -Wno-suggest-attribute=format -Wno-format-extra-args -Wno-format -Wno-unused-function -Wno-attributes -Wno-maybe-uninitialized -Wno-expansion-to-defined -Wno-misleading-indentation -Wno-literal-suffix -Wno-int-in-bool-context -Wno-memset-elt-size -Wno-shift-negative-value -Wno-dangling-else -Wno-sequence-point -Wno-nonnull"
         export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
         export CPPFLAGS="${EXTRA_CPPFLAGS}" 
         export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
@@ -871,7 +871,7 @@ function do_gdb()
       
         bash "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}/configure" --help
 
-        export GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-maybe-uninitialized"
+        export GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-maybe-uninitialized -Wno-implicit-fallthrough -Wno-int-in-bool-context -Wno-format-nonliteral -Wno-misleading-indentation"
         export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
         export GCC_WARN_CXXFLAGS="-Wno-deprecated-declarations" 
         export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 

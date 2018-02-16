@@ -42,6 +42,8 @@ i=0
 
 declare -a rest
 
+# Identify some of the options. The rest are collected and passed
+# to the container script.
 while [ $i -lt $argc ]
 do
 
@@ -97,7 +99,7 @@ do
       echo "Build the GNU MCU Eclipse ARM Embedded GCC distributions."
       echo "Usage:"
       # Some of the options are processed by the container script.
-      echo "    bash $0 helper_script [--win32] [--win64] [--linux32] [--linux64] [--osx] [--all] [clean|cleanall|preload-images] [--env-file file] [--date YYYYmmdd-HHMM] [--disable-strip] [--without-pdf] [--with-html] [--disable-multilib] [--develop] [--use-gits] [--jobs N] [--help]"
+      echo "    bash $0 [--win32] [--win64] [--linux32] [--linux64] [--osx] [--all] [clean|cleanall|preload-images] [--env-file file] [--date YYYYmmdd-HHMM] [--disable-strip] [--without-pdf] [--with-html] [--disable-multilib] [--develop] [--use-gits] [--jobs N] [--help]"
       echo
       exit 1
       ;;
@@ -132,43 +134,42 @@ fi
 script_folder_path="$(dirname ${build_script_path})"
 script_folder_name="$(basename ${script_folder_path})"
 
+if [ -f "${script_folder_path}"/VERSION ]
+then
+  # When running from the distribution folder.
+  RELEASE_VERSION=${RELEASE_VERSION:-"$(cat "${script_folder_path}"/VERSION)"}
+fi
+
+echo
+echo "Preparing release ${RELEASE_VERSION}..."
+
+echo
 defines_script_path="${script_folder_path}/defs-source.sh"
 echo "Definitions source script: \"${defines_script_path}\"."
 source "${defines_script_path}"
 
 # The Work folder is in HOME.
-HOST_WORK_FOLDER_PATH=${HOST_WORK_FOLDER_PATH:-"${HOME}/Work/${APP_LC_NAME}"}
-CONTAINER_WORK_FOLDER_PATH="/Host/Work/${APP_LC_NAME}"
+HOST_WORK_FOLDER_PATH=${HOST_WORK_FOLDER_PATH:-"${HOME}/Work/${APP_LC_NAME}-${RELEASE_VERSION}"}
+CONTAINER_WORK_FOLDER_PATH="/Host/Work/${APP_LC_NAME}-${RELEASE_VERSION}"
 
 host_functions_script_path="${script_folder_path}/helper/host-functions-source.sh"
 echo "Host helper functions source script: \"${host_functions_script_path}\"."
 source "${host_functions_script_path}"
 
-# Copy the current scripts to the Work area, to later copy them into 
-# the install folder.
-rm -rf "${HOST_WORK_FOLDER_PATH}/scripts"
-mkdir -p "${HOST_WORK_FOLDER_PATH}/scripts/helper"
-cp "${script_folder_path}"/*.sh \
-  "${HOST_WORK_FOLDER_PATH}/scripts"
-cp "${script_folder_path}"/helper/container-functions-source.sh \
-  "${HOST_WORK_FOLDER_PATH}/scripts/helper"
-cp "${script_folder_path}"/helper/host-functions-source.sh \
-  "${HOST_WORK_FOLDER_PATH}/scripts/helper"
+# Copy the build files to the Work area, to make them available for the 
+# container script.
+rm -rf "${HOST_WORK_FOLDER_PATH}"/build.git
+mkdir -p "${HOST_WORK_FOLDER_PATH}"/build.git
+cp -r "$(dirname ${script_folder_path})"/* "${HOST_WORK_FOLDER_PATH}"/build.git
+rm -rf "${HOST_WORK_FOLDER_PATH}"/build.git/scripts/helper/.git
+rm -rf "${HOST_WORK_FOLDER_PATH}"/build.git/scripts/helper/build-helper.sh
 
-# Copy the patches.
-rm -rf "${HOST_WORK_FOLDER_PATH}"/patches
-cp -r "$(dirname ${script_folder_path})"/gnu-mcu-eclipse/patches \
-  "${HOST_WORK_FOLDER_PATH}"
-
-# Copy VERSION.
-cp -r "$(dirname ${script_folder_path})"/gnu-mcu-eclipse/VERSION \
-  "${HOST_WORK_FOLDER_PATH}"/scripts
-
-container_build_script_path="${script_folder_path}/helper/${CONTAINER_SCRIPT_NAME}"
-echo "Container build script: \"${container_build_script_path}\"."
+CONTAINER_BUILD_SCRIPT_REL_PATH="build.git/scripts/${CONTAINER_SCRIPT_NAME}"
+echo "Container build script: \"${HOST_WORK_FOLDER_PATH}/${CONTAINER_BUILD_SCRIPT_REL_PATH}\"."
 
 # -----------------------------------------------------------------------------
 
+# The names of the two Docker images used for the build.
 docker_linux64_image="ilegeul/centos:6-xbb-v1"
 docker_linux32_image="ilegeul/centos32:6-xbb-v1"
 
@@ -184,8 +185,6 @@ host_start_timer
 host_detect
 
 host_prepare_prerequisites
-
-# TODO: pass more variables to host-defines-source.sh
 
 # -----------------------------------------------------------------------------
 
@@ -249,7 +248,7 @@ if [ -z "${DO_BUILD_OSX}${DO_BUILD_LINUX64}${DO_BUILD_WIN64}${DO_BUILD_LINUX32}$
 then
 
   host_build_target "Creating the native distribution..." \
-    --script "${HOST_WORK_FOLDER_PATH}/scripts/${CONTAINER_SCRIPT_NAME}" \
+    --script "${HOST_WORK_FOLDER_PATH}/${CONTAINER_BUILD_SCRIPT_REL_PATH}" \
     --env-file "${ENV_FILE}" \
     -- \
     ${rest[@]-}
@@ -263,7 +262,7 @@ else
     if [ "${HOST_UNAME}" == "Darwin" ]
     then
       host_build_target "Creating the OS X distribution..." \
-        --script "${HOST_WORK_FOLDER_PATH}/scripts/${CONTAINER_SCRIPT_NAME}" \
+        --script "${HOST_WORK_FOLDER_PATH}/${CONTAINER_BUILD_SCRIPT_REL_PATH}" \
         --env-file "${ENV_FILE}" \
         --target-os osx \
         -- \
@@ -281,7 +280,7 @@ else
   if [ "${DO_BUILD_LINUX64}" == "y" ]
   then
     host_build_target "Creating the GNU/Linux 64-bits distribution..." \
-      --script "${CONTAINER_WORK_FOLDER_PATH}/scripts/${CONTAINER_SCRIPT_NAME}" \
+      --script "${CONTAINER_WORK_FOLDER_PATH}/${CONTAINER_BUILD_SCRIPT_REL_PATH}" \
       --env-file "${ENV_FILE}" \
       --target-os linux \
       --target-bits 64 \
@@ -297,7 +296,7 @@ else
     if [ ! -f "${HOST_WORK_FOLDER_PATH}/install/${linux_distribution}64/${APP_LC_NAME}/bin/${GCC_TARGET}-gcc" ]
     then
       host_build_target "Creating the GNU/Linux 64-bits distribution..." \
-        --script "${CONTAINER_WORK_FOLDER_PATH}/scripts/${CONTAINER_SCRIPT_NAME}" \
+        --script "${CONTAINER_WORK_FOLDER_PATH}/${CONTAINER_BUILD_SCRIPT_REL_PATH}" \
         --env-file "${ENV_FILE}" \
         --target-os linux \
         --target-bits 64 \
@@ -313,7 +312,7 @@ else
     fi
 
     host_build_target "Creating the Windows 64-bits distribution..." \
-      --script "${CONTAINER_WORK_FOLDER_PATH}/scripts/${CONTAINER_SCRIPT_NAME}" \
+      --script "${CONTAINER_WORK_FOLDER_PATH}/${CONTAINER_BUILD_SCRIPT_REL_PATH}" \
       --env-file "${ENV_FILE}" \
       --target-os win \
       --target-bits 64 \
@@ -328,7 +327,7 @@ else
   if [ "${DO_BUILD_LINUX32}" == "y" ]
   then
     host_build_target "Creating the GNU/Linux 32-bits distribution..." \
-      --script "${CONTAINER_WORK_FOLDER_PATH}/scripts/${CONTAINER_SCRIPT_NAME}" \
+      --script "${CONTAINER_WORK_FOLDER_PATH}/${CONTAINER_BUILD_SCRIPT_REL_PATH}" \
       --env-file "${ENV_FILE}" \
       --target-os linux \
       --target-bits 32 \
@@ -345,7 +344,7 @@ else
     if [ ! -f "${HOST_WORK_FOLDER_PATH}/install/${linux_distribution}32/${APP_LC_NAME}/bin/${GCC_TARGET}-gcc" ]
     then
       host_build_target "Creating the GNU/Linux 32-bits distribution..." \
-        --script "${CONTAINER_WORK_FOLDER_PATH}/scripts/${CONTAINER_SCRIPT_NAME}" \
+        --script "${CONTAINER_WORK_FOLDER_PATH}/${CONTAINER_BUILD_SCRIPT_REL_PATH}" \
         --env-file "${ENV_FILE}" \
         --target-os linux \
         --target-bits 32 \
@@ -361,7 +360,7 @@ else
     fi
 
     host_build_target "Creating the Windows 32-bits distribution..." \
-      --script "${CONTAINER_WORK_FOLDER_PATH}/scripts/${CONTAINER_SCRIPT_NAME}" \
+      --script "${CONTAINER_WORK_FOLDER_PATH}/${CONTAINER_BUILD_SCRIPT_REL_PATH}" \
       --env-file "${ENV_FILE}" \
       --target-os win \
       --target-bits 32 \
@@ -379,7 +378,7 @@ host_show_sha
 
 host_stop_timer
 
-# Done successfully.
+# Completed successfully.
 exit 0
 
 # -----------------------------------------------------------------------------

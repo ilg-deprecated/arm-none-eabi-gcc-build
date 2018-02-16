@@ -6,7 +6,7 @@
 
 # -----------------------------------------------------------------------------
 
-function do_gcc_combo_download() 
+function download_gcc_combo() 
 {
   # https://developer.arm.com/open-source/gnu-toolchain/gnu-rm
   # https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
@@ -16,7 +16,7 @@ function do_gcc_combo_download()
   download_and_extract "${GCC_COMBO_URL}" "${GCC_COMBO_ARCHIVE}" "${GCC_COMBO_FOLDER_NAME}"
 }
 
-function do_python_download() 
+function download_python() 
 {
   # https://www.python.org/downloads/release/python-2714/
   # https://www.python.org/ftp/python/2.7.14/python-2.7.14.msi
@@ -52,9 +52,10 @@ function do_python_download()
     "${BUILD_FOLDER_PATH}/${p7zip_folder_name}"/bin/7za x -o"${PYTHON_WIN}" "${DOWNLOAD_FOLDER_PATH}/${PYTHON_WIN_PACK}" -i@/tmp/included
 
     # Patch to disable the macro that renames hypot.
-    if [ -f "${WORK_FOLDER_PATH}/patches/${PYTHON_WIN}.patch" ]
+    local patch_path="${WORK_FOLDER_PATH}/build.git/patches/${PYTHON_WIN}.patch"
+    if [ -f "${patch_path}" ]
     then
-      patch -p0 <"${WORK_FOLDER_PATH}/patches/${PYTHON_WIN}.patch" 
+      patch -p0 <"${patch_path}" 
     fi
   else
     echo "Folder ${PYTHON_WIN} already present."
@@ -190,7 +191,7 @@ function do_binutils()
 
     touch "${binutils_stamp_file_path}"
   else
-    echo "Step binutils already done."
+    echo "Component binutils already processed."
   fi
 }
 
@@ -300,7 +301,7 @@ function do_gcc_first()
 
     touch "${gcc_first_stamp_file_path}"
   else
-    echo "Step gcc first stage already done."
+    echo "Component gcc first stage already processed."
   fi
 }
 
@@ -500,13 +501,13 @@ function do_newlib()
 
     touch "${newlib_stamp_file_path}"
   else
-    echo "Step newlib$1 already done."
+    echo "Component newlib$1 already processed."
   fi
 }
 
 # -----------------------------------------------------------------------------
 
-function do_copy_nano_libs() 
+function copy_nano_libs() 
 {
   local src_folder="$1"
   local dst_folder="$2"
@@ -539,7 +540,7 @@ function do_copy_nano_libs()
 # $1=source
 # $2=destination
 # $3=target gcc
-function do_copy_multi_libs()
+function copy_multi_libs()
 {
   local -a multilibs
   local multilib
@@ -555,17 +556,17 @@ function do_copy_multi_libs()
     for multilib in "${multilibs[@]}"
     do
       multi_folder="${multilib%%;*}"
-      do_copy_nano_libs "${src_folder}/${multi_folder}" \
+      copy_nano_libs "${src_folder}/${multi_folder}" \
         "${dst_folder}/${multi_folder}"
     done
   else
-    do_copy_nano_libs "${src_folder}" "${dst_folder}"
+    copy_nano_libs "${src_folder}" "${dst_folder}"
   fi
 }
 
 # -----------------------------------------------------------------------------
 
-function do_copy_linux_libs()
+function copy_linux_libs()
 {
   local copy_linux_stamp_file_path="${BUILD_FOLDER_PATH}/stamp-copy-linux-completed"
   if [ ! -f "${copy_linux_stamp_file_path}" ]
@@ -588,7 +589,7 @@ function do_copy_linux_libs()
     touch "${copy_linux_stamp_file_path}"
 
   else
-    echo "Step copy-linux-libs already done."
+    echo "Component copy-linux-libs already processed."
   fi
 }
 
@@ -801,7 +802,7 @@ function do_gcc_final()
 
             # Copy the libraries after appending the `_nano` suffix.
             # Iterate through all multilib names.
-            do_copy_multi_libs \
+            copy_multi_libs \
               "${APP_PREFIX_NANO}/${GCC_TARGET}/lib" \
               "${APP_PREFIX}/${GCC_TARGET}/lib" \
               "${target_gcc}"
@@ -838,7 +839,7 @@ function do_gcc_final()
 
     touch "${gcc_final_stamp_file_path}"
   else
-    echo "Step gcc$1 final stage already done."
+    echo "Component gcc$1 final stage already processed."
   fi
 }
 
@@ -975,149 +976,26 @@ function do_gdb()
 
     touch "${gdb_stamp_file_path}"
   else
-    echo "Step gdb$1 already done."
+    echo "Component gdb$1 already processed."
   fi
 }
 
-function do_pretidy() 
+function tidy_up() 
 {
+  echo
+  echo "Tidying up..."
+
   find "${APP_PREFIX}" -name "libiberty.a" -exec rm -v '{}' ';'
   find "${APP_PREFIX}" -name '*.la' -exec rm -v '{}' ';'
 }
 
-function do_strip_binaries()
+function strip_binaries()
 {
   if [ "${WITH_STRIP}" == "y" ]
-  then
-
-    if [ "${TARGET_OS}" != "win" ]
-    then
-
-      local binaries=$(find "${INSTALL_FOLDER_PATH}"/bin -name ${GCC_TARGET}-\*)
-      for bin in ${binaries} 
-      do
-        strip_binary strip ${bin}
-      done
-
-      binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*)
-      for bin in ${binaries} 
-      do
-        strip_binary strip ${bin}
-      done
-
-      set +e
-      if [ "${UNAME}" == "Darwin" ]; then
-        binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm +111 -and ! -type d)
-      else
-        binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm /111 -and ! -type d)
-      fi
-      set -e
-
-      for bin in ${binaries} 
-      do
-        strip_binary strip ${bin}
-      done
-
-    else
-
-      local binaries=$(find "${INSTALL_FOLDER_PATH}"/bin -name ${GCC_TARGET}-\*.exe)
-      for bin in ${binaries} 
-      do
-        strip_binary "${CROSS_COMPILE_PREFIX}"-strip ${bin}
-      done
-
-      binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*)
-      for bin in ${binaries} 
-      do
-        strip_binary "${CROSS_COMPILE_PREFIX}"-strip ${bin}
-      done
-
-      binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \*.exe)
-      for bin in ${binaries} 
-      do
-        strip_binary "${CROSS_COMPILE_PREFIX}"-strip ${bin}
-      done
-
-    fi
-
-  fi
-}
-
-function do_strip_libs()
-{
-  local stamp_file_path="${BUILD_FOLDER_PATH}/stamp-strip-libs-completed"
-  
-  if [ ! -f "${stamp_file_path}" ]
-  then
-    if [ "${WITH_STRIP}" == "y" ]
-    then
-      (
-        PATH="${APP_PREFIX}/bin":${PATH}
-
-        local libs=$(find "${APP_PREFIX}" -name '*.[ao]')
-        for lib in ${libs}
-        do
-          echo ${GCC_TARGET}-objcopy -R ... ${lib}
-          ${GCC_TARGET}-objcopy -R .comment -R .note -R .debug_info -R .debug_aranges -R .debug_pubnames -R .debug_pubtypes -R .debug_abbrev -R .debug_line -R .debug_str -R .debug_ranges -R .debug_loc ${lib} || true
-        done
-      )
-    fi
-
-    touch "${stamp_file_path}"
-  else
-    echo "Step strip-libs already done."
-  fi
-}
-
-function do_copy_license_files()
-{
-  local stamp_file_path="${BUILD_FOLDER_PATH}/stamp-copy-license-completed"
-  
-  if [ ! -f "${stamp_file_path}" ]
   then
 
     echo
-    echo "Copying license files..."
-
-    copy_license \
-      "${WORK_FOLDER_PATH}/${ZLIB_FOLDER_NAME}" "${ZLIB_FOLDER_NAME}"
-    copy_license \
-      "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}" "${GMP_FOLDER_NAME}"
-    copy_license \
-      "${WORK_FOLDER_PATH}/${MPFR_FOLDER_NAME}" "${MPFR_FOLDER_NAME}"
-    copy_license \
-      "${WORK_FOLDER_PATH}/${MPC_FOLDER_NAME}" "${MPC_FOLDER_NAME}"
-    copy_license \
-      "${WORK_FOLDER_PATH}/${ISL_FOLDER_NAME}" "${ISL_FOLDER_NAME}"
-    copy_license \
-      "${WORK_FOLDER_PATH}/${LIBELF_FOLDER_NAME}" "${LIBELF_FOLDER_NAME}"
-    copy_license \
-      "${WORK_FOLDER_PATH}/${EXPAT_FOLDER_NAME}" "${EXPAT_FOLDER_NAME}"
-    copy_license \
-      "${WORK_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}" "${LIBICONV_FOLDER_NAME}"
-    copy_license \
-      "${WORK_FOLDER_PATH}/${XZ_FOLDER_NAME}" "${XZ_FOLDER_NAME}"
-
-    copy_license \
-      "${WORK_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}" "${BINUTILS_SRC_FOLDER_NAME}-${BINUTILS_VERSION}"
-    copy_license \
-      "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}" "${GCC_SRC_FOLDER_NAME}-${GCC_VERSION}"
-    copy_license \
-      "${WORK_FOLDER_PATH}/${NEWLIB_SRC_FOLDER_NAME}" "${NEWLIB_SRC_FOLDER_NAME}-${NEWLIB_VERSION}"
-    copy_license \
-      "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}" "${GDB_SRC_FOLDER_NAME}-${GDB_VERSION}"
-
-    touch "${stamp_file_path}"
-
-  else
-    echo "Step copy-license already done."
-  fi
-}
-
-function do_check_binaries()
-{
-  if [ "${WITH_STRIP}" == "y" ]
-  then
+    echo "Striping binaries..."
 
     if [ "${TARGET_OS}" != "win" ]
     then
@@ -1125,13 +1003,13 @@ function do_check_binaries()
       local binaries=$(find "${INSTALL_FOLDER_PATH}"/bin -name ${GCC_TARGET}-\*)
       for bin in ${binaries} 
       do
-        check_binary ${bin}
+        strip_binary strip ${bin}
       done
 
       binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*)
       for bin in ${binaries} 
       do
-        check_binary ${bin}
+        strip_binary strip ${bin}
       done
 
       set +e
@@ -1142,9 +1020,9 @@ function do_check_binaries()
       fi
       set -e
 
-      for bin in ${binaries}
+      for bin in ${binaries} 
       do
-        check_binary ${bin}
+        strip_binary strip ${bin}
       done
 
     else
@@ -1152,22 +1030,172 @@ function do_check_binaries()
       local binaries=$(find "${INSTALL_FOLDER_PATH}"/bin -name ${GCC_TARGET}-\*.exe)
       for bin in ${binaries} 
       do
-        check_binary ${bin}
+        strip_binary "${CROSS_COMPILE_PREFIX}"-strip ${bin}
       done
 
-      binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*.exe)
+      binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*)
       for bin in ${binaries} 
       do
-        check_binary ${bin}
+        strip_binary "${CROSS_COMPILE_PREFIX}"-strip ${bin}
       done
 
       binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \*.exe)
-      for bin in ${binaries}
+      for bin in ${binaries} 
       do
-        check_binary ${bin}
+        strip_binary "${CROSS_COMPILE_PREFIX}"-strip ${bin}
       done
 
     fi
 
   fi
 }
+
+function strip_libs()
+{
+  if [ "${WITH_STRIP}" == "y" ]
+  then
+    (
+      PATH="${APP_PREFIX}/bin":${PATH}
+
+      echo
+      echo "Striping libraries..."
+
+      local libs=$(find "${APP_PREFIX}" -name '*.[ao]')
+      for lib in ${libs}
+      do
+        echo ${GCC_TARGET}-objcopy -R ... ${lib}
+        ${GCC_TARGET}-objcopy -R .comment -R .note -R .debug_info -R .debug_aranges -R .debug_pubnames -R .debug_pubtypes -R .debug_abbrev -R .debug_line -R .debug_str -R .debug_ranges -R .debug_loc ${lib} || true
+      done
+    )
+  fi
+}
+
+function copy_gme_files()
+{
+  rm -rf "${APP_PREFIX}"/gnu-mcu-eclipse
+  mkdir -p "${APP_PREFIX}"/gnu-mcu-eclipse
+
+  echo
+  echo "Copying license files..."
+
+  copy_license \
+    "${WORK_FOLDER_PATH}/${ZLIB_FOLDER_NAME}" \
+    "${ZLIB_FOLDER_NAME}"
+  copy_license \
+    "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}" \
+    "${GMP_FOLDER_NAME}"
+  copy_license \
+    "${WORK_FOLDER_PATH}/${MPFR_FOLDER_NAME}" \
+    "${MPFR_FOLDER_NAME}"
+  copy_license \
+    "${WORK_FOLDER_PATH}/${MPC_FOLDER_NAME}" \
+    "${MPC_FOLDER_NAME}"
+  copy_license \
+    "${WORK_FOLDER_PATH}/${ISL_FOLDER_NAME}" \
+    "${ISL_FOLDER_NAME}"
+  copy_license \
+    "${WORK_FOLDER_PATH}/${LIBELF_FOLDER_NAME}" \
+    "${LIBELF_FOLDER_NAME}"
+  copy_license \
+    "${WORK_FOLDER_PATH}/${EXPAT_FOLDER_NAME}" \
+    "${EXPAT_FOLDER_NAME}"
+  copy_license \
+    "${WORK_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}" \
+    "${LIBICONV_FOLDER_NAME}"
+  copy_license \
+    "${WORK_FOLDER_PATH}/${XZ_FOLDER_NAME}" \
+    "${XZ_FOLDER_NAME}"
+
+  copy_license \
+    "${WORK_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}" \
+    "${BINUTILS_SRC_FOLDER_NAME}-${BINUTILS_VERSION}"
+  copy_license \
+    "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}" \
+    "${GCC_SRC_FOLDER_NAME}-${GCC_VERSION}"
+  copy_license \
+    "${WORK_FOLDER_PATH}/${NEWLIB_SRC_FOLDER_NAME}" \
+    "${NEWLIB_SRC_FOLDER_NAME}-${NEWLIB_VERSION}"
+  copy_license \
+    "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}" \
+    "${GDB_SRC_FOLDER_NAME}-${GDB_VERSION}"
+
+  copy_build_files
+
+  echo
+  echo "Copying ARM files..."
+
+  cd "${WORK_FOLDER_PATH}/${GCC_COMBO_FOLDER_NAME}"
+
+  /usr/bin/install -v -c -m 644 "readme.txt" \
+    "${APP_PREFIX}"/gnu-mcu-eclipse/arm-readme.txt
+
+  /usr/bin/install -v -c -m 644 "release.txt" \
+    "${APP_PREFIX}"/gnu-mcu-eclipse/arm-release.txt
+
+  echo
+  echo "Copying GME files..."
+
+  cd "${WORK_FOLDER_PATH}"/build.git
+  /usr/bin/install -v -c -m 644 "README-out.md" \
+    "${APP_PREFIX}"/README.md
+}
+
+function check_binaries()
+{
+  if [ "${TARGET_OS}" != "win" ]
+  then
+
+    echo
+    echo "Checking binaries for unwanted shared libraries..."
+
+    local binaries=$(find "${INSTALL_FOLDER_PATH}"/bin -name ${GCC_TARGET}-\*)
+    for bin in ${binaries} 
+    do
+      check_binary ${bin}
+    done
+
+    binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*)
+    for bin in ${binaries} 
+    do
+      check_binary ${bin}
+    done
+
+    set +e
+    if [ "${UNAME}" == "Darwin" ]; then
+      binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm +111 -and ! -type d)
+    else
+      binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm /111 -and ! -type d)
+    fi
+    set -e
+
+    for bin in ${binaries}
+    do
+      check_binary ${bin}
+    done
+
+  else
+
+    echo
+    echo "Checking binaries for unwanted DLLs..."
+
+    local binaries=$(find "${INSTALL_FOLDER_PATH}"/bin -name ${GCC_TARGET}-\*.exe)
+    for bin in ${binaries} 
+    do
+      check_binary ${bin}
+    done
+
+    binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*.exe)
+    for bin in ${binaries} 
+    do
+      check_binary ${bin}
+    done
+
+    binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \*.exe)
+    for bin in ${binaries}
+    do
+      check_binary ${bin}
+    done
+
+  fi
+}
+

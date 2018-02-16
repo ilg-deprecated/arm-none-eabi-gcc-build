@@ -89,7 +89,7 @@ function do_zlib()
     touch "${zlib_stamp_file}"
 
   else
-    echo "Library zlib already installed."
+    echo "Library zlib already processed."
   fi
 }
 
@@ -168,7 +168,7 @@ function do_gmp()
     touch "${gmp_stamp_file}"
 
   else
-    echo "Library gmp already installed."
+    echo "Library gmp already processed."
   fi
 }
 
@@ -242,7 +242,7 @@ function do_mpfr()
     touch "${mpfr_stamp_file}"
 
   else
-    echo "Library mpfr already installed."
+    echo "Library mpfr already processed."
   fi
 }
 
@@ -317,7 +317,7 @@ function do_mpc()
     touch "${mpc_stamp_file}"
 
   else
-    echo "Library mpc already installed."
+    echo "Library mpc already processed."
   fi
 }
 
@@ -397,7 +397,7 @@ function do_isl()
     touch "${isl_stamp_file}"
 
   else
-    echo "Library isl already installed."
+    echo "Library isl already processed."
   fi
 }
 
@@ -467,7 +467,7 @@ function do_libelf()
     touch "${libelf_stamp_file}"
 
   else
-    echo "Library libelf already installed."
+    echo "Library libelf already processed."
   fi
 }
 
@@ -547,7 +547,7 @@ function do_expat()
     touch "${expat_stamp_file}"
 
   else
-    echo "Library expat already installed."
+    echo "Library expat already processed."
   fi
 }
 
@@ -622,7 +622,7 @@ function do_libiconv()
     touch "${libiconv_stamp_file}"
 
   else
-    echo "Library libiconv already installed."
+    echo "Library libiconv already processed."
   fi
 }
 
@@ -695,6 +695,6 @@ function do_xz()
     touch "${xz_stamp_file}"
 
   else
-    echo "Library xz already installed."
+    echo "Library xz already processed."
   fi
 }

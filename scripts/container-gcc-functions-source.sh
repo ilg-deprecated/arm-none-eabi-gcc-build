@@ -1072,8 +1072,8 @@ function strip_libs()
 
 function copy_gme_files()
 {
-  rm -rf "${APP_PREFIX}"/gnu-mcu-eclipse
-  mkdir -p "${APP_PREFIX}"/gnu-mcu-eclipse
+  rm -rf "${APP_PREFIX}"/${DISTRO_LC_NAME}
+  mkdir -p "${APP_PREFIX}"/${DISTRO_LC_NAME}
 
   echo
   echo "Copying license files..."
@@ -1127,10 +1127,10 @@ function copy_gme_files()
   cd "${WORK_FOLDER_PATH}/${GCC_COMBO_FOLDER_NAME}"
 
   /usr/bin/install -v -c -m 644 "readme.txt" \
-    "${APP_PREFIX}"/gnu-mcu-eclipse/arm-readme.txt
+    "${APP_PREFIX}"/${DISTRO_LC_NAME}/arm-readme.txt
 
   /usr/bin/install -v -c -m 644 "release.txt" \
-    "${APP_PREFIX}"/gnu-mcu-eclipse/arm-release.txt
+    "${APP_PREFIX}"/${DISTRO_LC_NAME}/arm-release.txt
 
   echo
   echo "Copying GME files..."

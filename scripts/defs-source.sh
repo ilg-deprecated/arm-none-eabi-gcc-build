@@ -15,7 +15,10 @@ APP_NAME=${APP_NAME:-"ARM Embedded GCC"}
 APP_UC_NAME=${APP_UC_NAME:-"ARM Embedded GCC"}
 APP_LC_NAME=${APP_LC_NAME:-"arm-none-eabi-gcc"}
 
-BRANDING=${BRANDING:-"GNU MCU Eclipse ARM Embedded GCC"}
+DISTRO_UC_NAME=${DISTRO_UC_NAME:-"GNU MCU Eclipse"}
+DISTRO_LC_NAME=${DISTRO_LC_NAME:-"gnu-mcu-eclipse"}
+
+BRANDING=${BRANDING:-"${DISTRO_UC_NAME} ARM Embedded GCC"}
 
 GCC_TARGET=${GCC_TARGET:-"arm-none-eabi"}
 

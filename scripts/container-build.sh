@@ -69,7 +69,7 @@ source "${container_functions_script_path}"
 # -----------------------------------------------------------------------------
 
 WITH_STRIP="y"
-MULTILIB_FLAGS="--with-multilib-list=rmprofile"
+WITHOUT_MULTILIB=""
 WITH_PDF="y"
 WITH_HTML="n"
 IS_DEVELOP=""
@@ -107,7 +107,7 @@ do
       ;;
 
     --disable-multilib)
-      MULTILIB_FLAGS="--disable-multilib"
+      WITHOUT_MULTILIB="y"
       shift
       ;;
 
@@ -265,6 +265,8 @@ then
 
   GCC_COMBO_URL="https://developer.arm.com/-/media/Files/downloads/gnu-rm/${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}${GCC_COMBO_VERSION_QUARTER}/${GCC_COMBO_ARCHIVE}"
 
+  MULTILIB_FLAGS="--with-multilib-list=rmprofile"
+
   BINUTILS_VERSION="2.29"
   # From gcc/BASE_VER; svn: 255204.
   GCC_VERSION="7.2.1"
@@ -300,6 +302,7 @@ then
 
   GCC_COMBO_URL="https://developer.arm.com/-/media/Files/downloads/gnu-rm/${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}${GCC_COMBO_VERSION_QUARTER}/${GCC_COMBO_ARCHIVE}"
 
+  MULTILIB_FLAGS="--with-multilib-list=rmprofile"
   BINUTILS_VERSION="2.28"
   # From gcc/BASE_VER; svn: 249437.
   GCC_VERSION="6.3.1"
@@ -336,6 +339,8 @@ then
 
   GCC_COMBO_URL="https://developer.arm.com/-/media/Files/downloads/gnu-rm/${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}${GCC_COMBO_VERSION_QUARTER}/${GCC_COMBO_ARCHIVE}"
 
+  MULTILIB_FLAGS="--with-multilib-list=armv6-m,armv7-m,armv7e-m,armv7-r,armv8-m.base,armv8-m.main"
+
   BINUTILS_VERSION="2.26"
   # From gcc/BASE_VER; svn: 240432.
   GCC_VERSION="5.4.1"
@@ -359,6 +364,11 @@ then
 else
   echo "Unsupported version ${RELEASE_VERSION}."
   exit 1
+fi
+
+if [ "${MULTILIB_FLAGS}" == "y" ]
+then
+  MULTILIB_FLAGS="--disable-multilib"
 fi
 
 if [ "${TARGET_BITS}" == "32" ]

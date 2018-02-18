@@ -123,6 +123,7 @@ do
 
     --debug)
       IS_DEBUG="y"
+      WITH_STRIP="n"
       shift
       ;;
 
@@ -193,6 +194,7 @@ then
   # For consistency, even on macOS, prefer GCC 7 over clang.
   # (Also because all GCC pre 7 versions fail with 'bracket nesting level 
   # exceeded' with clang; not to mention the too many warnings.)
+  # To build gdb, redefine them to clang.
   export CC=gcc-7
   export CXX=g++-7
 elif [ "${TARGET_OS}" == "linux" ]
@@ -201,18 +203,25 @@ then
   export CXX=g++
 fi
 
-EXTRA_CFLAGS="-ffunction-sections -fdata-sections -m${TARGET_BITS} -pipe -O2"
-EXTRA_CXXFLAGS="-ffunction-sections -fdata-sections -m${TARGET_BITS} -pipe -O2"
+EXTRA_CFLAGS="-ffunction-sections -fdata-sections -m${TARGET_BITS} -pipe"
+EXTRA_CXXFLAGS="-ffunction-sections -fdata-sections -m${TARGET_BITS} -pipe"
 
 if [ "${IS_DEBUG}" == "y" ]
 then
-  EXTRA_CFLAGS+=" -g"
-  EXTRA_CXXFLAGS+=" -g"
+  EXTRA_CFLAGS+=" -g -O0"
+  EXTRA_CXXFLAGS+=" -g -O0"
+else
+  EXTRA_CFLAGS+=" -O2"
+  EXTRA_CXXFLAGS+=" -O2"
 fi
 
 EXTRA_CPPFLAGS="-I${INSTALL_FOLDER_PATH}"/include
 EXTRA_LDFLAGS_LIB="-L${INSTALL_FOLDER_PATH}"/lib
 EXTRA_LDFLAGS="${EXTRA_LDFLAGS_LIB}"
+if [ "${IS_DEBUG}" == "y" ]
+then
+  EXTRA_LDFLAGS+=" -g"
+fi
 EXTRA_LDFLAGS_APP="${EXTRA_LDFLAGS} -static-libstdc++"
 
 if [ "${TARGET_OS}" == "osx" ]
@@ -221,7 +230,7 @@ then
 elif [ "${TARGET_OS}" == "linux" ]
 then
   # Do not add -static here, it fails.
-  # Do not try to link pthread statically, it should match system glibc.
+  # Do not try to link pthread statically, it must match the system glibc.
   EXTRA_LDFLAGS_APP+=" -Wl,--gc-sections"
 elif [ "${TARGET_OS}" == "win" ]
 then

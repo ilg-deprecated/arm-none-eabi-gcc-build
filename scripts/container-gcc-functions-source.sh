@@ -879,6 +879,15 @@ function do_gdb()
       
         bash "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}/configure" --help
 
+        if [ "${TARGET_OS}" == "osx" ]
+        then
+          # For unknown reasons, building GCC with GCC 7 and GCC 6 creates
+          # a binary that fails with 'Abort trap: 6' (to test use 'set 
+          # language auto').
+          export CC=clang
+          export CXX=clang++
+        fi
+
         export GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-maybe-uninitialized -Wno-implicit-fallthrough -Wno-int-in-bool-context -Wno-format-nonliteral -Wno-misleading-indentation"
         export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
         export GCC_WARN_CXXFLAGS="-Wno-deprecated-declarations" 
@@ -919,6 +928,7 @@ function do_gdb()
           --with-libexpat \
           --with-lzma=yes \
           --with-system-gdbinit="${APP_PREFIX}/${GCC_TARGET}"/lib/gdbinit \
+          '--with-gdb-datadir='\''${prefix}'\''/arm-none-eabi/share/gdb' \
           \
           ${extra_python_opts} \
           --program-prefix="${GCC_TARGET}-" \
@@ -933,10 +943,8 @@ function do_gdb()
           \
         | tee "${INSTALL_FOLDER_PATH}/configure-gdb$1-output.txt"
         cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gdb$1-log.txt
-
       fi
 
-      # Partial build, without documentation.
       echo
       echo "Running gdb$1 make..."
 

@@ -99,7 +99,7 @@ do
       echo "Build the GNU MCU Eclipse ARM Embedded GCC distributions."
       echo "Usage:"
       # Some of the options are processed by the container script.
-      echo "    bash $0 [--win32] [--win64] [--linux32] [--linux64] [--osx] [--all] [clean|cleanall|preload-images] [--env-file file] [--date YYYYmmdd-HHMM] [--disable-strip] [--without-pdf] [--with-html] [--disable-multilib] [--develop] [--use-gits] [--jobs N] [--help]"
+      echo "    bash $0 [--win32] [--win64] [--linux32] [--linux64] [--osx] [--all] [clean|cleanall|preload-images] [--env-file file] [--date YYYYmmdd-HHMM] [--disable-strip] [--without-pdf] [--with-html] [--disable-multilib] [--develop] [--debug] [--jobs N] [--help]"
       echo
       exit 1
       ;;

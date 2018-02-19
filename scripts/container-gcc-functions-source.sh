@@ -885,10 +885,19 @@ function do_gdb()
           export CXX=clang++
         fi
 
-        export GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-maybe-uninitialized -Wno-implicit-fallthrough -Wno-int-in-bool-context -Wno-format-nonliteral -Wno-misleading-indentation"
-        export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
-        export GCC_WARN_CXXFLAGS="-Wno-deprecated-declarations" 
-        export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
+        GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-maybe-uninitialized -Wno-implicit-fallthrough -Wno-int-in-bool-context -Wno-format-nonliteral -Wno-misleading-indentation"
+        GCC_WARN_CXXFLAGS="-Wno-deprecated-declarations"
+        if [ "${CC}" == "clang" ]
+        then
+          GCC_WARN_CFLAGS+=" -Wno-unknown-warning-option -Wno-incompatible-pointer-types-discards-qualifiers -Wno-extended-offsetof"
+          GCC_WARN_CXXFLAGS+=" -Wno-unknown-warning-option -Wno-c++11-narrowing"
+        fi
+        export GCC_WARN_CFLAGS
+        export GCC_WARN_CXXFLAGS
+
+        export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}"
+        export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}"
+        
         export CPPFLAGS="${EXTRA_CPPFLAGS}" 
         export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
  

@@ -71,7 +71,7 @@ function do_binutils()
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=gdb-git
 
   BINUTILS_FOLDER_NAME="binutils-${BINUTILS_VERSION}"
-  local binutils_stamp_file_path="${BUILD_FOLDER_PATH}/${BINUTILS_FOLDER_NAME}/stamp-install-completed"
+  local binutils_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-binutils-installed"
 
   if [ ! -f "${binutils_stamp_file_path}" ]
   then
@@ -191,7 +191,7 @@ function do_binutils()
 
     touch "${binutils_stamp_file_path}"
   else
-    echo "Component binutils already processed."
+    echo "Component binutils already installed."
   fi
 }
 
@@ -200,7 +200,7 @@ GCC_SRC_FOLDER_NAME="gcc"
 function do_gcc_first()
 {
   local gcc_first_folder_name="gcc-${GCC_VERSION}-first"
-  local gcc_first_stamp_file_path="${BUILD_FOLDER_PATH}/${gcc_first_folder_name}/stamp-install-completed"
+  local gcc_first_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gcc-first-installed"
 
   if [ ! -f "${gcc_first_stamp_file_path}" ]
   then
@@ -301,7 +301,7 @@ function do_gcc_first()
 
     touch "${gcc_first_stamp_file_path}"
   else
-    echo "Component gcc first stage already processed."
+    echo "Component gcc first stage already installed."
   fi
 }
 
@@ -312,7 +312,7 @@ NEWLIB_SRC_FOLDER_NAME="newlib"
 function do_newlib()
 {
   local newlib_folder_name="newlib-${NEWLIB_VERSION}$1"
-  local newlib_stamp_file_path="${BUILD_FOLDER_PATH}/${newlib_folder_name}/stamp-install-completed"
+  local newlib_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-newlib$1-installed"
 
   if [ ! -f "${newlib_stamp_file_path}" ]
   then
@@ -500,7 +500,7 @@ function do_newlib()
 
     touch "${newlib_stamp_file_path}"
   else
-    echo "Component newlib$1 already processed."
+    echo "Component newlib$1 already installed."
   fi
 }
 
@@ -567,7 +567,7 @@ function copy_multi_libs()
 
 function copy_linux_libs()
 {
-  local copy_linux_stamp_file_path="${BUILD_FOLDER_PATH}/stamp-copy-linux-completed"
+  local copy_linux_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-copy-linux-completed"
   if [ ! -f "${copy_linux_stamp_file_path}" ]
   then
 
@@ -599,7 +599,7 @@ function copy_linux_libs()
 function do_gcc_final()
 {
   local gcc_final_folder_name="gcc-${GCC_VERSION}-final$1"
-  local gcc_final_stamp_file_path="${BUILD_FOLDER_PATH}/${gcc_final_folder_name}/stamp-install-completed"
+  local gcc_final_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gcc$1-final-installed"
 
   if [ ! -f "${gcc_final_stamp_file_path}" ]
   then
@@ -836,7 +836,7 @@ function do_gcc_final()
 
     touch "${gcc_final_stamp_file_path}"
   else
-    echo "Component gcc$1 final stage already processed."
+    echo "Component gcc$1 final stage already installed."
   fi
 }
 
@@ -847,7 +847,7 @@ GDB_SRC_FOLDER_NAME="gdb"
 function do_gdb()
 {
   local gdb_folder_name="gdb-${GDB_VERSION}$1"
-  local gdb_stamp_file_path="${BUILD_FOLDER_PATH}/${gdb_folder_name}/stamp-install-completed"
+  local gdb_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gdb$1-installed"
 
   if [ ! -f "${gdb_stamp_file_path}" ]
   then
@@ -982,7 +982,7 @@ function do_gdb()
 
     touch "${gdb_stamp_file_path}"
   else
-    echo "Component gdb$1 already processed."
+    echo "Component gdb$1 already installed."
   fi
 }
 

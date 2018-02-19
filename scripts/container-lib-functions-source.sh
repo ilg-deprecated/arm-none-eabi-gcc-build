@@ -25,8 +25,8 @@ function do_zlib()
   # local zlib_url="http://zlib.net/fossils/${zlib_archive}"
   local zlib_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${zlib_archive}"
 
-  local zlib_stamp_file="${BUILD_FOLDER_PATH}/${ZLIB_FOLDER_NAME}/stamp-install-completed"
-  if [ ! -f "${zlib_stamp_file}" ]
+  local zlib_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-zlib-installed"
+  if [ ! -f "${zlib_stamp_file_path}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
@@ -86,10 +86,10 @@ function do_zlib()
       ) | tee "${INSTALL_FOLDER_PATH}/make-zlib-output.txt"
     )
 
-    touch "${zlib_stamp_file}"
+    touch "${zlib_stamp_file_path}"
 
   else
-    echo "Library zlib already processed."
+    echo "Library zlib already installed."
   fi
 }
 
@@ -109,8 +109,8 @@ function do_gmp()
   # local gmp_url="https://gmplib.org/download/gmp/${gmp_archive}"
   local gmp_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${gmp_archive}"
 
-  local gmp_stamp_file="${BUILD_FOLDER_PATH}/${GMP_FOLDER_NAME}/stamp-install-completed"
-  if [ ! -f "${gmp_stamp_file}" ]
+  local gmp_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gmp-installed"
+  if [ ! -f "${gmp_stamp_file_path}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
@@ -165,10 +165,10 @@ function do_gmp()
       ) | tee "${INSTALL_FOLDER_PATH}/make-gmp-output.txt"
     )
 
-    touch "${gmp_stamp_file}"
+    touch "${gmp_stamp_file_path}"
 
   else
-    echo "Library gmp already processed."
+    echo "Library gmp already installed."
   fi
 }
 
@@ -188,8 +188,8 @@ function do_mpfr()
   # local mpfr_url="http://www.mpfr.org/${MPFR_FOLDER_NAME}/${mpfr_archive}"
   local mpfr_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${mpfr_archive}"
 
-  local mpfr_stamp_file="${BUILD_FOLDER_PATH}/${MPFR_FOLDER_NAME}/stamp-install-completed"
-  if [ ! -f "${mpfr_stamp_file}" ]
+  local mpfr_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-mpfr-installed"
+  if [ ! -f "${mpfr_stamp_file_path}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
@@ -239,10 +239,10 @@ function do_mpfr()
         make install-strip
       ) | tee "${INSTALL_FOLDER_PATH}/make-mpfr-output.txt"
     )
-    touch "${mpfr_stamp_file}"
+    touch "${mpfr_stamp_file_path}"
 
   else
-    echo "Library mpfr already processed."
+    echo "Library mpfr already installed."
   fi
 }
 
@@ -264,8 +264,8 @@ function do_mpc()
     mpc_url="http://www.multiprecision.org/downloads/${mpc_archive}"
   fi
 
-  local mpc_stamp_file="${BUILD_FOLDER_PATH}/${MPC_FOLDER_NAME}/stamp-install-completed"
-  if [ ! -f "${mpc_stamp_file}" ]
+  local mpc_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-mpc-installed"
+  if [ ! -f "${mpc_stamp_file_path}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
@@ -314,10 +314,10 @@ function do_mpc()
         make install-strip
       ) | tee "${INSTALL_FOLDER_PATH}/make-mpc-output.txt"
     )
-    touch "${mpc_stamp_file}"
+    touch "${mpc_stamp_file_path}"
 
   else
-    echo "Library mpc already processed."
+    echo "Library mpc already installed."
   fi
 }
 
@@ -343,8 +343,8 @@ function do_isl()
   # local isl_url="http://isl.gforge.inria.fr/${isl_archive}"
   local isl_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${isl_archive}"
 
-  local isl_stamp_file="${BUILD_FOLDER_PATH}/${ISL_FOLDER_NAME}/stamp-install-completed"
-  if [ ! -f "${isl_stamp_file}" ]
+  local isl_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-isl-installed"
+  if [ ! -f "${isl_stamp_file_path}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
@@ -394,10 +394,10 @@ function do_isl()
       ) | tee "${INSTALL_FOLDER_PATH}/make-isl-output.txt"
 
     )
-    touch "${isl_stamp_file}"
+    touch "${isl_stamp_file_path}"
 
   else
-    echo "Library isl already processed."
+    echo "Library isl already installed."
   fi
 }
 
@@ -413,8 +413,8 @@ function do_libelf()
   # local libelf_url="http://www.mr511.de/software/${libelf_archive}"
   local libelf_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${libelf_archive}"
 
-  local libelf_stamp_file="${BUILD_FOLDER_PATH}/${LIBELF_FOLDER_NAME}/stamp-install-completed"
-  if [ ! -f "${libelf_stamp_file}" ]
+  local libelf_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-libelf-installed"
+  if [ ! -f "${libelf_stamp_file_path}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
@@ -464,10 +464,10 @@ function do_libelf()
       ) | tee "${INSTALL_FOLDER_PATH}/make-libelf-output.txt"
     )
 
-    touch "${libelf_stamp_file}"
+    touch "${libelf_stamp_file_path}"
 
   else
-    echo "Library libelf already processed."
+    echo "Library libelf already installed."
   fi
 }
 
@@ -492,8 +492,8 @@ function do_expat()
   local expat_release="R_$(echo ${EXPAT_VERSION} | sed -e 's|[.]|_|g')"
   local expat_url="https://github.com/libexpat/libexpat/releases/download/${expat_release}/${expat_archive}"
 
-  local expat_stamp_file="${BUILD_FOLDER_PATH}/${EXPAT_FOLDER_NAME}/stamp-install-completed"
-  if [ ! -f "${expat_stamp_file}" ]
+  local expat_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-expat-installed"
+  if [ ! -f "${expat_stamp_file_path}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
@@ -544,10 +544,10 @@ function do_expat()
 
     )
 
-    touch "${expat_stamp_file}"
+    touch "${expat_stamp_file_path}"
 
   else
-    echo "Library expat already processed."
+    echo "Library expat already installed."
   fi
 }
 
@@ -566,8 +566,8 @@ function do_libiconv()
   local libiconv_archive="${LIBICONV_FOLDER_NAME}.tar.gz"
   local libiconv_url="https://ftp.gnu.org/pub/gnu/libiconv/${libiconv_archive}"
 
-  local libiconv_stamp_file="${BUILD_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}/stamp-install-completed"
-  if [ ! -f "${libiconv_stamp_file}" ]
+  local libiconv_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-libiconv-installed"
+  if [ ! -f "${libiconv_stamp_file_path}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
@@ -619,10 +619,10 @@ function do_libiconv()
       ) | tee "${INSTALL_FOLDER_PATH}/make-libiconv-output.txt"
     )
 
-    touch "${libiconv_stamp_file}"
+    touch "${libiconv_stamp_file_path}"
 
   else
-    echo "Library libiconv already processed."
+    echo "Library libiconv already installed."
   fi
 }
 
@@ -640,8 +640,8 @@ function do_xz()
   # local xz_url="https://sourceforge.net/projects/lzmautils/files/${xz_archive}"
   local xz_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${xz_archive}"
 
-  local xz_stamp_file="${BUILD_FOLDER_PATH}/${XZ_FOLDER_NAME}/stamp-install-completed"
-  if [ ! -f "${xz_stamp_file}" ]
+  local xz_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-xz-installed"
+  if [ ! -f "${xz_stamp_file_path}" ]
   then
 
     cd "${WORK_FOLDER_PATH}"
@@ -692,9 +692,9 @@ function do_xz()
       ) | tee "${INSTALL_FOLDER_PATH}/make-xz-output.txt"
     )
 
-    touch "${xz_stamp_file}"
+    touch "${xz_stamp_file_path}"
 
   else
-    echo "Library xz already processed."
+    echo "Library xz already installed."
   fi
 }

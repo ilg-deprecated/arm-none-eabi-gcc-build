@@ -498,9 +498,6 @@ create_archive
 # Change ownership to non-root Linux user.
 fix_ownership
 
-# Copy install to shared folder.
-copy_install
-
 # -----------------------------------------------------------------------------
 
 echo

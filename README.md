@@ -2,7 +2,7 @@
 
 These are the additional files required by the **GNU MCU Eclipse ARM Embedded GCC** build procedures.
 
-This release closely follows the official [GNU Arm Embedded Toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm).
+This release closely follows the official [GNU Arm Embedded Toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm) maintained by ARM.
 
 ## Changes
 
@@ -19,13 +19,15 @@ $ git clone --recurse-submodules https://github.com/gnu-mcu-eclipse/arm-none-eab
   ~/Downloads/arm-none-eabi-gcc-build.git
 ```
 
-To build the latest version:
+To build the latest macOS version:
 
 ```console
 $ caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
 ```
 
-To build one of the previous versions:
+To build the Windows and GNU/Linux versions, use `--linux64 --win64` or `--linux32 --win32`.
+
+To build one of the previous macOS versions:
 
 ```console
 $ RELEASE_VERSION=5.4.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx

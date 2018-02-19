@@ -129,7 +129,7 @@ function do_binutils()
           \
           --disable-shared \
           --enable-static \
-          --disable-build-warnings \
+          --enable-build-warnings=no \
           --disable-rpath \
           --with-system-zlib \
           \
@@ -279,8 +279,8 @@ function do_gcc_first()
           ${MULTILIB_FLAGS} \
           \
           --disable-rpath \
+          --disable-build-format-warnings \
           --with-system-zlib \
-          WARN_PEDANTIC='' \
           \
         | tee "${INSTALL_FOLDER_PATH}/configure-gcc-first-output.txt"
         cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc-first-log.txt
@@ -666,8 +666,6 @@ function do_gcc_final()
         # --with-newlib Specifies that ‘newlib’ is being used as the target C library. This causes `__eprintf`` to be omitted from `libgcc.a`` on the assumption that it will be provided by newlib.
         # --enable-languages=c,c++ Support only C/C++, ignore all other.
 
-        # WARN_PEDANTIC seems ignored and requires more work.
-
         if [ "$1" == "" ]
         then
 
@@ -708,8 +706,8 @@ function do_gcc_final()
             ${MULTILIB_FLAGS} \
             \
             --disable-rpath \
+            --disable-build-format-warnings \
             --with-system-zlib \
-            WARN_PEDANTIC= \
             \
           | tee "${INSTALL_FOLDER_PATH}/configure-gcc$1-last-output.txt"
           cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc$1-first-log.txt
@@ -747,8 +745,8 @@ function do_gcc_final()
             ${MULTILIB_FLAGS} \
             \
             --disable-rpath \
+            --disable-build-format-warnings \
             --with-system-zlib \
-            WARN_PEDANTIC= \
             \
           | tee "${INSTALL_FOLDER_PATH}/configure-gcc$1-last-output.txt"
           cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc$1-first-log.txt
@@ -934,6 +932,7 @@ function do_gdb()
           --program-suffix="$1" \
           \
           --disable-werror \
+          --enable-build-warnings=no \
           --disable-rpath \
           --with-system-zlib \
           --without-guile \

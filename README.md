@@ -25,12 +25,12 @@ To build the latest version:
 $ caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
 ```
 
-To build a previous version:
+To build one of the previous versions:
 
 ```console
-$ RELEASE_VERSION=5.4.1-1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
-$ RELEASE_VERSION=6.3.1-1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
-$ RELEASE_VERSION=7.2.1-1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
+$ RELEASE_VERSION=5.4.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
+$ RELEASE_VERSION=6.3.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
+$ RELEASE_VERSION=7.2.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
 ```
 
 For the prerequisites and more details on the build procedure, please see the [How to build the ARM Embedded GCC binaries?](http://gnu-mcu-eclipse.github.io/toolchain/arm/build-procedure/) page. 

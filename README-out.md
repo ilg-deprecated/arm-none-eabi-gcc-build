@@ -24,13 +24,15 @@ This release closely follows the official ARM distribution, as described in the 
 
 Compared to the ARM distribution, the build procedure is more or less the same and there should be no functional differences.
 
+The only addition affects newlib, which was extended with `printf()`/`scanf()` support for `long long` and C99 formats (`--enable-newlib-io-long-long` and `--enable-newlib-io-c99-formats`).
+
 ## Compatibility
 
-The binaries were built using [xPack Build Box (XBB)](https://github.com/xpack/xpack-build-box), a set of build environments based on slightly older systems and should be compatible with most recent systems.
+The binaries were built using [xPack Build Box (XBB)](https://github.com/xpack/xpack-build-box), a set of build environments based on slightly older systems that should be compatible with most recent systems.
 
-- GNU/Linux: built with GCC 7.2, running in a CentOS 6 Docker container
-- Windows: built with mingw-w64 GCC 7.2, running in a CentOS 6 Docker container 
-- macOS: built GCC 7.2, running in a custom Homebrew instance on macOS 10.10.5.
+- GNU/Linux: all binaries built with GCC 7.2, running in a CentOS 6 Docker container
+- Windows: all binaries built with mingw-w64 GCC 7.2, running in a CentOS 6 Docker container 
+- macOS: all binaries built GCC 7.2, running in a custom Homebrew instance on macOS 10.10.5, except GDB which was built with Apple clang, since neither building with GCC 7 or GCC 6 produced functional binaries (SIGABRT for `set language auto`)
 
 ## Build
 

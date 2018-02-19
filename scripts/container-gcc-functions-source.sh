@@ -710,7 +710,7 @@ function do_gcc_final()
             --with-system-zlib \
             \
           | tee "${INSTALL_FOLDER_PATH}/configure-gcc$1-last-output.txt"
-          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc$1-first-log.txt
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc$1-last-log.txt
 
         else
 
@@ -749,7 +749,7 @@ function do_gcc_final()
             --with-system-zlib \
             \
           | tee "${INSTALL_FOLDER_PATH}/configure-gcc$1-last-output.txt"
-          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc$1-first-log.txt
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc$1-last-log.txt
 
         fi
 

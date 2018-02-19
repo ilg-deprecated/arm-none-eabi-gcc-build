@@ -379,7 +379,9 @@ function do_newlib()
         if [ "$1" == "" ]
         then
 
-          # TODO: Check if long-long and c990formats are ok.
+          # Extra options to ARM distribution:
+          # --enable-newlib-io-long-long
+          # --enable-newlib-io-c99-formats
           bash "${WORK_FOLDER_PATH}/${NEWLIB_SRC_FOLDER_NAME}/configure" \
             --prefix="${APP_PREFIX}"  \
             --infodir="${APP_PREFIX_DOC}/info" \
@@ -405,8 +407,9 @@ function do_newlib()
         elif [ "$1" == "-nano" ]
         then
 
-          # TODO: Check if long-long and c990formats are ok.
-          # TODO: Check if register-fini is needed.
+          # --enable-newlib-io-long-long and --enable-newlib-io-c99-formats
+          # are currently ignored if --enable-newlib-nano-formatted-io.
+          # --enable-newlib-register-fini is debatable, was removed.
           bash "${WORK_FOLDER_PATH}/${NEWLIB_SRC_FOLDER_NAME}/configure" \
             --prefix="${APP_PREFIX_NANO}"  \
             \
@@ -425,10 +428,6 @@ function do_newlib()
             --enable-newlib-global-atexit \
             --enable-newlib-nano-formatted-io \
             --disable-nls \
-            \
-            --enable-newlib-io-long-long \
-            --enable-newlib-io-c99-formats \
-            --enable-newlib-register-fini \
             \
           | tee "${INSTALL_FOLDER_PATH}/configure-newlib$1-output.txt"
 

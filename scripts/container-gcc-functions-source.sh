@@ -887,7 +887,7 @@ function do_gdb()
 
         GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-maybe-uninitialized -Wno-implicit-fallthrough -Wno-int-in-bool-context -Wno-format-nonliteral -Wno-misleading-indentation"
         GCC_WARN_CXXFLAGS="-Wno-deprecated-declarations"
-        if [ "${CC}" == "clang" ]
+        if [ "${TARGET_OS}" == "osx" ]
         then
           GCC_WARN_CFLAGS+=" -Wno-unknown-warning-option -Wno-incompatible-pointer-types-discards-qualifiers -Wno-extended-offsetof"
           GCC_WARN_CXXFLAGS+=" -Wno-unknown-warning-option -Wno-c++11-narrowing"

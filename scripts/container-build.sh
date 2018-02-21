@@ -82,7 +82,7 @@ if [ "$(uname)" == "Darwin" ]
 then
   JOBS="--jobs=$(sysctl -n hw.ncpu)"
 else
-  JOBS="--jobs=$(nproc --all)"
+  JOBS="--jobs=$(grep ^processor /proc/cpuinfo|wc -l)"
 fi
 
 while [ $# -gt 0 ]

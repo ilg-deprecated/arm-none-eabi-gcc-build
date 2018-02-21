@@ -235,7 +235,7 @@ then
 fi
 EXTRA_LDFLAGS_APP="${EXTRA_LDFLAGS} -static-libstdc++"
 
-if [ "${TARGET_OS}" == "osx" ]
+if [ "${TARGET_OS}" == "macos" ]
 then
   EXTRA_LDFLAGS_APP+=" -Wl,-dead_strip"
 elif [ "${TARGET_OS}" == "linux" ]

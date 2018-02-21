@@ -445,7 +445,7 @@ function do_newlib()
 
       (
         # Parallel build failed on CentOS XBB
-        if [ "${TARGET_OS}" == "osx" ]
+        if [ "${TARGET_OS}" == "macos" ]
         then
           make ${JOBS}
         else

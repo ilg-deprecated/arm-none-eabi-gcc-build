@@ -876,24 +876,8 @@ function do_gdb()
       
         bash "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}/configure" --help
 
-        if [ "${TARGET_OS}" == "osx" ]
-        then
-          # For unknown reasons, building GCC with GCC 7 and GCC 6 creates
-          # a binary that fails with 'Abort trap: 6' (to test use 'set 
-          # language auto').
-          export CC=clang
-          export CXX=clang++
-        fi
-
-        GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-maybe-uninitialized -Wno-implicit-fallthrough -Wno-int-in-bool-context -Wno-format-nonliteral -Wno-misleading-indentation"
-        GCC_WARN_CXXFLAGS="-Wno-deprecated-declarations"
-        if [ "${TARGET_OS}" == "osx" ]
-        then
-          GCC_WARN_CFLAGS+=" -Wno-unknown-warning-option -Wno-incompatible-pointer-types-discards-qualifiers -Wno-extended-offsetof"
-          GCC_WARN_CXXFLAGS+=" -Wno-unknown-warning-option -Wno-c++11-narrowing"
-        fi
-        export GCC_WARN_CFLAGS
-        export GCC_WARN_CXXFLAGS
+        export GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-maybe-uninitialized -Wno-implicit-fallthrough -Wno-int-in-bool-context -Wno-format-nonliteral -Wno-misleading-indentation"
+        export GCC_WARN_CXXFLAGS="-Wno-deprecated-declarations"
 
         export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}"
         export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}"

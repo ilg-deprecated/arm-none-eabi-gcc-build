@@ -194,9 +194,11 @@ then
   # For consistency, even on macOS, prefer GCC 7 over clang.
   # (Also because all GCC pre 7 versions fail with 'bracket nesting level 
   # exceeded' with clang; not to mention the too many warnings.)
-  # To build gdb, redefine them to clang.
-  export CC=gcc-7
-  export CXX=g++-7
+  # However the oof-the-shelf GCC 7 has a problem, and requires patching,
+  # otherwise the generated GDB fails with SIGABRT; to test use 'set 
+  # language auto').
+  export CC=gcc-7.2.0-patched
+  export CXX=g++-7.2.0-patched
 elif [ "${TARGET_OS}" == "linux" ]
 then
   export CC=gcc

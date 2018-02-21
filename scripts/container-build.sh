@@ -76,6 +76,15 @@ IS_DEVELOP=""
 IS_DEBUG=""
 LINUX_INSTALL_PATH=""
 
+# Attempts to use 8 occasionally failed, reduce if necessary.
+threads=$(sysctl -n hw.ncpu)
+if [ "$(uname)" == "Darwin" ]
+then
+  JOBS="--jobs=$(sysctl -n hw.ncpu)"
+else
+  JOBS="--jobs=$(nproc --all)"
+fi
+
 while [ $# -gt 0 ]
 do
 

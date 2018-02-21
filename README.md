@@ -15,6 +15,7 @@ The main difference is that the binaries generated cover all modern platforms, W
 To download the build scripts:
 
 ```console
+$ rm -rf ~/Downloads/arm-none-eabi-gcc-build.git
 $ git clone --recurse-submodules https://github.com/gnu-mcu-eclipse/arm-none-eabi-gcc-build.git \
   ~/Downloads/arm-none-eabi-gcc-build.git
 ```
@@ -26,6 +27,12 @@ $ caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
 ```
 
 To build the Windows and GNU/Linux versions, use `--linux64 --win64` or `--linux32 --win32`.
+
+On a GNU/Linux machine, use `--all`.
+
+```console
+$ bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
+```
 
 To build one of the previous macOS versions:
 

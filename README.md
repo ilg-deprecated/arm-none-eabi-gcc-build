@@ -20,11 +20,7 @@ $ git clone --recurse-submodules https://github.com/gnu-mcu-eclipse/arm-none-eab
   ~/Downloads/arm-none-eabi-gcc-build.git
 ```
 
-To build the latest macOS version:
-
-```console
-$ caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
-```
+### Windows and GNU/Linux
 
 To build the Windows and GNU/Linux versions, use `--linux64 --win64` or `--linux32 --win32`.
 
@@ -34,6 +30,21 @@ On a GNU/Linux machine, use `--all`.
 $ bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 ```
 
+To build one of the previous Windows and GNU/Linux versions:
+
+```console
+$ RELEASE_VERSION=5.4.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
+$ RELEASE_VERSION=6.3.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
+$ RELEASE_VERSION=7.2.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
+```
+### macOS
+
+To build the latest macOS version:
+
+```console
+$ caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
+```
+
 To build one of the previous macOS versions:
 
 ```console
@@ -41,6 +52,7 @@ $ RELEASE_VERSION=5.4.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.
 $ RELEASE_VERSION=6.3.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
 $ RELEASE_VERSION=7.2.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
 ```
+## More
 
 For the prerequisites and more details on the build procedure, please see the [How to build the ARM Embedded GCC binaries?](http://gnu-mcu-eclipse.github.io/toolchain/arm/build-procedure/) page. 
 

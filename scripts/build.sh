@@ -378,6 +378,9 @@ host_show_sha
 
 host_stop_timer
 
+echo
+echo "Use --date ${DISTRIBUTION_FILE_DATE} if needed to resume a build."
+
 # Completed successfully.
 exit 0
 

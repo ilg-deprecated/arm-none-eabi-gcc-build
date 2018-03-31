@@ -62,9 +62,9 @@ To prepare a new release, first determine the GCC version (like `7.2.1`) and upd
 
 Add a new set of definitions in the `scripts/container-build.sh`, with the versions of various components.
 
-## Update CHANGESLOG.txt
+## Update CHANGELOG.txt
 
-Check `arm-none-eabi-gcc-build.git/CHANGESLOG.txt` and add the new release.
+Check `arm-none-eabi-gcc-build.git/CHANGELOG.txt` and add the new release.
 
 ## Build
 
@@ -89,7 +89,6 @@ $ bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 To build one of the previous versions:
 
 ```console
-$ RELEASE_VERSION=5.4.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 $ RELEASE_VERSION=6.3.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 $ RELEASE_VERSION=7.2.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 ```
@@ -114,7 +113,6 @@ $ caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx
 To build one of the previous macOS versions:
 
 ```console
-$ RELEASE_VERSION=5.4.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
 $ RELEASE_VERSION=6.3.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
 $ RELEASE_VERSION=7.2.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
 ```
@@ -127,6 +125,14 @@ Several hours later, the output of the build script is a compressed archive and 
 $ ls -l deploy
 total 784400
 ... TBD
+```
+
+## Transfer files
+
+To copy the files from the build machine to the current development machine, open the `deploy` folder in a terminal and use `scp`:
+
+```console
+$ scp * ilg@ilg-mbp.local:Downloads
 ```
 
 ## Subsequent runs
@@ -187,6 +193,7 @@ No other files are installed in any system folders or other locations.
 ## Uninstall
 
 The binaries are distributed as portable archives, that do not need to run a setup and do not require an uninstall.
+
 
 ## Test
 

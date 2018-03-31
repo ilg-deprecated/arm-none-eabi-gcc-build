@@ -344,6 +344,9 @@ then
 elif [[ "${RELEASE_VERSION}" =~ 5\.4\.1-* ]]
 then
 
+  # WARNING: The original configuration fails while building GMP on Win64!
+  # Workaround: use a newer GMP.
+
   # WARNING: Build fails with 'bracket nesting level exceeded'.
   # https://developer.arm.com/-/media/Files/downloads/gnu-rm/5_4-2016q3/gcc-arm-none-eabi-5_4-2016q3-20160926-src.tar.bz2
 
@@ -368,7 +371,10 @@ then
   GDB_VERSION="7.10"
 
   ZLIB_VERSION="1.2.8"
-  GMP_VERSION="4.3.2"
+  # Fails during configure on Win64, due to an ABI mismatch.
+  # Workaround: use the version validated by GCC 6.x.
+  # GMP_VERSION="4.3.2"
+  GMP_VERSION="6.1.0"
   MPFR_VERSION="2.4.2"
   MPC_VERSION="0.8.1"
   ISL_VERSION="0.12.2"

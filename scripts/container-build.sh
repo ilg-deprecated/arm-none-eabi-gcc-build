@@ -341,55 +341,12 @@ then
 
   PYTHON_WIN_VERSION="2.7.13"
 
-elif [[ "${RELEASE_VERSION}" =~ 5\.4\.1-* ]]
-then
-
-  # WARNING: The original configuration fails while building GMP on Win64!
-  # Workaround: use a newer GMP.
-
-  # WARNING: Build fails with 'bracket nesting level exceeded'.
-  # https://developer.arm.com/-/media/Files/downloads/gnu-rm/5_4-2016q3/gcc-arm-none-eabi-5_4-2016q3-20160926-src.tar.bz2
-
-  GCC_COMBO_VERSION_MAJOR="5_4"
-  GCC_COMBO_VERSION_YEAR="2016"
-  GCC_COMBO_VERSION_QUARTER="q3"
-  GCC_COMBO_VERSION_KIND="20160926"
-
-  GCC_COMBO_VERSION="${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}${GCC_COMBO_VERSION_QUARTER}-${GCC_COMBO_VERSION_KIND}"
-  GCC_COMBO_FOLDER_NAME="gcc-arm-none-eabi-${GCC_COMBO_VERSION}"
-  GCC_COMBO_ARCHIVE="${GCC_COMBO_FOLDER_NAME}-src.tar.bz2"
-
-  GCC_COMBO_URL="https://developer.arm.com/-/media/Files/downloads/gnu-rm/${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}${GCC_COMBO_VERSION_QUARTER}/${GCC_COMBO_ARCHIVE}"
-
-  MULTILIB_FLAGS="--with-multilib-list=armv6-m,armv7-m,armv7e-m,armv7-r,armv8-m.base,armv8-m.main"
-
-  BINUTILS_VERSION="2.26"
-  # From gcc/BASE_VER; svn: 240432.
-  GCC_VERSION="5.4.1"
-  # git: f763e2dc88d04430dd2524a529eef91a2e517e4e; 8 Sep 2016.
-  NEWLIB_VERSION="2.6.0"
-  GDB_VERSION="7.10"
-
-  ZLIB_VERSION="1.2.8"
-  # Fails during configure on Win64, due to an ABI mismatch.
-  # Workaround: use the version validated by GCC 6.x.
-  # GMP_VERSION="4.3.2"
-  GMP_VERSION="6.1.0"
-  MPFR_VERSION="2.4.2"
-  MPC_VERSION="0.8.1"
-  ISL_VERSION="0.12.2"
-  LIBELF_VERSION="0.8.13"
-  EXPAT_VERSION="2.0.1"
-  LIBICONV_VERSION="1.14"
-  XZ_VERSION="5.2.3"
-
-  # Assumed.
-  PYTHON_WIN_VERSION="2.7.13"
-
 else
   echo "Unsupported version ${RELEASE_VERSION}."
   exit 1
 fi
+
+# Note: The 5.x build failed with various messages.
 
 if [ "${MULTILIB_FLAGS}" == "y" ]
 then

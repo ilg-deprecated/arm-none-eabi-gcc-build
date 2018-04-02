@@ -58,7 +58,7 @@ Currently the build procedure uses the _Source Invariant_ archive and the config
 
 ## Prepare release
 
-To prepare a new release, first determine the GCC version (like `7.2.1`) and update the `scripts/VERSION` file. The fourth digit is the number of the ARM release of the same GCC version, and the fifth digit is the GNU MCU Eclipse release number.
+To prepare a new release, first determine the GCC version (like `7.2.1`) and update the `scripts/VERSION` file. The format is `7.2.1-1.1`. The fourth digit is the number of the ARM release of the same GCC version, and the fifth digit is the GNU MCU Eclipse release number of this version.
 
 Add a new set of definitions in the `scripts/container-build.sh`, with the versions of various components.
 
@@ -93,11 +93,25 @@ $ RELEASE_VERSION=6.3.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts
 $ RELEASE_VERSION=7.2.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 ```
 
-Many hours later, the output of the build script is a set of 4 files and their SHA signatures, created in the `deploy` folder:
+Several hours later, the output of the build script is a set of 4 files and their SHA signatures, created in the `deploy` folder:
 
 ```console
 $ ls -l deploy
-... TBD
+total 350108
+-rw-r--r-- 1 ilg ilg  61981364 Apr  1 08:27 gnu-mcu-eclipse-arm-none-eabi-gcc-7.2.1-1.1-20180401-0515-centos32.tar.xz
+-rw-r--r-- 1 ilg ilg       140 Apr  1 08:27 gnu-mcu-eclipse-arm-none-eabi-gcc-7.2.1-1.1-20180401-0515-centos32.tar.xz.sha
+-rw-r--r-- 1 ilg ilg  61144048 Apr  1 08:19 gnu-mcu-eclipse-arm-none-eabi-gcc-7.2.1-1.1-20180401-0515-centos64.tar.xz
+-rw-r--r-- 1 ilg ilg       140 Apr  1 08:19 gnu-mcu-eclipse-arm-none-eabi-gcc-7.2.1-1.1-20180401-0515-centos64.tar.xz.sha
+-rw-r--r-- 1 ilg ilg 112105889 Apr  1 08:29 gnu-mcu-eclipse-arm-none-eabi-gcc-7.2.1-1.1-20180401-0515-win32.zip
+-rw-r--r-- 1 ilg ilg       134 Apr  1 08:29 gnu-mcu-eclipse-arm-none-eabi-gcc-7.2.1-1.1-20180401-0515-win32.zip.sha
+-rw-r--r-- 1 ilg ilg 123181226 Apr  1 08:21 gnu-mcu-eclipse-arm-none-eabi-gcc-7.2.1-1.1-20180401-0515-win64.zip
+-rw-r--r-- 1 ilg ilg       134 Apr  1 08:21 gnu-mcu-eclipse-arm-none-eabi-gcc-7.2.1-1.1-20180401-0515-win64.zip.sha
+```
+
+To copy the files from the build machine to the current development machine, open the `deploy` folder in a terminal and use `scp`:
+
+```console
+$ scp * ilg@ilg-mbp.local:Downloads
 ```
 
 ### Build the macOS binary
@@ -123,11 +137,10 @@ Several hours later, the output of the build script is a compressed archive and 
 
 ```console
 $ ls -l deploy
-total 784400
-... TBD
+total 115352
+-rw-r--r--  1 ilg  staff  59052308 Apr  1 16:17 gnu-mcu-eclipse-arm-none-eabi-gcc-7.2.1-1.1-20180401-0515-osx.tar.xz
+-rw-r--r--  1 ilg  staff       135 Apr  1 16:17 gnu-mcu-eclipse-arm-none-eabi-gcc-7.2.1-1.1-20180401-0515-osx.tar.xz.sha
 ```
-
-## Transfer files
 
 To copy the files from the build machine to the current development machine, open the `deploy` folder in a terminal and use `scp`:
 
@@ -161,15 +174,23 @@ To also remove the repository and the output files, use:
 $ bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh cleanall
 ```
 
+For production builds it is recommended to completely remove the build folder.
+
 ### --develop
 
-For performance reasons, the actual build folders are internal to each Docker run, and are not persistent. This has the disadvantage that interrupted builds cannot be resumed.
+For performance reasons, the actual build folders are internal to each Docker run, and are not persistent. This gives the best speed, but has the disadvantage that interrupted builds cannot be resumed.
 
 For development builds, it is possible to define the build folders in the host file system, and resume an interrupted build.
 
 ### --debug
 
 For development builds, it is also possible to create everything with `-g -O0` and be able to run debug sessions.
+
+### Interrupted builds
+
+The Docker scripts run with root privileges. This is generally not a problem, since at the end of the script the output files are reassigned to the actual user.
+
+However, for an interrupted build, this step is skipped, and files in the install folder will remain owned by root. Thus, before removing the build folder, it might be necessary to run a recursive `chown`.
 
 ## Install
 
@@ -181,10 +202,14 @@ A portable method is to use [`xpm`](https://www.npmjs.com/package/xpm):
 $ xpm install @gnu-mcu-eclipse/arm-none-eabi-gcc --global
 ```
 
+Note: this method will be available soon.
+
+More details are available on the [How to install the ARM toolchain?](https://gnu-mcu-eclipse.github.io/toolchain/arm/install/) page.
+
 After install, the package should create a structure like this (only the first two depth levels are shown):
 
 ```console
-$ tree -L 2 /Users/ilg/opt/gnu-mcu-eclipse/arm-none-eabi-gcc/7.1.1-1-20170702-0625/
+$ tree -L 2 /Users/ilg/Library/xPacks/@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-1.1/
 ... TBD
 ```
 
@@ -192,18 +217,18 @@ No other files are installed in any system folders or other locations.
 
 ## Uninstall
 
-The binaries are distributed as portable archives, that do not need to run a setup and do not require an uninstall.
+The binaries are distributed as portable archives; thus they do not need to run a setup and do not require an uninstall.
 
 
 ## Test
 
 A simple test is performed by the script at the end, by launching the executable to check if all shared/dynamic libraries are correctly used.
 
-For a true test you need to first install the package and then run the program form the final location. For example on macOS the output should look like:
+For a true test you need to first install the package and then run the program from the final location. For example on macOS the output should look like:
 
 ```console
-$ .../gnu-mcu-eclipse/arm-none-eabi-gcc/7.1.1-1-20170702-0625/bin/arm-none-eabi-gcc --version
-arm-none-eabi-gcc (GNU MCU Eclipse ARM Embedded GCC, 64-bits) 7.1.1 20170509
+$ /Users/ilg/Library/xPacks/@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-1.1/bin/arm-none-eabi-gcc --version
+arm-none-eabi-gcc (GNU MCU Eclipse ARM Embedded GCC, 64-bits) 7.2.1 20170904
 ```
 
 ## More build details

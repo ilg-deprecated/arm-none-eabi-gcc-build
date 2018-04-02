@@ -1,22 +1,7 @@
 # GNU MCU Eclipse ARM Embedded GCC - the build scripts
 
-These are the scripts and additional files required to build the **GNU MCU Eclipse ARM Embedded GCC**.
-
-## Rationale
-
-**GNU MCU Eclipse ARM Embedded GCC** is a new ARM toolchain distribution. For user convenience, binaries for all major platforms are provided: Windows 64/32-bits, GNU/Linux 64/32-bits, macOS (64-bits); a portable install method, using `xpm` is also available.
-
-**GNU MCU Eclipse ARM Embedded GCC** closely follows the official [GNU Arm Embedded Toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm) maintained by ARM.
-
-## Changes
-
-Compared to the original ARM release, there are no functional changes; the **same architecture options** are supported, and **the same combinations of libraries** (derived from newlib) are provided.
-
-The only change is a small improvement to the script used to build newlib, where the following options were added:
-
-* `--enable-newlib-io-c99-formats` - enable C99 support in IO functions like printf/scanf
-* `--enable-newlib-io-long-long` - enable long long type support in IO functions like printf/scanf
-
+These are the scripts and additional files required to build the 
+[GNU MCU Eclipse ARM Embedded GCC](https://github.com/gnu-mcu-eclipse/arm-none-eabi-gcc).
 
 ## Prerequisites
 

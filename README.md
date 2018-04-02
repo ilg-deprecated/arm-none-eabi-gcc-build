@@ -1,8 +1,8 @@
 # GNU MCU Eclipse ARM Embedded GCC build
 
-These are the additional files required by the **GNU MCU Eclipse ARM Embedded GCC** build procedures.
+These are the scripts and additional files required to build the **GNU MCU Eclipse ARM Embedded GCC**.
 
-This release closely follows the official [GNU Arm Embedded Toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm) maintained by ARM.
+**GNU MCU Eclipse ARM Embedded GCC** closely follows the official [GNU Arm Embedded Toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm) maintained by ARM.
 
 ## Changes
 
@@ -10,9 +10,15 @@ Compared to the original ARM version, there are no functional changes; the **sam
 
 The main difference is that the binaries generated cover all modern platforms, Windows 32/64-bits, GNU/Linux 32/64-bits, macOS 64-bits.
 
+There is also a small improvement to the script used to build newlib, the following options were added:
+
+* `--enable-newlib-io-c99-formats` - enable C99 support in IO functions like printf/scanf
+* `--enable-newlib-io-long-long` - enable long long type support in IO functions like printf/scanf
+
+
 ## Prerequisites
 
-The prerequisites are common to all binary builds. Please follow the instructions in the separate [Prerequisites for building binaries]({{ site.baseurl }}/developer/build-binaries-prerequisites-xbb/) page and return when ready.
+The prerequisites are common to all binary builds. Please follow the instructions in the separate [Prerequisites for building binaries](https://gnu-mcu-eclipse.github.io/developer/build-binaries-prerequisites-xbb/) page and return when ready.
 
 ## Download the build scripts repo
 
@@ -209,8 +215,62 @@ More details are available on the [How to install the ARM toolchain?](https://gn
 After install, the package should create a structure like this (only the first two depth levels are shown):
 
 ```console
-$ tree -L 2 /Users/ilg/Library/xPacks/@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-1.1/
-... TBD
+$ tree -L 2 /Users/ilg/Library/xPacks/\@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-1.1/.content/
+/Users/ilg/Library/xPacks/@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-1.1/.content/
+├── README.md
+├── arm-none-eabi
+│   ├── bin
+│   ├── include
+│   ├── lib
+│   └── share
+├── bin
+│   ├── arm-none-eabi-addr2line
+│   ├── arm-none-eabi-ar
+│   ├── arm-none-eabi-as
+│   ├── arm-none-eabi-c++
+│   ├── arm-none-eabi-c++filt
+│   ├── arm-none-eabi-cpp
+│   ├── arm-none-eabi-elfedit
+│   ├── arm-none-eabi-g++
+│   ├── arm-none-eabi-gcc
+│   ├── arm-none-eabi-gcc-7.2.1
+│   ├── arm-none-eabi-gcc-ar
+│   ├── arm-none-eabi-gcc-nm
+│   ├── arm-none-eabi-gcc-ranlib
+│   ├── arm-none-eabi-gcov
+│   ├── arm-none-eabi-gcov-dump
+│   ├── arm-none-eabi-gcov-tool
+│   ├── arm-none-eabi-gdb
+│   ├── arm-none-eabi-gdb-py
+│   ├── arm-none-eabi-gprof
+│   ├── arm-none-eabi-ld
+│   ├── arm-none-eabi-ld.bfd
+│   ├── arm-none-eabi-nm
+│   ├── arm-none-eabi-objcopy
+│   ├── arm-none-eabi-objdump
+│   ├── arm-none-eabi-ranlib
+│   ├── arm-none-eabi-readelf
+│   ├── arm-none-eabi-size
+│   ├── arm-none-eabi-strings
+│   └── arm-none-eabi-strip
+├── gnu-mcu-eclipse
+│   ├── CHANGELOG.txt
+│   ├── arm-readme.txt
+│   ├── arm-release.txt
+│   ├── licenses
+│   ├── patches
+│   └── scripts
+├── include
+│   └── gdb
+├── lib
+│   ├── gcc
+│   ├── libcc1.0.so
+│   └── libcc1.so -> libcc1.0.so
+└── share
+    ├── doc
+    └── gcc-arm-none-eabi
+
+17 directories, 35 files
 ```
 
 No other files are installed in any system folders or other locations.
@@ -227,8 +287,8 @@ A simple test is performed by the script at the end, by launching the executable
 For a true test you need to first install the package and then run the program from the final location. For example on macOS the output should look like:
 
 ```console
-$ /Users/ilg/Library/xPacks/@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-1.1/bin/arm-none-eabi-gcc --version
-arm-none-eabi-gcc (GNU MCU Eclipse ARM Embedded GCC, 64-bits) 7.2.1 20170904
+$ /Users/ilg/Library/xPacks/\@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-1.1/.content/bin/arm-none-eabi-gcc --version
+arm-none-eabi-gcc (GNU MCU Eclipse ARM Embedded GCC, 64-bits) 7.2.1 20170904 (release) [ARM/embedded-7-branch revision 255204]
 ```
 
 ## More build details

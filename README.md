@@ -210,8 +210,6 @@ A portable method is to use [`xpm`](https://www.npmjs.com/package/xpm):
 $ xpm install @gnu-mcu-eclipse/arm-none-eabi-gcc --global
 ```
 
-Note: this method will be available soon.
-
 More details are available on the [How to install the ARM toolchain?](https://gnu-mcu-eclipse.github.io/toolchain/arm/install/) page.
 
 After install, the package should create a structure like this (only the first two depth levels are shown):

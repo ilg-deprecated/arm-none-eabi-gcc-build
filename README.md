@@ -4,7 +4,7 @@ These are the scripts and additional files required to build the **GNU MCU Eclip
 
 ## Rationale
 
-**GNU MCU Eclipse ARM Embedded GCC** is a new ARM toolchain distribution. For user convenience, binaries for all major platforms are provided: Windows 64/32-bits, GNU/Linux 64/32-bits, macOS (64-bits).
+**GNU MCU Eclipse ARM Embedded GCC** is a new ARM toolchain distribution. For user convenience, binaries for all major platforms are provided: Windows 64/32-bits, GNU/Linux 64/32-bits, macOS (64-bits); a portable install method, using `xpm` is also available.
 
 **GNU MCU Eclipse ARM Embedded GCC** closely follows the official [GNU Arm Embedded Toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm) maintained by ARM.
 

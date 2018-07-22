@@ -264,7 +264,7 @@ else
       host_build_target "Creating the OS X distribution..." \
         --script "${HOST_WORK_FOLDER_PATH}/${CONTAINER_BUILD_SCRIPT_REL_PATH}" \
         --env-file "${ENV_FILE}" \
-        --target-os osx \
+        --target-os macos \
         -- \
         ${rest[@]-}
     else

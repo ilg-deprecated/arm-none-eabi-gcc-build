@@ -24,8 +24,6 @@ This release closely follows the official ARM distribution, as described in the 
 
 Compared to the ARM distribution, the build procedure is more or less the same and there should be no functional differences.
 
-The only addition affects newlib, which was extended with `printf()`/`scanf()` support for `long long` and C99 formats (`--enable-newlib-io-long-long` and `--enable-newlib-io-c99-formats`).
-
 ## Compatibility
 
 The binaries were built using [xPack Build Box (XBB)](https://github.com/xpack/xpack-build-box), a set of build environments based on slightly older systems that should be compatible with most recent systems.

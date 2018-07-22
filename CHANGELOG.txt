@@ -1,5 +1,10 @@
 The major changes and releases, in reverse chronological order:
 
+[2018-07-22]
+
+- v7.3.1-1.1-20180722 released
+- based on ARM `gcc-arm-none-eabi-7-2018-q2-update`
+
 [2018-04-01]
 
 - v7.2.1-1.1-20180401 released

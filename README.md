@@ -59,6 +59,10 @@ Add a new set of definitions in the `scripts/container-build.sh`, with the versi
 
 Check `arm-none-eabi-gcc-build.git/CHANGELOG.txt` and add the new release.
 
+## Update the README-out.md
+
+There should be no changes, but better check.
+
 ## Build
 
 Although it is perfectly possible to build all binaries in a single step on a macOS system, due to Docker specifics, it is faster to build the GNU/Linux and Windows binaries on a GNU/Linux system and the macOS binary separately.

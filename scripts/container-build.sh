@@ -267,8 +267,47 @@ CFLAGS_OPTIMIZATIONS_FOR_TARGET="-ffunction-sections -fdata-sections -O2"
 # https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
 # https://gcc.gnu.org/viewcvs/gcc/branches/ARM/
 
+# For the main GCC version, check gcc/BASE-VER.
+
 # Keep them in sync with combo archive content.
-if [[ "${RELEASE_VERSION}" =~ 7\.2\.1-* ]]
+if [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]
+then
+
+  # https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-src.tar.bz2
+
+  GCC_COMBO_VERSION_MAJOR="7"
+  GCC_COMBO_VERSION_YEAR="2018"
+  GCC_COMBO_VERSION_QUARTER="q2"
+  GCC_COMBO_VERSION_KIND="update"
+
+  GCC_COMBO_VERSION="${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}-${GCC_COMBO_VERSION_QUARTER}-${GCC_COMBO_VERSION_KIND}"
+  GCC_COMBO_FOLDER_NAME="gcc-arm-none-eabi-${GCC_COMBO_VERSION}"
+  GCC_COMBO_ARCHIVE="${GCC_COMBO_FOLDER_NAME}-src.tar.bz2"
+
+  GCC_COMBO_URL="https://developer.arm.com/-/media/Files/downloads/gnu-rm/${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}${GCC_COMBO_VERSION_QUARTER}/${GCC_COMBO_ARCHIVE}"
+
+  MULTILIB_FLAGS="--with-multilib-list=rmprofile"
+
+  BINUTILS_VERSION="2.30"
+  # From gcc/BASE_VER; svn: 261907.
+  GCC_VERSION="7.3.1"
+  # git: 3ccfb407af410ba7e54ea0da11ae1e40b554a6f4.
+  NEWLIB_VERSION="3.0.0"
+  GDB_VERSION="8.1"
+
+  ZLIB_VERSION="1.2.8"
+  GMP_VERSION="6.1.0"
+  MPFR_VERSION="3.1.4"
+  MPC_VERSION="1.0.3"
+  ISL_VERSION="0.15"
+  LIBELF_VERSION="0.8.13"
+  EXPAT_VERSION="2.1.1"
+  LIBICONV_VERSION="1.14"
+  XZ_VERSION="5.2.3"
+
+  PYTHON_WIN_VERSION="2.7.13"
+
+elif [[ "${RELEASE_VERSION}" =~ 7\.2\.1-* ]]
 then
 
   # https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2017q4/gcc-arm-none-eabi-7-2017-q4-major-src.tar.bz2

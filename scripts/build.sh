@@ -107,7 +107,9 @@ do
     *)
       # Collect all other in an array. Append to the end.
       # Will be later processed by the container script.
+      set +u
       rest[${#rest[*]}]="$arg"
+      set -u
       ;;
 
   esac

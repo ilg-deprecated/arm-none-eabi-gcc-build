@@ -915,7 +915,7 @@ function do_gdb()
           --disable-binutils \
           --disable-ld \
           --disable-gprof \
-          --with-libexpat \
+          --with-expat \
           --with-lzma=yes \
           --with-system-gdbinit="${APP_PREFIX}/${GCC_TARGET}"/lib/gdbinit \
           '--with-gdb-datadir='\''${prefix}'\''/arm-none-eabi/share/gdb' \
@@ -924,6 +924,8 @@ function do_gdb()
           --program-prefix="${GCC_TARGET}-" \
           --program-suffix="$1" \
           \
+          --disable-shared \
+          --enable-static \
           --disable-werror \
           --enable-build-warnings=no \
           --disable-rpath \

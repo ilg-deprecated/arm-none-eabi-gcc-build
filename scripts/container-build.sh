@@ -387,7 +387,7 @@ fi
 
 # Note: The 5.x build failed with various messages.
 
-if [ "${MULTILIB_FLAGS}" == "y" ]
+if [ "${WITHOUT_MULTILIB}" == "y" ]
 then
   MULTILIB_FLAGS="--disable-multilib"
 fi

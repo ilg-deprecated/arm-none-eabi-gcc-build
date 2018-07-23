@@ -77,7 +77,7 @@ Before starting a multi-platform build, check if Docker is started:
 $ docker info
 ```
 
-To build both th 32/64-bits Windows and GNU/Linux versions, use `--all`; to build selectively, use `--linux64 --win64` or `--linux32 --win32` (GNU/Linux can be built alone; Windows also requires the GNU/Linux build).
+To build both the 32/64-bits Windows and GNU/Linux versions, use `--all`; to build selectively, use `--linux64 --win64` or `--linux32 --win32` (GNU/Linux can be built alone; Windows also requires the GNU/Linux build).
 
 ```console
 $ bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all

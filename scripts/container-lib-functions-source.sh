@@ -129,7 +129,7 @@ function do_gmp()
         echo
         echo "Running gmp configure..."
 
-        # ABI is mandatory, otherwise configure fails on 32-bits.
+        # ABI is mandatory, otherwise configure fails on 32-bit.
         # (see https://gmplib.org/manual/ABI-and-ISA.html)
 
         bash "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}/configure" --help

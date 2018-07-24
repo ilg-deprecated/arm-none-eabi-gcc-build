@@ -459,7 +459,7 @@ function do_newlib()
           if [ "${WITH_PDF}" == "y" ]
           then
 
-            # Warning, parallel build failed on Debian 32-bits.
+            # Warning, parallel build failed on Debian 32-bit.
 
             (
               if [[ "${RELEASE_VERSION}" =~ 5\.4\.1-* ]]

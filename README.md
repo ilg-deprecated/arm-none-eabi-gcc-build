@@ -77,7 +77,7 @@ Before starting a multi-platform build, check if Docker is started:
 $ docker info
 ```
 
-To build both the 32/64-bits Windows and GNU/Linux versions, use `--all`; to build selectively, use `--linux64 --win64` or `--linux32 --win32` (GNU/Linux can be built alone; Windows also requires the GNU/Linux build).
+To build both the 32/64-bit Windows and GNU/Linux versions, use `--all`; to build selectively, use `--linux64 --win64` or `--linux32 --win32` (GNU/Linux can be built alone; Windows also requires the GNU/Linux build).
 
 ```console
 $ bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
@@ -277,7 +277,7 @@ For a true test you need to first install the package and then run the program f
 
 ```console
 $ /Users/ilg/Library/xPacks/\@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-1.1/.content/bin/arm-none-eabi-gcc --version
-arm-none-eabi-gcc (GNU MCU Eclipse ARM Embedded GCC, 64-bits) 7.2.1 20170904 (release) [ARM/embedded-7-branch revision 255204]
+arm-none-eabi-gcc (GNU MCU Eclipse ARM Embedded GCC, 64-bit) 7.2.1 20170904 (release) [ARM/embedded-7-branch revision 255204]
 ```
 
 ## More build details

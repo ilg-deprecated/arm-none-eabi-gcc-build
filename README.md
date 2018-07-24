@@ -108,7 +108,7 @@ total 350108
 To copy the files from the build machine to the current development machine, open the `deploy` folder in a terminal and use `scp`:
 
 ```console
-$ scp * ilg@ilg-mbp.local:Downloads
+$ scp * ilg@ilg-mbp.local:Downloads/gme-binaries
 ```
 
 ### Build the macOS binary
@@ -134,15 +134,15 @@ Several hours later, the output of the build script is a compressed archive and 
 
 ```console
 $ ls -l deploy
-total 115352
--rw-r--r--  1 ilg  staff  59052308 Apr  1 16:17 gnu-mcu-eclipse-arm-none-eabi-gcc-7.2.1-1.1-20180401-0515-osx.tar.xz
--rw-r--r--  1 ilg  staff       135 Apr  1 16:17 gnu-mcu-eclipse-arm-none-eabi-gcc-7.2.1-1.1-20180401-0515-osx.tar.xz.sha
+total 216064
+-rw-r--r--  1 ilg  staff  110620198 Jul 24 16:35 gnu-mcu-eclipse-arm-none-eabi-gcc-7.3.1-1.1-20180724-0637-macos.tgz
+-rw-r--r--  1 ilg  staff        134 Jul 24 16:35 gnu-mcu-eclipse-arm-none-eabi-gcc-7.3.1-1.1-20180724-0637-macos.tgz.sha
 ```
 
 To copy the files from the build machine to the current development machine, open the `deploy` folder in a terminal and use `scp`:
 
 ```console
-$ scp * ilg@ilg-mbp.local:Downloads
+$ scp * ilg@ilg-mbp.local:Downloads/gme-binaries
 ```
 
 ## Subsequent runs

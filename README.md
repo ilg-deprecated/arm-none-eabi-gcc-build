@@ -101,6 +101,13 @@ The current platform for GNU/Linux and Windows production builds is an
 Ubuntu 17.10 VirtualBox image running on a macMini with 16 GB of RAM 
 and a fast SSD.
 
+```console
+$ ssh ilg@ilg-ud17-docker.local
+```
+
+If the virtual machine runs on a macOS, to be sure it does not go
+to sleep, run a `caffeinate bash`.
+
 Before starting a multi-platform build, check if Docker is started:
 
 ```console
@@ -112,8 +119,10 @@ build selectively, use `--linux64 --win64` or `--linux32 --win32` (GNU/Linux
 can be built alone; Windows also requires the GNU/Linux build).
 
 ```console
-$ bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
+$ screen bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 ```
+
+Use Ctrl-a Ctrl-d to detach (Ctrl-a ? for help), and `screen -r` to reconnect.
 
 To build one of the previous versions:
 
@@ -154,8 +163,9 @@ To build the latest macOS version, with the same timestamp as the previous
 build:
 
 ```console
-$ caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
+$ screen caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
 ```
+Use Ctrl-a Ctrl-d to detach (Ctrl-a ? for help), and `screen -r` to reconnect.
 
 To build one of the previous macOS versions:
 

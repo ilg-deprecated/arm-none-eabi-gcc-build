@@ -159,6 +159,10 @@ $ scp * ilg@ilg-mbp.local:Downloads/gme-binaries
 The current platform for macOS production builds is a macOS 10.10.5 VirtualBox 
 image running on the same macMini with 16 GB of RAM and a fast SSD.
 
+```console
+$ ssh ilg@ilg-mac-xbb.local
+```
+
 To build the latest macOS version, with the same timestamp as the previous 
 build:
 

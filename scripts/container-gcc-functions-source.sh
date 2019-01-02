@@ -244,9 +244,11 @@ function do_gcc_first()
 
         # --enable-checking=no ???
 
+        # Prefer an explicit libexec folder.
+        # --libexecdir="${APP_PREFIX}/lib" 
+
         bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" \
           --prefix="${APP_PREFIX}"  \
-          --libexecdir="${APP_PREFIX}/lib" \
           --infodir="${APP_PREFIX_DOC}/info" \
           --mandir="${APP_PREFIX_DOC}/man" \
           --htmldir="${APP_PREFIX_DOC}/html" \
@@ -667,12 +669,14 @@ function do_gcc_final()
         # --with-newlib Specifies that ‘newlib’ is being used as the target C library. This causes `__eprintf`` to be omitted from `libgcc.a`` on the assumption that it will be provided by newlib.
         # --enable-languages=c,c++ Support only C/C++, ignore all other.
 
+        # Prefer an explicit libexec folder.
+        # --libexecdir="${APP_PREFIX}/lib" \
+
         if [ "$1" == "" ]
         then
 
           bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" \
             --prefix="${APP_PREFIX}"  \
-            --libexecdir="${APP_PREFIX}/lib" \
             --infodir="${APP_PREFIX_DOC}/info" \
             --mandir="${APP_PREFIX_DOC}/man" \
             --htmldir="${APP_PREFIX_DOC}/html" \

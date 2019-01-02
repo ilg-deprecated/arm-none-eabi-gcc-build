@@ -202,9 +202,10 @@ then
   # For consistency, even on macOS, prefer GCC 7 over clang.
   # (Also because all GCC pre 7 versions fail with 'bracket nesting level 
   # exceeded' with clang; not to mention the too many warnings.)
-  # However the oof-the-shelf GCC 7 has a problem, and requires patching,
+  # However the off-the-shelf GCC 7 has a problem, and requires patching,
   # otherwise the generated GDB fails with SIGABRT; to test use 'set 
   # language auto').
+  # Since 8.x, ARM added `-fbracket-depth=512` for macOS builds.
   export CC=gcc-7.2.0-patched
   export CXX=g++-7.2.0-patched
 elif [ "${TARGET_OS}" == "linux" ]
@@ -270,7 +271,45 @@ CFLAGS_OPTIMIZATIONS_FOR_TARGET="-ffunction-sections -fdata-sections -O2"
 # For the main GCC version, check gcc/BASE-VER.
 
 # Keep them in sync with combo archive content.
-if [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]
+if [[ "${RELEASE_VERSION}" =~ 8\.2\.1-* ]]
+then
+
+  # https://developer.arm.com/-/media/Files/downloads/gnu-rm/8-2018q4/gcc-arm-none-eabi-8-2018-q4-major-src.tar.bz2
+
+  GCC_COMBO_VERSION_MAJOR="8"
+  GCC_COMBO_VERSION_YEAR="2018"
+  GCC_COMBO_VERSION_QUARTER="q4"
+  GCC_COMBO_VERSION_KIND="major"
+
+  GCC_COMBO_VERSION="${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}-${GCC_COMBO_VERSION_QUARTER}-${GCC_COMBO_VERSION_KIND}"
+  GCC_COMBO_FOLDER_NAME="gcc-arm-none-eabi-${GCC_COMBO_VERSION}"
+  GCC_COMBO_ARCHIVE="${GCC_COMBO_FOLDER_NAME}-src.tar.bz2"
+
+  GCC_COMBO_URL="https://developer.arm.com/-/media/Files/downloads/gnu-rm/${GCC_COMBO_VERSION_MAJOR}-${GCC_COMBO_VERSION_YEAR}${GCC_COMBO_VERSION_QUARTER}/${GCC_COMBO_ARCHIVE}"
+
+  MULTILIB_FLAGS="--with-multilib-list=rmprofile"
+
+  BINUTILS_VERSION="2.31"
+  # From gcc/BASE_VER. svn 267074 from LAST_UPDATED and /release.txt
+  GCC_VERSION="8.2.1"
+  # git: df6915f029ac9acd2b479ea898388cbd7dda4974 from /release.txt.
+  NEWLIB_VERSION="3.0.0"
+  # git: fe554d200d1befdc3bddc9e14f8593ea3446c351 from /release.txt
+  GDB_VERSION="8.2"
+
+  ZLIB_VERSION="1.2.8"
+  GMP_VERSION="6.1.0"
+  MPFR_VERSION="3.1.4"
+  MPC_VERSION="1.0.3"
+  ISL_VERSION="0.18"
+  LIBELF_VERSION="0.8.13"
+  EXPAT_VERSION="2.1.1"
+  LIBICONV_VERSION="1.14"
+  XZ_VERSION="5.2.3"
+
+  PYTHON_WIN_VERSION="2.7.13"
+
+elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]
 then
 
   # https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-src.tar.bz2

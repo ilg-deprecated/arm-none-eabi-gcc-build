@@ -419,6 +419,7 @@ function do_newlib()
             \
             --disable-newlib-supplied-syscalls \
             --enable-newlib-reent-small \
+            --enable-newlib-retargetable-locking \
             --disable-newlib-fvwrite-in-streamio \
             --disable-newlib-fseek-optimization \
             --disable-newlib-wide-orient \

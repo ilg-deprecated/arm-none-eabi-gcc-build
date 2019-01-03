@@ -25,12 +25,21 @@ $ git clone --recurse-submodules https://github.com/gnu-mcu-eclipse/arm-none-eab
   ~/Downloads/arm-none-eabi-gcc-build.git
 ```
 
+## Check for newer submodule
+
+The script uses a submodule helper. With SourceTree, check if there are
+any newer commits for the submodule.
+
 ## Check the script
 
 The script creates a temporary build `Work/arm-none-eabi-gcc-${version}` 
 folder in the user home. Although not recommended, if for any reasons you 
 need to change this, you can redefine `WORK_FOLDER_PATH` variable before 
 invoking the script.
+
+There are many other settings that can be redefined via
+environment variables. If necessary,
+place them in a file and pass it via `--env-file`.
 
 ## Preload the Docker images
 

@@ -27,8 +27,8 @@ $ git clone --recurse-submodules https://github.com/gnu-mcu-eclipse/arm-none-eab
 
 ## Check for newer submodule
 
-The script uses a submodule helper. With SourceTree, check if there are
-any newer commits for the submodule.
+The script uses a submodule helper. If you cloned the repo previously, 
+with SourceTree, check if there are any newer commits for the submodule.
 
 ## Check the script
 
@@ -75,18 +75,19 @@ the configure options are the same as in the ARM build scripts.
 
 ## Prepare release
 
-To prepare a new release, 
+To prepare a new release:
+
 - download the new _Source Invariant_ archive
-- copy/paste the files over `arm-gcc-original-scripts.git` files (except 
-  the PDF)
-- commit it with a message like **8-2018-q4-major**; also add a tag
-- check differences from the previous version
+- copy/paste the files and override the `arm-gcc-original-scripts.git` files 
+  (except the PDF);
+- commit with a message like **8-2018-q4-major**; also add a tag;
+- check differences from the previous version;
 - determine the GCC version (like `7.2.1`) and update the `scripts/VERSION` 
   file; the format is `7.2.1-1.1`. The fourth digit is the number of the 
   ARM release of the same GCC version, and the fifth digit is the GNU MCU 
   Eclipse release number of this version.
 - add a new set of definitions in the `scripts/container-build.sh`, with 
-  the versions of various components.
+  the versions of various components;
 - if newer libraries are used, check if they are available from the local git
   cache project.
 
@@ -160,7 +161,7 @@ To copy the files from the build machine to the current development machine,
 open the `deploy` folder in a terminal and use `scp`:
 
 ```console
-$ scp * ilg@ilg-mbp.local:Downloads/gme-binaries
+$ scp * ilg@ilg-mbp.local:Downloads/gme-binaries/arm
 ```
 
 ### Build the macOS binary
@@ -204,7 +205,7 @@ To copy the files from the build machine to the current development machine,
 open the `deploy` folder in a terminal and use `scp`:
 
 ```console
-$ scp * ilg@ilg-mbp.local:Downloads/gme-binaries
+$ scp * ilg@ilg-mbp.local:Downloads/gme-binaries/arm
 ```
 
 ## Subsequent runs
@@ -271,7 +272,7 @@ a compressed tar archive on macOS and GNU/Linux).
 A portable method is to use [`xpm`](https://www.npmjs.com/package/xpm):
 
 ```console
-$ xpm install @gnu-mcu-eclipse/arm-none-eabi-gcc --global
+$ xpm install --global @gnu-mcu-eclipse/arm-none-eabi-gcc
 ```
 
 More details are available on the 
@@ -282,8 +283,8 @@ After install, the package should create a structure like this (only the
 first two depth levels are shown):
 
 ```console
-$ tree -L 2 /Users/ilg/Library/xPacks/\@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-1.1/.content/
-/Users/ilg/Library/xPacks/@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-1.1/.content/
+$ tree -L 2 /Users/ilg/opt/gnu-mcu-eclipse/arm-none-eabi-gcc/8.2.1-1.1-20190102-1122 
+/Users/ilg/opt/gnu-mcu-eclipse/arm-none-eabi-gcc/8.2.1-1.1-20190102-1122
 ├── README.md
 ├── arm-none-eabi
 │   ├── bin
@@ -300,7 +301,7 @@ $ tree -L 2 /Users/ilg/Library/xPacks/\@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-
 │   ├── arm-none-eabi-elfedit
 │   ├── arm-none-eabi-g++
 │   ├── arm-none-eabi-gcc
-│   ├── arm-none-eabi-gcc-7.2.1
+│   ├── arm-none-eabi-gcc-8.2.1
 │   ├── arm-none-eabi-gcc-ar
 │   ├── arm-none-eabi-gcc-nm
 │   ├── arm-none-eabi-gcc-ranlib
@@ -308,6 +309,8 @@ $ tree -L 2 /Users/ilg/Library/xPacks/\@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-
 │   ├── arm-none-eabi-gcov-dump
 │   ├── arm-none-eabi-gcov-tool
 │   ├── arm-none-eabi-gdb
+│   ├── arm-none-eabi-gdb-add-index
+│   ├── arm-none-eabi-gdb-add-index-py
 │   ├── arm-none-eabi-gdb-py
 │   ├── arm-none-eabi-gprof
 │   ├── arm-none-eabi-ld
@@ -333,11 +336,13 @@ $ tree -L 2 /Users/ilg/Library/xPacks/\@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-
 │   ├── gcc
 │   ├── libcc1.0.so
 │   └── libcc1.so -> libcc1.0.so
+├── libexec
+│   └── gcc
 └── share
     ├── doc
     └── gcc-arm-none-eabi
 
-17 directories, 35 files
+19 directories, 37 files
 ```
 
 No other files are installed in any system folders or other locations.
@@ -346,7 +351,6 @@ No other files are installed in any system folders or other locations.
 
 The binaries are distributed as portable archives; thus they do not 
 need to run a setup and do not require an uninstall.
-
 
 ## Test
 

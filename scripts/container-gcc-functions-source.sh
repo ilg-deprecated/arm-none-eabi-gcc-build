@@ -1001,7 +1001,7 @@ function strip_binaries()
   then
 
     echo
-    echo "Striping binaries..."
+    echo "Stripping binaries..."
 
     if [ "${TARGET_OS}" != "win" ]
     then
@@ -1064,7 +1064,7 @@ function strip_libs()
       PATH="${APP_PREFIX}/bin":${PATH}
 
       echo
-      echo "Striping libraries..."
+      echo "Stripping libraries..."
 
       local libs=$(find "${APP_PREFIX}" -name '*.[ao]')
       for lib in ${libs}

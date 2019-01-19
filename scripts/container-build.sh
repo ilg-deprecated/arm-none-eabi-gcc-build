@@ -313,7 +313,7 @@ then
   PYTHON_WIN_VERSION="2.7.13"
 
   # Except the initial release, all other must be patched.
-  if [ "${RELEASE_VERSION}" != "8.2.1-1.1" ]
+  if [ "${RELEASE_VERSION}" != "8.2.1-1.1" ]
   then
     BINUTILS_PATCH="binutils-2.31.patch"
   fi

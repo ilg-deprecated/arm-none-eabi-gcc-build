@@ -39,7 +39,10 @@ invoking the script.
 
 There are many other settings that can be redefined via
 environment variables. If necessary,
-place them in a file and pass it via `--env-file`.
+place them in a file and pass it via `--env-file`. This file is
+either passed to Docker or sourced to shell. The Docker syntax 
+**is not** identical to shell, so some files may
+not be accepted by bash.
 
 ## Preload the Docker images
 
@@ -139,6 +142,8 @@ To build one of the previous versions:
 ```console
 $ RELEASE_VERSION=6.3.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 $ RELEASE_VERSION=7.2.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
+$ RELEASE_VERSION=8.2.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
+$ RELEASE_VERSION=8.2.1-1.2 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 ```
 
 Several hours later, the output of the build script is a set of 4 files and 

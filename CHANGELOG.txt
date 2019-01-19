@@ -1,5 +1,10 @@
 The major changes and releases, in reverse chronological order:
 
+[2019-01-19]
+
+- v8.2.1-1.2-20190119 released
+- 32-bit objcopy bug patched 
+
 [2019-01-02]
 
 - v8.2.1-1.1-20190102 released

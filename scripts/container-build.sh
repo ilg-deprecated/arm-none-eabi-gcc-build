@@ -270,6 +270,9 @@ CFLAGS_OPTIMIZATIONS_FOR_TARGET="-ffunction-sections -fdata-sections -O2"
 
 # For the main GCC version, check gcc/BASE-VER.
 
+# Redefine to existing file names to enable patches.
+BINUTILS_PATCH=""
+
 # Keep them in sync with combo archive content.
 if [[ "${RELEASE_VERSION}" =~ 8\.2\.1-* ]]
 then
@@ -308,6 +311,12 @@ then
   XZ_VERSION="5.2.3"
 
   PYTHON_WIN_VERSION="2.7.13"
+
+  # Except the initial release, all other must be patched.
+  if [ "${RELEASE_VERSION}" != "8.2.1-1.1" ]
+  then
+    BINUTILS_PATCH="binutils-2.31.patch"
+  fi
 
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]
 then

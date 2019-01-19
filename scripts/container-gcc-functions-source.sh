@@ -78,7 +78,9 @@ function do_binutils()
 
     cd "${WORK_FOLDER_PATH}"
 
-    extract "${GCC_COMBO_FOLDER_NAME}"/src/binutils.tar.bz2 "${BINUTILS_SRC_FOLDER_NAME}"
+    # Note: define BINUTILS_PATCH to the patch file name.
+    extract "${GCC_COMBO_FOLDER_NAME}"/src/binutils.tar.bz2 \
+      "${BINUTILS_SRC_FOLDER_NAME}" "${BINUTILS_PATCH}"
 
     (
       mkdir -p "${BUILD_FOLDER_PATH}/${BINUTILS_FOLDER_NAME}"

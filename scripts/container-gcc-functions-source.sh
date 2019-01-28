@@ -1208,3 +1208,28 @@ function check_binaries()
   fi
 }
 
+function final_tunings()
+{
+  # Create the missing LTO plugin links.
+  # For `ar` to work with LTO objects, it needs the plugin in lib/bfd-plugins,
+  # but the build leaves it where `ld` needs it. On POSIX, make a soft link.
+  if [ "${FIX_LTO_PLUGIN}" == "y" ]
+  then
+    if [ "${TARGET_OS}" != "win" ]
+    then
+      (
+        cd "${APP_PREFIX}"
+
+        mkdir -p "$(dirname ${LTO_PLUGIN_SO_BFD_PATH})"
+        if [ ! -f "${LTO_PLUGIN_SO_BFD_PATH}" ]
+        then
+          local so_path="$(find * -type f -name ${LTO_PLUGIN_SO_ORIGINAL_NAME})"
+          if [ ! -z "${so_path}" ]
+          then
+            ln -s -v ""../../${so_path}" "${LTO_PLUGIN_SO_BFD_PATH}"
+        fi
+      )
+    fi
+  fi
+}
+

@@ -273,6 +273,12 @@ CFLAGS_OPTIMIZATIONS_FOR_TARGET="-ffunction-sections -fdata-sections -O2"
 # Redefine to existing file names to enable patches.
 BINUTILS_PATCH=""
 
+# Redefine to "y" to create the LTO plugin links.
+FIX_LTO_PLUGIN=""
+LTO_PLUGIN_SO_ORIGINAL_NAME="liblto_plugin.0.so"
+LTO_PLUGIN_SO_BFD_PATH="lib/bfd-plugins/liblto_plugin.so"
+
+
 # Keep them in sync with combo archive content.
 if [[ "${RELEASE_VERSION}" =~ 8\.2\.1-* ]]
 then
@@ -547,6 +553,8 @@ fi
 check_binaries
 
 copy_gme_files
+
+final_tunings
 
 # Task [IV-7] /$HOST_MINGW/installation/
 # Nope, no setup.exe.

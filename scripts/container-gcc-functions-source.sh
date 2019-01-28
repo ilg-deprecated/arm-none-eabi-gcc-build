@@ -127,6 +127,7 @@ function do_binutils()
           --disable-gdb \
           --enable-interwork \
           --enable-plugins \
+          --enable-lto \
           --with-sysroot="${APP_PREFIX}/${GCC_TARGET}" \
           \
           --disable-shared \

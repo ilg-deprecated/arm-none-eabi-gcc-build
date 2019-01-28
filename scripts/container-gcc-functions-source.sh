@@ -1220,13 +1220,20 @@ function final_tunings()
       (
         cd "${APP_PREFIX}"
 
+        echo
+        echo "Creating liblto_plugin.so link..."
+
         mkdir -p "$(dirname ${LTO_PLUGIN_SO_BFD_PATH})"
         if [ ! -f "${LTO_PLUGIN_SO_BFD_PATH}" ]
         then
           local so_path="$(find * -type f -name ${LTO_PLUGIN_SO_ORIGINAL_NAME})"
           if [ ! -z "${so_path}" ]
           then
-            ln -s -v ""../../${so_path}" "${LTO_PLUGIN_SO_BFD_PATH}"
+            ln -s -v "../../${so_path}" "${LTO_PLUGIN_SO_BFD_PATH}"
+          else
+            echo "${LTO_PLUGIN_SO_ORIGINAL_NAME} not found."
+            exit 1
+          fi
         fi
       )
     fi

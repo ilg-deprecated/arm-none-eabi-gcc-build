@@ -272,12 +272,21 @@ CFLAGS_OPTIMIZATIONS_FOR_TARGET="-ffunction-sections -fdata-sections -O2"
 
 # Redefine to existing file names to enable patches.
 BINUTILS_PATCH=""
+GDB_PATCH=""
+
+BINUTILS_SRC_FOLDER_NAME="binutils"
+GCC_SRC_FOLDER_NAME="gcc"
+NEWLIB_SRC_FOLDER_NAME="newlib"
+GDB_SRC_FOLDER_NAME="gdb"
 
 # Redefine to "y" to create the LTO plugin links.
 FIX_LTO_PLUGIN=""
 LTO_PLUGIN_SO_ORIGINAL_NAME="liblto_plugin.0.so"
 LTO_PLUGIN_SO_BFD_PATH="lib/bfd-plugins/liblto_plugin.so"
 
+# Redefine to actual URL if the build should use the Git sources.
+# Also be sure GDB_GIT_BRANCH and GDB_GIT_COMMIT are defined
+GDB_GIT_URL=""
 
 # Keep them in sync with combo archive content.
 if [[ "${RELEASE_VERSION}" =~ 8\.2\.1-* ]]
@@ -324,6 +333,14 @@ then
     BINUTILS_PATCH="binutils-2.31.patch"
   fi
 
+  if [ \( "${RELEASE_VERSION}" != "8.2.1-1.1" \) -a \
+       \( "${RELEASE_VERSION}" != "8.2.1-1.2" \) ]
+  then
+    GDB_GIT_URL="git://sourceware.org/git/binutils-gdb.git"
+    GDB_GIT_BRANCH="master"
+    GDB_GIT_COMMIT="ad0f979c9df2cc3fba1f120c5e7f39e35591ed07"
+  fi
+ 
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]
 then
 
@@ -397,6 +414,8 @@ then
   XZ_VERSION="5.2.3"
 
   PYTHON_WIN_VERSION="2.7.13"
+
+  GDB_PATCH="gdb-${GDB_VERSION}.patch"
 
 elif [[ "${RELEASE_VERSION}" =~ 6\.3\.1-* ]]
 then

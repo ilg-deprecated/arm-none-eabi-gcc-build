@@ -13,7 +13,29 @@ function download_gcc_combo()
 
   cd "${WORK_FOLDER_PATH}"
 
-  download_and_extract "${GCC_COMBO_URL}" "${GCC_COMBO_ARCHIVE}" "${GCC_COMBO_FOLDER_NAME}"
+  download_and_extract "${GCC_COMBO_URL}" "${GCC_COMBO_ARCHIVE}" \
+    "${GCC_COMBO_FOLDER_NAME}"
+}
+
+function download_gdb() 
+{
+  # Same package as binutils.
+  if [ ! -d "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}" ]
+  then
+    cd "${WORK_FOLDER_PATH}"
+    if [ -n "${GDB_GIT_URL}" ]
+    then
+      git_clone "${GDB_GIT_URL}" "${GDB_GIT_BRANCH}" \
+        "${GDB_GIT_COMMIT}" "gdb-${GDB_GIT_COMMIT}.git"
+      mv "gdb-${GDB_GIT_COMMIT}.git/gdb" "${GDB_SRC_FOLDER_NAME}"
+      rm -rf "gdb.git"
+    elif [ -n "${GDB_ARCHIVE_URL}" ]
+    then
+      extract "${GCC_COMBO_FOLDER_NAME}"/src/gdb.tar.bz2 \
+        "${GDB_SRC_FOLDER_NAME}" "${GDB_PATCH}"
+
+    fi
+  fi
 }
 
 function download_python() 
@@ -61,8 +83,6 @@ function download_python()
     echo "Folder ${PYTHON_WIN} already present."
   fi
 }
-
-BINUTILS_SRC_FOLDER_NAME="binutils"
 
 function do_binutils()
 {
@@ -198,8 +218,6 @@ function do_binutils()
   fi
 }
 
-GCC_SRC_FOLDER_NAME="gcc"
-
 function do_gcc_first()
 {
   local gcc_first_folder_name="gcc-${GCC_VERSION}-first"
@@ -309,8 +327,6 @@ function do_gcc_first()
     echo "Component gcc first stage already installed."
   fi
 }
-
-NEWLIB_SRC_FOLDER_NAME="newlib"
 
 # For the nano build, call it with "-nano".
 # $1="" or $1="-nano"
@@ -848,8 +864,6 @@ function do_gcc_final()
   fi
 }
 
-GDB_SRC_FOLDER_NAME="gdb"
-
 # Called twice, with and without python support.
 # $1="" or $1="-py"
 function do_gdb()
@@ -862,7 +876,7 @@ function do_gdb()
 
     cd "${WORK_FOLDER_PATH}"
 
-    extract "${GCC_COMBO_FOLDER_NAME}"/src/gdb.tar.bz2 "${GDB_SRC_FOLDER_NAME}" "${GDB_VERSION}"
+    download_gdb
 
     (
       mkdir -p "${BUILD_FOLDER_PATH}/${gdb_folder_name}"

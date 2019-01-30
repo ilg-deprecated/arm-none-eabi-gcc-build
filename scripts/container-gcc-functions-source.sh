@@ -26,9 +26,7 @@ function download_gdb()
     if [ -n "${GDB_GIT_URL}" ]
     then
       git_clone "${GDB_GIT_URL}" "${GDB_GIT_BRANCH}" \
-        "${GDB_GIT_COMMIT}" "gdb-${GDB_GIT_COMMIT}.git"
-      mv "gdb-${GDB_GIT_COMMIT}.git/gdb" "${GDB_SRC_FOLDER_NAME}"
-      rm -rf "gdb.git"
+        "${GDB_GIT_COMMIT}" "${GDB_SRC_FOLDER_NAME}"
     elif [ -n "${GDB_ARCHIVE_URL}" ]
     then
       extract "${GCC_COMBO_FOLDER_NAME}"/src/gdb.tar.bz2 \

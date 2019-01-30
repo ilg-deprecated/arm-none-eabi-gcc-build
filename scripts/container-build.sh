@@ -330,15 +330,18 @@ then
   # Except the initial release, all other must be patched.
   if [ "${RELEASE_VERSION}" != "8.2.1-1.1" ]
   then
+    # For version 8.2.1-1.2 and up.
     BINUTILS_PATCH="binutils-2.31.patch"
   fi
 
   if [ \( "${RELEASE_VERSION}" != "8.2.1-1.1" \) -a \
        \( "${RELEASE_VERSION}" != "8.2.1-1.2" \) ]
   then
+    # For version 8.2.1-1.3 and up.
     GDB_GIT_URL="git://sourceware.org/git/binutils-gdb.git"
     GDB_GIT_BRANCH="master"
     GDB_GIT_COMMIT="ad0f979c9df2cc3fba1f120c5e7f39e35591ed07"
+    GDB_SRC_FOLDER_NAME="gdb-${GDB_VERSION}.git"
   fi
  
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]

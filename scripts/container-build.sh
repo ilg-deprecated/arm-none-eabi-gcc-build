@@ -288,6 +288,9 @@ LTO_PLUGIN_SO_BFD_PATH="lib/bfd-plugins/liblto_plugin.so"
 # Also be sure GDB_GIT_BRANCH and GDB_GIT_COMMIT are defined
 GDB_GIT_URL=""
 
+# Redfine it to a version based name and create new files.
+README_OUT_FILE_NAME="README-out.md"
+
 # Keep them in sync with combo archive content.
 if [[ "${RELEASE_VERSION}" =~ 8\.2\.1-* ]]
 then
@@ -345,6 +348,8 @@ then
     # Latest commit from 2019-01-29.
     GDB_GIT_COMMIT="ad0f979c9df2cc3fba1f120c5e7f39e35591ed07"
     GDB_SRC_FOLDER_NAME="gdb-${GDB_VERSION}.git"
+
+    README_OUT_FILE_NAME="README-${RELEASE_VERSION}.md"
   fi
  
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]

@@ -166,6 +166,7 @@ To copy the files from the build machine to the current development machine,
 open the `deploy` folder in a terminal and use `scp`:
 
 ```console
+$ cd deploy
 $ scp * ilg@ilg-mbp.local:Downloads/gme-binaries/arm
 ```
 
@@ -210,6 +211,7 @@ To copy the files from the build machine to the current development machine,
 open the `deploy` folder in a terminal and use `scp`:
 
 ```console
+$ cd deploy
 $ scp * ilg@ilg-mbp.local:Downloads/gme-binaries/arm
 ```
 

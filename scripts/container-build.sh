@@ -338,6 +338,8 @@ then
        \( "${RELEASE_VERSION}" != "8.2.1-1.2" \) ]
   then
     # For version 8.2.1-1.3 and up.
+    FIX_LTO_PLUGIN="y"
+
     GDB_GIT_URL="git://sourceware.org/git/binutils-gdb.git"
     GDB_GIT_BRANCH="master"
     # Latest commit from 2019-01-29.

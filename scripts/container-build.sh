@@ -340,6 +340,7 @@ then
     # For version 8.2.1-1.3 and up.
     GDB_GIT_URL="git://sourceware.org/git/binutils-gdb.git"
     GDB_GIT_BRANCH="master"
+    # Latest commit from 2019-01-29.
     GDB_GIT_COMMIT="ad0f979c9df2cc3fba1f120c5e7f39e35591ed07"
     GDB_SRC_FOLDER_NAME="gdb-${GDB_VERSION}.git"
   fi

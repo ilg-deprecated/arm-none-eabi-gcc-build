@@ -283,6 +283,8 @@ GDB_SRC_FOLDER_NAME="gdb"
 FIX_LTO_PLUGIN=""
 LTO_PLUGIN_SO_ORIGINAL_NAME="liblto_plugin.0.so"
 LTO_PLUGIN_SO_BFD_PATH="lib/bfd-plugins/liblto_plugin.so"
+LTO_PLUGIN_DLL_ORIGINAL_NAME="liblto_plugin-0.dll"
+LTO_PLUGIN_DLL_BFD_PATH="lib/bfd-plugins/liblto_plugin-0.dll"
 
 # Redefine to actual URL if the build should use the Git sources.
 # Also be sure GDB_GIT_BRANCH and GDB_GIT_COMMIT are defined

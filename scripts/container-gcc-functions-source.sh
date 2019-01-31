@@ -1227,11 +1227,29 @@ function final_tunings()
   # but the build leaves it where `ld` needs it. On POSIX, make a soft link.
   if [ "${FIX_LTO_PLUGIN}" == "y" ]
   then
-    if [ "${TARGET_OS}" != "win" ]
-    then
-      (
-        cd "${APP_PREFIX}"
+    (
+      cd "${APP_PREFIX}"
 
+      echo
+      if [ "${TARGET_OS}" == "win" ]
+      then
+        echo
+        echo "Copying liblto_plugin-0.dll..."
+
+        mkdir -p "$(dirname ${LTO_PLUGIN_SO_BFD_PATH})"
+
+        if [ ! -f "${LTO_PLUGIN_DLL_BFD_PATH}" ]
+        then
+          local dll_path="$(find * -type f -name ${LTO_PLUGIN_DLL_ORIGINAL_NAME})"
+          if [ ! -z "${dll_path}" ]
+          then
+            cp -v "../../${dll_path}" "${LTO_PLUGIN_DLL_BFD_PATH}"
+          else
+            echo "${LTO_PLUGIN_DLL_ORIGINAL_NAME} not found."
+            exit 1
+          fi
+        fi
+      else
         echo
         echo "Creating liblto_plugin.so link..."
 
@@ -1247,8 +1265,8 @@ function final_tunings()
             exit 1
           fi
         fi
-      )
-    fi
+      fi
+    )
   fi
 }
 

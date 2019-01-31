@@ -648,6 +648,7 @@ function do_gcc_final()
         export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
         export CPPFLAGS="${EXTRA_CPPFLAGS}" 
         export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
+
         # Do not add CRT_glob.o here, it will fail with already defined,
         # since it is already handled by --enable-mingw-wildcard.
 
@@ -840,6 +841,15 @@ function do_gcc_final()
           # For Windows build only the GCC binaries, the libraries were copied 
           # from the Linux build.
           make ${JOBS} all-gcc
+
+          # The LTO plugin fails to create the DLL if -static is used.
+          # So do it again, without -static.
+          (
+            cd lto-plugin
+            export LDFLAGS="$(echo ${EXTRA_LDFLAGS_APP} | sed -e 's/ -static / /')"
+            make clean all
+          )
+
           make install-gcc
 
           if [ "${WITH_PDF}" == "y" ]

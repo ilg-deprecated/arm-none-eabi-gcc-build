@@ -708,6 +708,7 @@ function do_gcc_final()
             --enable-languages=c,c++ \
             ${mingw_wildcard} \
             --enable-plugins \
+            --enable-lto \
             --disable-decimal-float \
             --disable-libffi \
             --disable-libgomp \

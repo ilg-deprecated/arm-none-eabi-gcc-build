@@ -4,6 +4,8 @@ The major changes and releases, in reverse chronological order:
 
 - v8.2.1-1.3-20190201 released
 - use Git GDB to fix LTO bugs
+- remove the static options for the liblto_plugin-0.dll to be created
+- link/copy the liblto_plugin to the bdf-plugins 
 
 [2019-01-19]
 

@@ -288,7 +288,7 @@ then
   LTO_PLUGIN_BFD_PATH="lib/bfd-plugins/liblto_plugin.so"
 elif [ "${TARGET_OS}" == "linux" ]
 then
-  LTO_PLUGIN_ORIGINAL_NAME="liblto_plugin.so"
+  LTO_PLUGIN_ORIGINAL_NAME="liblto_plugin.so.0.0.0"
   LTO_PLUGIN_BFD_PATH="lib/bfd-plugins/liblto_plugin.so"
 elif [ "${TARGET_OS}" == "win" ]
 then

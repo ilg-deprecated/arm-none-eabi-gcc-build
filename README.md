@@ -66,6 +66,17 @@ ilegeul/centos      6-xbb-v1            294dd5ee82f3        2 weeks ago         
 hello-world         latest              f2a91732366c        2 months ago        1.85kB
 ```
 
+## Remove unused Docker space
+
+This is mostly useful after failed builds, during development, when
+dangling images may be left by Docker.
+
+To remove unused files:
+
+```console
+$ docker system prune --force
+```
+
 ## Update git repos
 
 The GNU MCU Eclipse ARM Embedded GCC distribution follows the official 

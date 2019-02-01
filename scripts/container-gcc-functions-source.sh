@@ -1254,7 +1254,7 @@ function final_tunings()
           local plugin_path="$(find * -type f -name ${LTO_PLUGIN_ORIGINAL_NAME})"
           if [ ! -z "${plugin_path}" ]
           then
-            cp -v "../../${plugin_path}" "${LTO_PLUGIN_BFD_PATH}"
+            cp -v "${plugin_path}" "${LTO_PLUGIN_BFD_PATH}"
           else
             echo "${LTO_PLUGIN_ORIGINAL_NAME} not found."
             exit 1

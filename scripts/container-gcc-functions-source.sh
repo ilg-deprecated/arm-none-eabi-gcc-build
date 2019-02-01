@@ -1245,34 +1245,34 @@ function final_tunings()
       if [ "${TARGET_OS}" == "win" ]
       then
         echo
-        echo "Copying liblto_plugin-0.dll..."
+        echo "Copying ${LTO_PLUGIN_ORIGINAL_NAME}..."
 
-        mkdir -p "$(dirname ${LTO_PLUGIN_SO_BFD_PATH})"
+        mkdir -p "$(dirname ${LTO_PLUGIN_BFD_PATH})"
 
-        if [ ! -f "${LTO_PLUGIN_DLL_BFD_PATH}" ]
+        if [ ! -f "${LTO_PLUGIN_BFD_PATH}" ]
         then
-          local dll_path="$(find * -type f -name ${LTO_PLUGIN_DLL_ORIGINAL_NAME})"
-          if [ ! -z "${dll_path}" ]
+          local plugin_path="$(find * -type f -name ${LTO_PLUGIN_ORIGINAL_NAME})"
+          if [ ! -z "${plugin_path}" ]
           then
-            cp -v "../../${dll_path}" "${LTO_PLUGIN_DLL_BFD_PATH}"
+            cp -v "../../${plugin_path}" "${LTO_PLUGIN_BFD_PATH}"
           else
-            echo "${LTO_PLUGIN_DLL_ORIGINAL_NAME} not found."
+            echo "${LTO_PLUGIN_ORIGINAL_NAME} not found."
             exit 1
           fi
         fi
       else
         echo
-        echo "Creating liblto_plugin.so link..."
+        echo "Creating ${LTO_PLUGIN_ORIGINAL_NAME} link..."
 
-        mkdir -p "$(dirname ${LTO_PLUGIN_SO_BFD_PATH})"
-        if [ ! -f "${LTO_PLUGIN_SO_BFD_PATH}" ]
+        mkdir -p "$(dirname ${LTO_PLUGIN_BFD_PATH})"
+        if [ ! -f "${LTO_PLUGIN_BFD_PATH}" ]
         then
-          local so_path="$(find * -type f -name ${LTO_PLUGIN_SO_ORIGINAL_NAME})"
-          if [ ! -z "${so_path}" ]
+          local plugin_path="$(find * -type f -name ${LTO_PLUGIN_ORIGINAL_NAME})"
+          if [ ! -z "${plugin_path}" ]
           then
-            ln -s -v "../../${so_path}" "${LTO_PLUGIN_SO_BFD_PATH}"
+            ln -s -v "../../${plugin_path}" "${LTO_PLUGIN_BFD_PATH}"
           else
-            echo "${LTO_PLUGIN_SO_ORIGINAL_NAME} not found."
+            echo "${LTO_PLUGIN_ORIGINAL_NAME} not found."
             exit 1
           fi
         fi

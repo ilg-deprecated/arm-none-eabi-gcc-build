@@ -282,10 +282,20 @@ GDB_SRC_FOLDER_NAME="gdb"
 
 # Redefine to "y" to create the LTO plugin links.
 FIX_LTO_PLUGIN=""
-LTO_PLUGIN_SO_ORIGINAL_NAME="liblto_plugin.0.so"
-LTO_PLUGIN_SO_BFD_PATH="lib/bfd-plugins/liblto_plugin.so"
-LTO_PLUGIN_DLL_ORIGINAL_NAME="liblto_plugin-0.dll"
-LTO_PLUGIN_DLL_BFD_PATH="lib/bfd-plugins/liblto_plugin-0.dll"
+if [ "${TARGET_OS}" == "macos" ]
+then
+  LTO_PLUGIN_ORIGINAL_NAME="liblto_plugin.0.so"
+  LTO_PLUGIN_BFD_PATH="lib/bfd-plugins/liblto_plugin.so"
+elif [ "${TARGET_OS}" == "linux" ]
+then
+  LTO_PLUGIN_ORIGINAL_NAME="liblto_plugin.so"
+  LTO_PLUGIN_BFD_PATH="lib/bfd-plugins/liblto_plugin.so"
+elif [ "${TARGET_OS}" == "win" ]
+then
+  LTO_PLUGIN_ORIGINAL_NAME="liblto_plugin-0.dll"
+  LTO_PLUGIN_BFD_PATH="lib/bfd-plugins/liblto_plugin-0.dll"
+fi
+
 
 # Redefine to actual URL if the build should use the Git sources.
 # Also be sure GDB_GIT_BRANCH and GDB_GIT_COMMIT are defined

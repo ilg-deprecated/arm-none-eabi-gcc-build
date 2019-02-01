@@ -298,6 +298,7 @@ function do_gcc_first()
           --with-python-dir=share/gcc-${GCC_TARGET} \
           --with-sysroot="${APP_PREFIX}/${GCC_TARGET}" \
           ${MULTILIB_FLAGS} \
+          "${EXTRA_CONFIG_OPTIONS}" \
           \
           --disable-rpath \
           --disable-build-format-warnings \
@@ -728,6 +729,7 @@ function do_gcc_final()
             --with-python-dir=share/gcc-${GCC_TARGET} \
             --with-sysroot="${APP_PREFIX}/${GCC_TARGET}" \
             ${MULTILIB_FLAGS} \
+            "${EXTRA_CONFIG_OPTIONS}" \
             \
             --disable-rpath \
             --disable-build-format-warnings \
@@ -767,6 +769,7 @@ function do_gcc_final()
             --with-python-dir=share/gcc-${GCC_TARGET} \
             --with-sysroot="${APP_PREFIX_NANO}/${GCC_TARGET}" \
             ${MULTILIB_FLAGS} \
+            "${EXTRA_CONFIG_OPTIONS}" \
             \
             --disable-rpath \
             --disable-build-format-warnings \

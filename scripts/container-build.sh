@@ -233,23 +233,32 @@ if [ "${IS_DEBUG}" == "y" ]
 then
   EXTRA_LDFLAGS+=" -g"
 fi
-EXTRA_LDFLAGS_APP="${EXTRA_LDFLAGS} -static-libstdc++"
+# -static-libstdc++ moved to EXTRA_CONFIG_OPTIONS
+EXTRA_LDFLAGS_APP="${EXTRA_LDFLAGS}"
 
 if [ "${TARGET_OS}" == "macos" ]
 then
+  # ARM uses
+  # GCC_CONFIG_OPTS_LCPP="--with-host-libstdcxx=-static-libgcc -Wl,-lstdc++ -lm"
   EXTRA_LDFLAGS_APP+=" -Wl,-dead_strip"
+  EXTRA_CONFIG_OPTIONS="--with-host-libstdcxx=-static-libstdc++ -static-libgcc"
 elif [ "${TARGET_OS}" == "linux" ]
 then
-  # Do not add -static here, it fails.
+  # ARM uses
+  # GCC_CONFIG_OPTS_LCPP="--with-host-libstdcxx=-static-libgcc -Wl,-Bstatic,-lstdc++,-Bdynamic -lm"
+  # Do not add -static here to EXTRA_LDFLAGS_APP, it fails.
   # Do not try to link pthread statically, it must match the system glibc.
   EXTRA_LDFLAGS_APP+=" -Wl,--gc-sections"
+  EXTRA_CONFIG_OPTIONS="--with-host-libstdcxx=-static-libstdc++ -static-libgcc -static"
 elif [ "${TARGET_OS}" == "win" ]
 then
-  # CRT_glob is from ARM script
+  # ARM scripts also use CRT_glob; currently ignored here.
   # -static avoids libwinpthread-1.dll; unfortunatelly it interfears
   # with liblto_plugin-0.dll
   # -static-libgcc avoids libgcc_s_sjlj-1.dll 
-  EXTRA_LDFLAGS_APP+=" -static -static-libgcc -Wl,--gc-sections"
+  # EXTRA_LDFLAGS_APP+=" -static -static-libgcc -Wl,--gc-sections"
+  EXTRA_LDFLAGS_APP+=" -Wl,--gc-sections"
+  EXTRA_CONFIG_OPTIONS="--with-host-libstdcxx=-static-libstdc++ -static-libgcc -static"
 fi
 
 export PKG_CONFIG=pkg-config-verbose
@@ -282,6 +291,8 @@ GDB_SRC_FOLDER_NAME="gdb"
 
 # Redefine to "y" to create the LTO plugin links.
 FIX_LTO_PLUGIN=""
+
+# Redefine in each version if needed.
 if [ "${TARGET_OS}" == "macos" ]
 then
   LTO_PLUGIN_ORIGINAL_NAME="liblto_plugin.0.so"

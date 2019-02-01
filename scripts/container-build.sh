@@ -296,6 +296,7 @@ then
   LTO_PLUGIN_BFD_PATH="lib/bfd-plugins/liblto_plugin-0.dll"
 fi
 
+HAS_WINPTHREAD=""
 
 # Redefine to actual URL if the build should use the Git sources.
 # Also be sure GDB_GIT_BRANCH and GDB_GIT_COMMIT are defined
@@ -355,6 +356,7 @@ then
   then
     # For version 8.2.1-1.3 and up.
     FIX_LTO_PLUGIN="y"
+    HAS_WINPTHREAD="y"
 
     GDB_GIT_URL="git://sourceware.org/git/binutils-gdb.git"
     GDB_GIT_BRANCH="master"
@@ -598,6 +600,11 @@ check_binaries
 copy_gme_files
 
 final_tunings
+
+if [ "${TARGET_OS}" == "win" ]
+then
+  copy_win_libwinpthread_dll
+fi
 
 # Task [IV-7] /$HOST_MINGW/installation/
 # Nope, no setup.exe.

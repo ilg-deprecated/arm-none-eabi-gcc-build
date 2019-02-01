@@ -31,7 +31,8 @@ same and there should be no functional differences, except the following
 bug fixes:
 
 - a patch was applied to binutils to fix the 32-bit objcopy bug
-- GDB was built the Git commit ad0f979c9 from 2019-01-29, to fix the LTO bugs
+- GDB was built the Git commit ad0f979c9 from 2019-01-29, to fix the bugs
+  affecting C++ LTO projects
   [24145](https://sourceware.org/bugzilla/show_bug.cgi?id=24145)
 
 ## Compatibility
@@ -45,10 +46,8 @@ compatible with most recent systems.
   Docker container
 - Windows: all binaries built with mingw-w64 GCC 7.2, running in a 
   CentOS 6 Docker container 
-- macOS: all binaries built GCC 7.2, running in a custom Homebrew 
-  instance on macOS 10.10.5, except GDB which was built with Apple clang, 
-  since neither building with GCC 7 or GCC 6 produced functional binaries 
-  (SIGABRT for `set language auto`)
+- macOS: all binaries built with GCC 7.2, running in a custom Homebrew 
+  instance on macOS 10.10.5
 
 ## Build
 

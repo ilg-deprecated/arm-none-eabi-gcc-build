@@ -40,10 +40,8 @@ compatible with most recent systems.
   Docker container
 - Windows: all binaries built with mingw-w64 GCC 7.2, running in a 
   CentOS 6 Docker container 
-- macOS: all binaries built GCC 7.2, running in a custom Homebrew 
-  instance on macOS 10.10.5, except GDB which was built with Apple clang, 
-  since neither building with GCC 7 or GCC 6 produced functional binaries 
-  (SIGABRT for `set language auto`)
+- macOS: all binaries built with GCC 7.2, running in a custom Homebrew 
+  instance on macOS 10.10.5
 
 ## Build
 

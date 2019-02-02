@@ -30,7 +30,8 @@ Compared to the ARM distribution, the build procedure is more or less the
 same and there should be no functional differences, except the following 
 bug fixes:
 
-- a patch was applied to binutils to fix the 32-bit objcopy bug
+- a patch was applied to binutils to fix the 32-bit objcopy bug 
+  [24065](https://sourceware.org/bugzilla/show_bug.cgi?id=24065)
 - GDB was built the Git commit ad0f979c9 from 2019-01-29, to fix the bugs
   affecting C++ LTO projects
   [24145](https://sourceware.org/bugzilla/show_bug.cgi?id=24145)
@@ -44,7 +45,7 @@ bug fixes:
 
 The binaries were built using 
 [xPack Build Box (XBB)](https://github.com/xpack/xpack-build-box), a set 
-of build environments based on slightly older systems that should be 
+of build environments based on slightly older distributions, that should be 
 compatible with most recent systems.
 
 - GNU/Linux: all binaries built with GCC 7.2, running in a CentOS 6 

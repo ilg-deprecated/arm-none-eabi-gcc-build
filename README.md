@@ -153,8 +153,7 @@ To build one of the previous versions:
 ```console
 $ RELEASE_VERSION=6.3.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 $ RELEASE_VERSION=7.2.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
-$ RELEASE_VERSION=8.2.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
-$ RELEASE_VERSION=8.2.1-1.2 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
+$ RELEASE_VERSION=8.2.1-1.3 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 ```
 
 Several hours later, the output of the build script is a set of 4 files and 
@@ -203,6 +202,7 @@ To build one of the previous macOS versions:
 ```console
 $ RELEASE_VERSION=6.3.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
 $ RELEASE_VERSION=7.2.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
+$ RELEASE_VERSION=8.2.1-1.3 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
 ```
 
 For consistency reasons, the date should be the same as the GNU/Linux and 

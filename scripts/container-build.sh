@@ -366,10 +366,15 @@ then
     GDB_SRC_FOLDER_NAME="gdb-${GDB_VERSION}.git"
 
     README_OUT_FILE_NAME="README-${RELEASE_VERSION}.md"
+  fi
 
+  if [ \( "${RELEASE_VERSION}" != "8.2.1-1.1" \) -a \
+       \( "${RELEASE_VERSION}" != "8.2.1-1.2" \) -a \
+       \( "${RELEASE_VERSION}" != "8.2.1-1.3" \) ]
+  then
     GCC_PATCH="gcc-8.2.1.patch"
   fi
- 
+
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]
 then
 

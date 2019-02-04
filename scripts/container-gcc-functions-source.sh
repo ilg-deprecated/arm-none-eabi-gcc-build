@@ -226,7 +226,8 @@ function do_gcc_first()
 
     cd "${WORK_FOLDER_PATH}"
 
-    extract "${GCC_COMBO_FOLDER_NAME}"/src/gcc.tar.bz2 "${GCC_SRC_FOLDER_NAME}"
+    extract "${GCC_COMBO_FOLDER_NAME}"/src/gcc.tar.bz2 \
+      "${GCC_SRC_FOLDER_NAME}" "${GCC_PATCH}"
 
     (
       mkdir -p "${BUILD_FOLDER_PATH}/${gcc_first_folder_name}"
@@ -626,7 +627,8 @@ function do_gcc_final()
 
     cd "${WORK_FOLDER_PATH}"
 
-    extract "${GCC_COMBO_FOLDER_NAME}"/src/gcc.tar.bz2 "${GCC_SRC_FOLDER_NAME}"
+    extract "${GCC_COMBO_FOLDER_NAME}"/src/gcc.tar.bz2 \
+      "${GCC_SRC_FOLDER_NAME}" "${GCC_PATCH}"
 
     (
       mkdir -p "${BUILD_FOLDER_PATH}/${gcc_final_folder_name}"

@@ -273,6 +273,7 @@ CFLAGS_OPTIMIZATIONS_FOR_TARGET="-ffunction-sections -fdata-sections -O2"
 
 # Redefine to existing file names to enable patches.
 BINUTILS_PATCH=""
+GCC_PATCH=""
 GDB_PATCH=""
 
 BINUTILS_SRC_FOLDER_NAME="binutils"
@@ -365,6 +366,8 @@ then
     GDB_SRC_FOLDER_NAME="gdb-${GDB_VERSION}.git"
 
     README_OUT_FILE_NAME="README-${RELEASE_VERSION}.md"
+
+    GCC_PATCH="gcc-8.2.1.patch"
   fi
  
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]

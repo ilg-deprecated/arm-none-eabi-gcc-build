@@ -680,6 +680,7 @@ function do_gcc_final()
             export GCC_FOR_TARGET=${GCC_TARGET}-gcc
             export CXX_FOR_TARGET=${GCC_TARGET}-g++
 
+            # That was the last resort to avoid libwinpthread-1.dll.
             export LDFLAGS="${EXTRA_LDFLAGS_APP} -static" 
           fi
 
@@ -842,6 +843,37 @@ function do_gcc_final()
           # For Windows build only the GCC binaries, the libraries were copied 
           # from the Linux build.
           make ${JOBS} all-gcc
+
+          if [ "${TARGET_OS}" == "win" ]
+          then
+            (
+              cd lto-plugin
+
+              # The LTO plugin fails to create the DLL if --disable-shared or
+              # -static are used.
+              # So do it again, enabling shared and without -static.
+              export LDFLAGS="${EXTRA_LDFLAGS_APP}"
+
+              (
+                bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/lto-plugin/configure" --help
+
+                bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/lto-plugin/configure" \
+                  --prefix="${APP_PREFIX}"  \
+                  \
+                  --build=${BUILD} \
+                  --host=${HOST} \
+                  --target=${GCC_TARGET} \
+                  \
+                  --enable-shared \
+                  --with-gnu-ld \
+                  
+              ) | tee "${INSTALL_FOLDER_PATH}/configure-lto-plugin-output.txt"
+              cp "config.log" "${INSTALL_FOLDER_PATH}"/config-lto-plugin-log.txt
+
+              make clean all
+            )
+          fi
+
           make install-gcc
 
           if [ "${WITH_PDF}" == "y" ]

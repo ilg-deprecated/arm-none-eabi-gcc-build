@@ -590,7 +590,7 @@ function do_libiconv()
 
         # -fgnu89-inline fixes "undefined reference to `aliases2_lookup'"
         #  https://savannah.gnu.org/bugs/?47953
-        export CFLAGS="${EXTRA_CFLAGS} -fgnu89-inline -Wno-tautological-compare -Wno-parentheses-equality -Wno-static-in-inline"
+        export CFLAGS="${EXTRA_CFLAGS} -fgnu89-inline -Wno-tautological-compare -Wno-parentheses-equality -Wno-static-in-inline -Wno-pointer-to-int-cast"
         export CPPFLAGS="${EXTRA_CPPFLAGS}"
         export LDFLAGS="${EXTRA_LDFLAGS}"
 

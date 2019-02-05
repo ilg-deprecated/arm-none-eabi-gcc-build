@@ -153,7 +153,6 @@ function do_binutils()
             --enable-static \
             --enable-build-warnings=no \
             --disable-rpath \
-            --with-system-zlib \
             
         ) | tee "${INSTALL_FOLDER_PATH}/configure-binutils-output.txt"
         cp "config.log" "${INSTALL_FOLDER_PATH}"/config-binutils-log.txt
@@ -955,7 +954,6 @@ function do_gdb()
             --disable-werror \
             --enable-build-warnings=no \
             --disable-rpath \
-            --with-system-zlib \
             --without-guile \
             --without-babeltrace \
             --without-libunwind-ia64 \

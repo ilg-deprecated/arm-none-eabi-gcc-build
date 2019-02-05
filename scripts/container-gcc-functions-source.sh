@@ -907,7 +907,12 @@ function do_gdb()
           export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}"
           
           export CPPFLAGS="${EXTRA_CPPFLAGS}" 
-          export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
+          if [ "${TARGET_OS}" == "win" ]
+          then
+            export LDFLAGS="${EXTRA_LDFLAGS_APP} -static" 
+          else
+            export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
+          fi
   
           local extra_python_opts="--with-python=no"
           if [ "$1" == "-py" ]

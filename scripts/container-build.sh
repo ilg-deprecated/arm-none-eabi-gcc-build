@@ -235,6 +235,8 @@ then
 fi
 EXTRA_LDFLAGS_APP="${EXTRA_LDFLAGS} -static-libstdc++"
 
+GCC_CONFIG_OPTIONS=""
+
 if [ "${TARGET_OS}" == "macos" ]
 then
   EXTRA_LDFLAGS_APP+=" -Wl,-dead_strip"
@@ -249,7 +251,8 @@ then
   # -static avoids libwinpthread-1.dll; unfortunatelly it interfears
   # with liblto_plugin-0.dll
   # -static-libgcc avoids libgcc_s_sjlj-1.dll 
-  EXTRA_LDFLAGS_APP+=" -static -static-libgcc -Wl,--gc-sections"
+  EXTRA_LDFLAGS_APP+=" -Wl,--gc-sections"
+  GCC_CONFIG_OPTIONS="--with-host-libstdcxx=-static -static-libgcc"
 fi
 
 export PKG_CONFIG=pkg-config-verbose

@@ -679,6 +679,8 @@ function do_gcc_final()
             export CC_FOR_TARGET=${GCC_TARGET}-gcc
             export GCC_FOR_TARGET=${GCC_TARGET}-gcc
             export CXX_FOR_TARGET=${GCC_TARGET}-g++
+
+            export LDFLAGS="${EXTRA_LDFLAGS_APP} -static" 
           fi
 
           # https://gcc.gnu.org/install/configure.html

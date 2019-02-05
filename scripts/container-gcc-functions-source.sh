@@ -283,6 +283,7 @@ function do_gcc_first()
             --with-pkgversion="${BRANDING}" \
             \
             --enable-languages=c \
+            --enable-lto \
             --disable-decimal-float \
             --disable-libffi \
             --disable-libgomp \

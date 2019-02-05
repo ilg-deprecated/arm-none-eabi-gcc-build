@@ -108,11 +108,10 @@ function do_binutils()
 
       if [ ! -f "config.status" ]
       then
-
-        echo
-        echo "Running binutils configure..."
-      
         (
+          echo
+          echo "Running binutils configure..."
+      
           bash "${WORK_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}/configure" --help
 
           export CFLAGS="${EXTRA_CFLAGS} -Wno-deprecated-declarations -Wno-implicit-function-declaration -Wno-parentheses -Wno-format-nonliteral -Wno-shift-count-overflow -Wno-shift-negative-value -Wno-format -Wno-implicit-fallthrough"
@@ -154,15 +153,14 @@ function do_binutils()
             --disable-rpath \
             --with-system-zlib \
             
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-binutils-log.txt
         ) | tee "${INSTALL_FOLDER_PATH}/configure-binutils-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-binutils-log.txt
-
       fi
 
-      echo
-      echo "Running binutils make..."
-      
       (
+        echo
+        echo "Running binutils make..."
+      
         make ${JOBS} 
         make install
 
@@ -237,11 +235,10 @@ function do_gcc_first()
 
       if [ ! -f "config.status" ]
       then
-
-        echo
-        echo "Running gcc first stage configure..."
-      
         (
+          echo
+          echo "Running gcc first stage configure..."
+      
           bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" --help
 
           export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unused-value -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-unused-but-set-variable -Wno-shift-negative-value -Wno-misleading-indentation"
@@ -305,16 +302,15 @@ function do_gcc_first()
             --disable-build-format-warnings \
             --with-system-zlib \
           
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc-first-log.txt
         ) | tee "${INSTALL_FOLDER_PATH}/configure-gcc-first-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc-first-log.txt
-
       fi
 
-      # Partial build, without documentation.
-      echo
-      echo "Running gcc first stage make..."
-
       (
+        # Partial build, without documentation.
+        echo
+        echo "Running gcc first stage make..."
+
         # No need to make 'all', 'all-gcc' is enough to compile the libraries.
         # Parallel build failed once on win32.
         make ${JOBS} all-gcc
@@ -353,30 +349,29 @@ function do_newlib()
 
       if [ ! -f "config.status" ]
       then
-
-        # --disable-nls do not use Native Language Support
-        # --enable-newlib-io-long-double   enable long double type support in IO functions printf/scanf
-        # --enable-newlib-io-long-long   enable long long type support in IO functions like printf/scanf
-        # --enable-newlib-io-c99-formats   enable C99 support in IO functions like printf/scanf
-        # --enable-newlib-register-fini   enable finalization function registration using atexit
-        # --disable-newlib-supplied-syscalls disable newlib from supplying syscalls (__NO_SYSCALLS__)
-
-        # --disable-newlib-fvwrite-in-streamio    disable iov in streamio
-        # --disable-newlib-fseek-optimization    disable fseek optimization
-        # --disable-newlib-wide-orient    Turn off wide orientation in streamio
-        # --disable-newlib-unbuf-stream-opt    disable unbuffered stream optimization in streamio
-        # --enable-newlib-nano-malloc    use small-footprint nano-malloc implementation
-        # --enable-lite-exit	enable light weight exit
-        # --enable-newlib-global-atexit	enable atexit data structure as global
-        # --enable-newlib-nano-formatted-io    Use nano version formatted IO
-        # --enable-newlib-reent-small
-
-        # --enable-newlib-retargetable-locking ???
-
-        echo
-        echo "Running newlib$1 configure..."
-      
         (
+          # --disable-nls do not use Native Language Support
+          # --enable-newlib-io-long-double   enable long double type support in IO functions printf/scanf
+          # --enable-newlib-io-long-long   enable long long type support in IO functions like printf/scanf
+          # --enable-newlib-io-c99-formats   enable C99 support in IO functions like printf/scanf
+          # --enable-newlib-register-fini   enable finalization function registration using atexit
+          # --disable-newlib-supplied-syscalls disable newlib from supplying syscalls (__NO_SYSCALLS__)
+
+          # --disable-newlib-fvwrite-in-streamio    disable iov in streamio
+          # --disable-newlib-fseek-optimization    disable fseek optimization
+          # --disable-newlib-wide-orient    Turn off wide orientation in streamio
+          # --disable-newlib-unbuf-stream-opt    disable unbuffered stream optimization in streamio
+          # --enable-newlib-nano-malloc    use small-footprint nano-malloc implementation
+          # --enable-lite-exit	enable light weight exit
+          # --enable-newlib-global-atexit	enable atexit data structure as global
+          # --enable-newlib-nano-formatted-io    Use nano version formatted IO
+          # --enable-newlib-reent-small
+
+          # --enable-newlib-retargetable-locking ???
+
+          echo
+          echo "Running newlib$1 configure..."
+      
           bash "${WORK_FOLDER_PATH}/${NEWLIB_SRC_FOLDER_NAME}/configure" --help
 
           local optimize="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}"
@@ -454,16 +449,15 @@ function do_newlib()
             echo "Unsupported do_newlib arg $1"
             exit 1
           fi
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-newlib$1-log.txt
         ) | tee "${INSTALL_FOLDER_PATH}/configure-newlib$1-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-newlib$1-log.txt
-
       fi
 
-      # Partial build, without documentation.
-      echo
-      echo "Running newlib$1 make..."
-
       (
+        # Partial build, without documentation.
+        echo
+        echo "Running newlib$1 make..."
+
         # Parallel build failed on CentOS XBB
         if [ "${TARGET_OS}" == "macos" ]
         then
@@ -637,11 +631,10 @@ function do_gcc_final()
 
       if [ ! -f "config.status" ]
       then
-
-        echo
-        echo "Running gcc$1 final stage configure..."
-      
         (
+          echo
+          echo "Running gcc$1 final stage configure..."
+      
           bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" --help
 
           export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unused-value -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-unused-but-set-variable -Wno-shift-negative-value -Wno-expansion-to-defined"
@@ -771,16 +764,16 @@ function do_gcc_final()
               --with-system-zlib \
 
           fi
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc$1-last-log.txt
         ) | tee "${INSTALL_FOLDER_PATH}/configure-gcc$1-last-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc$1-last-log.txt
 
       fi
 
-      # Partial build, without documentation.
-      echo
-      echo "Running gcc$1 final stage make..."
-
       (
+        # Partial build, without documentation.
+        echo
+        echo "Running gcc$1 final stage make..."
+
         if [ "${TARGET_OS}" != "win" ]
         then
 
@@ -920,11 +913,10 @@ function do_gdb()
 
       if [ ! -f "config.status" ]
       then
-
-        echo
-        echo "Running gdb$1 configure..."
-      
         (
+          echo
+          echo "Running gdb$1 configure..."
+      
           bash "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}/configure" --help
 
           export GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-maybe-uninitialized -Wno-implicit-fallthrough -Wno-int-in-bool-context -Wno-format-nonliteral -Wno-misleading-indentation"
@@ -985,14 +977,14 @@ function do_gdb()
             --without-babeltrace \
             --without-libunwind-ia64 \
 
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gdb$1-log.txt
         ) | tee "${INSTALL_FOLDER_PATH}/configure-gdb$1-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gdb$1-log.txt
       fi
 
-      echo
-      echo "Running gdb$1 make..."
-
       (
+        echo
+        echo "Running gdb$1 make..."
+
         make ${JOBS}
         make install
 

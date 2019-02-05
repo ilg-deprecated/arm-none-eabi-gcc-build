@@ -47,26 +47,26 @@ function do_zlib()
       # export LDFLAGS="${EXTRA_LDFLAGS}"
       if [ "${TARGET_OS}" != "win" ]
       then
+        (
+          echo
+          echo "Running zlib configure..."
 
-        echo
-        echo "Running zlib configure..."
+          bash "./configure" --help
 
-        bash "./configure" --help
+          export CFLAGS="${EXTRA_CFLAGS} -Wno-shift-negative-value"
+          bash "./configure" \
+            --prefix="${INSTALL_FOLDER_PATH}" \
+            \
+            --static \
 
-        export CFLAGS="${EXTRA_CFLAGS} -Wno-shift-negative-value"
-        bash "./configure" \
-          --prefix="${INSTALL_FOLDER_PATH}" \
-          \
-          --static \
-        | tee "${INSTALL_FOLDER_PATH}/configure-zlib-output.txt"
-        cp "configure.log" "${INSTALL_FOLDER_PATH}"/configure-zlib-log.txt
-
+          cp "configure.log" "${INSTALL_FOLDER_PATH}"/configure-zlib-log.txt
+        ) | tee "${INSTALL_FOLDER_PATH}/configure-zlib-output.txt"
       fi
     
-      echo
-      echo "Running zlib make..."
-
       (
+        echo
+        echo "Running zlib make..."
+
         # Build.
         if [ "${TARGET_OS}" != "win" ]
         then
@@ -125,40 +125,39 @@ function do_gmp()
 
       if [ ! -f "config.status" ]
       then 
+        (
+          echo
+          echo "Running gmp configure..."
 
-        echo
-        echo "Running gmp configure..."
+          # ABI is mandatory, otherwise configure fails on 32-bit.
+          # (see https://gmplib.org/manual/ABI-and-ISA.html)
 
-        # ABI is mandatory, otherwise configure fails on 32-bit.
-        # (see https://gmplib.org/manual/ABI-and-ISA.html)
+          bash "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}/configure" --help
 
-        bash "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}/configure" --help
-
-        export CFLAGS="-Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare -Wno-overflow"
-        export CPPFLAGS="${EXTRA_CPPFLAGS}"
-        export LDFLAGS="${EXTRA_LDFLAGS}"
-        export ABI="${TARGET_BITS}"
-      
-        bash "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}/configure" \
-          --prefix="${INSTALL_FOLDER_PATH}" \
-          \
-          --build=${BUILD} \
-          --host=${HOST} \
-          --target=${TARGET} \
-          \
-          --disable-shared \
-          --enable-static \
-          --enable-cxx \
-          \
-        | tee "${INSTALL_FOLDER_PATH}/configure-gmp-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gmp-log.txt
-
+          export CFLAGS="-Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare -Wno-overflow"
+          export CPPFLAGS="${EXTRA_CPPFLAGS}"
+          export LDFLAGS="${EXTRA_LDFLAGS}"
+          export ABI="${TARGET_BITS}"
+        
+          bash "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}/configure" \
+            --prefix="${INSTALL_FOLDER_PATH}" \
+            \
+            --build=${BUILD} \
+            --host=${HOST} \
+            --target=${TARGET} \
+            \
+            --disable-shared \
+            --enable-static \
+            --enable-cxx \
+            
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gmp-log.txt
+        ) | tee "${INSTALL_FOLDER_PATH}/configure-gmp-output.txt"
       fi
 
-      echo
-      echo "Running gmp make..."
-
       (
+        echo
+        echo "Running gmp make..."
+
         # Build.
         make ${JOBS}
         make install-strip
@@ -204,36 +203,35 @@ function do_mpfr()
 
       if [ ! -f "config.status" ]
       then 
+        (
+          echo
+          echo "Running mpfr configure..."
 
-        echo
-        echo "Running mpfr configure..."
+          bash "${WORK_FOLDER_PATH}/${MPFR_FOLDER_NAME}/configure" --help
 
-        bash "${WORK_FOLDER_PATH}/${MPFR_FOLDER_NAME}/configure" --help
+          export CFLAGS="${EXTRA_CFLAGS}"
+          export CPPFLAGS="${EXTRA_CPPFLAGS}"
+          export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
 
-        export CFLAGS="${EXTRA_CFLAGS}"
-        export CPPFLAGS="${EXTRA_CPPFLAGS}"
-        export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
-
-        bash "${WORK_FOLDER_PATH}/${MPFR_FOLDER_NAME}/configure" \
-          --prefix="${INSTALL_FOLDER_PATH}" \
-          \
-          --build=${BUILD} \
-          --host=${HOST} \
-          --target=${TARGET} \
-          \
-          --disable-warnings \
-          --disable-shared \
-          --enable-static \
-          \
-        | tee "${INSTALL_FOLDER_PATH}/configure-mpfr-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-mpfr-log.txt
-
+          bash "${WORK_FOLDER_PATH}/${MPFR_FOLDER_NAME}/configure" \
+            --prefix="${INSTALL_FOLDER_PATH}" \
+            \
+            --build=${BUILD} \
+            --host=${HOST} \
+            --target=${TARGET} \
+            \
+            --disable-warnings \
+            --disable-shared \
+            --enable-static \
+            
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-mpfr-log.txt
+        ) | tee "${INSTALL_FOLDER_PATH}/configure-mpfr-output.txt"
       fi
 
-      echo
-      echo "Running mpfr make..."
-
       (
+        echo
+        echo "Running mpfr make..."
+
         # Build.
         make ${JOBS}
         make install-strip
@@ -280,35 +278,34 @@ function do_mpc()
 
       if [ ! -f "config.status" ]
       then 
+        (
+          echo
+          echo "Running mpc configure..."
+        
+          bash "${WORK_FOLDER_PATH}/${MPC_FOLDER_NAME}/configure" --help
 
-        echo
-        echo "Running mpc configure..."
-      
-        bash "${WORK_FOLDER_PATH}/${MPC_FOLDER_NAME}/configure" --help
+          export CFLAGS="${EXTRA_CFLAGS} -Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare"
+          export CPPFLAGS="${EXTRA_CPPFLAGS}"
+          export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
 
-        export CFLAGS="${EXTRA_CFLAGS} -Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare"
-        export CPPFLAGS="${EXTRA_CPPFLAGS}"
-        export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
-
-        bash "${WORK_FOLDER_PATH}/${MPC_FOLDER_NAME}/configure" \
-          --prefix="${INSTALL_FOLDER_PATH}" \
-          \
-          --build=${BUILD} \
-          --host=${HOST} \
-          --target=${TARGET} \
-          \
-          --disable-shared \
-          --enable-static \
-          \
-        | tee "${INSTALL_FOLDER_PATH}/configure-mpc-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-mpc-log.txt
-
+          bash "${WORK_FOLDER_PATH}/${MPC_FOLDER_NAME}/configure" \
+            --prefix="${INSTALL_FOLDER_PATH}" \
+            \
+            --build=${BUILD} \
+            --host=${HOST} \
+            --target=${TARGET} \
+            \
+            --disable-shared \
+            --enable-static \
+            
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-mpc-log.txt
+        ) | tee "${INSTALL_FOLDER_PATH}/configure-mpc-output.txt"
       fi
 
-      echo
-      echo "Running mpc make..."
-
       (
+        echo
+        echo "Running mpc make..."
+
         # Build.
         make ${JOBS}
         make install-strip
@@ -359,35 +356,34 @@ function do_isl()
 
       if [ ! -f "config.status" ]
       then 
+        (
+          echo
+          echo "Running isl configure..."
 
-        echo
-        echo "Running isl configure..."
+          bash "${WORK_FOLDER_PATH}/${ISL_FOLDER_NAME}/configure" --help
 
-        bash "${WORK_FOLDER_PATH}/${ISL_FOLDER_NAME}/configure" --help
+          export CFLAGS="${EXTRA_CFLAGS} -Wno-dangling-else -Wno-header-guard"
+          export CPPFLAGS="${EXTRA_CPPFLAGS}"
+          export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
 
-        export CFLAGS="${EXTRA_CFLAGS} -Wno-dangling-else -Wno-header-guard"
-        export CPPFLAGS="${EXTRA_CPPFLAGS}"
-        export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
-
-        bash "${WORK_FOLDER_PATH}/${ISL_FOLDER_NAME}/configure" \
-          --prefix="${INSTALL_FOLDER_PATH}" \
-          \
-          --build=${BUILD} \
-          --host=${HOST} \
-          --target=${TARGET} \
-          \
-          --disable-shared \
-          --enable-static \
-          \
-        | tee "${INSTALL_FOLDER_PATH}/configure-isl-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-isl-log.txt
-
+          bash "${WORK_FOLDER_PATH}/${ISL_FOLDER_NAME}/configure" \
+            --prefix="${INSTALL_FOLDER_PATH}" \
+            \
+            --build=${BUILD} \
+            --host=${HOST} \
+            --target=${TARGET} \
+            \
+            --disable-shared \
+            --enable-static \
+            
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-isl-log.txt
+        ) | tee "${INSTALL_FOLDER_PATH}/configure-isl-output.txt"
       fi
 
-      echo
-      echo "Running isl make..."
-
       (
+        echo
+        echo "Running isl make..."
+
         # Build.
         make ${JOBS}
         make install-strip
@@ -429,39 +425,40 @@ function do_libelf()
 
       if [ ! -f "config.status" ]
       then 
+        (
+          echo
+          echo "Running libelf configure..."
 
-        echo
-        echo "Running libelf configure..."
+          bash "${WORK_FOLDER_PATH}/${LIBELF_FOLDER_NAME}/configure" --help
 
-        bash "${WORK_FOLDER_PATH}/${LIBELF_FOLDER_NAME}/configure" --help
+          export CFLAGS="${EXTRA_CFLAGS} -Wno-tautological-compare"
+          export CPPFLAGS="${EXTRA_CPPFLAGS}"
+          export LDFLAGS="${EXTRA_LDFLAGS}"
 
-        export CFLAGS="${EXTRA_CFLAGS} -Wno-tautological-compare"
-        export CPPFLAGS="${EXTRA_CPPFLAGS}"
-        export LDFLAGS="${EXTRA_LDFLAGS}"
+          bash "${WORK_FOLDER_PATH}/${LIBELF_FOLDER_NAME}/configure" \
+            --prefix="${INSTALL_FOLDER_PATH}" \
+            \
+            --build=${BUILD} \
+            --host=${HOST} \
+            --target=${TARGET} \
+            \
+            --disable-shared \
+            --enable-static \
+            --disable-nls \
 
-        bash "${WORK_FOLDER_PATH}/${LIBELF_FOLDER_NAME}/configure" \
-          --prefix="${INSTALL_FOLDER_PATH}" \
-          \
-          --build=${BUILD} \
-          --host=${HOST} \
-          --target=${TARGET} \
-          \
-          --disable-shared \
-          --enable-static \
-          --disable-nls \
-        | tee "${INSTALL_FOLDER_PATH}/configure-libelf-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-libelf-log.txt
-
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-libelf-log.txt
+        ) | tee "${INSTALL_FOLDER_PATH}/configure-libelf-output.txt"
       fi
 
-      echo
-      echo "Running libelf make..."
-
       (
+        echo
+        echo "Running libelf make..."
+
         # Build.
         make ${JOBS}
         make install
       ) | tee "${INSTALL_FOLDER_PATH}/make-libelf-output.txt"
+
     )
 
     touch "${libelf_stamp_file_path}"
@@ -508,40 +505,38 @@ function do_expat()
 
       if [ ! -f "config.status" ]
       then 
+        (
+          echo
+          echo "Running expat configure..."
 
-        echo
-        echo "Running expat configure..."
+          bash "${WORK_FOLDER_PATH}/${EXPAT_FOLDER_NAME}/configure" --help
 
-        bash "${WORK_FOLDER_PATH}/${EXPAT_FOLDER_NAME}/configure" --help
+          export CFLAGS="${EXTRA_CFLAGS}"
+          export CPPFLAGS="${EXTRA_CPPFLAGS}"
+          export LDFLAGS="${EXTRA_LDFLAGS}"
 
-        export CFLAGS="${EXTRA_CFLAGS}"
-        export CPPFLAGS="${EXTRA_CPPFLAGS}"
-        export LDFLAGS="${EXTRA_LDFLAGS}"
-
-        bash "${WORK_FOLDER_PATH}/${EXPAT_FOLDER_NAME}/configure" \
-          --prefix="${INSTALL_FOLDER_PATH}" \
-          \
-          --build=${BUILD} \
-          --host=${HOST} \
-          --target=${TARGET} \
-          \
-          --disable-shared \
-          --enable-static \
-          \
-        | tee "${INSTALL_FOLDER_PATH}/configure-expat-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-expat-log.txt
-
+          bash "${WORK_FOLDER_PATH}/${EXPAT_FOLDER_NAME}/configure" \
+            --prefix="${INSTALL_FOLDER_PATH}" \
+            \
+            --build=${BUILD} \
+            --host=${HOST} \
+            --target=${TARGET} \
+            \
+            --disable-shared \
+            --enable-static \
+            
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-expat-log.txt
+        ) | tee "${INSTALL_FOLDER_PATH}/configure-expat-output.txt"
       fi
 
-      echo
-      echo "Running expat make..."
-
       (
+        echo
+        echo "Running expat make..."
+
         # Build.
         make ${JOBS}
         make install
       ) | tee "${INSTALL_FOLDER_PATH}/make-expat-output.txt"
-
     )
 
     touch "${expat_stamp_file_path}"
@@ -582,37 +577,37 @@ function do_libiconv()
 
       if [ ! -f "config.status" ]
       then 
+        (
+          echo
+          echo "Running libiconv configure..."
 
-        echo
-        echo "Running libiconv configure..."
+          bash "${WORK_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}/configure" --help
 
-        bash "${WORK_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}/configure" --help
+          # -fgnu89-inline fixes "undefined reference to `aliases2_lookup'"
+          #  https://savannah.gnu.org/bugs/?47953
+          export CFLAGS="${EXTRA_CFLAGS} -fgnu89-inline -Wno-tautological-compare -Wno-parentheses-equality -Wno-static-in-inline -Wno-pointer-to-int-cast"
+          export CPPFLAGS="${EXTRA_CPPFLAGS}"
+          export LDFLAGS="${EXTRA_LDFLAGS}"
 
-        # -fgnu89-inline fixes "undefined reference to `aliases2_lookup'"
-        #  https://savannah.gnu.org/bugs/?47953
-        export CFLAGS="${EXTRA_CFLAGS} -fgnu89-inline -Wno-tautological-compare -Wno-parentheses-equality -Wno-static-in-inline -Wno-pointer-to-int-cast"
-        export CPPFLAGS="${EXTRA_CPPFLAGS}"
-        export LDFLAGS="${EXTRA_LDFLAGS}"
+          bash "${WORK_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}/configure" \
+            --prefix="${INSTALL_FOLDER_PATH}" \
+            \
+            --build=${BUILD} \
+            --host=${HOST} \
+            --target=${TARGET} \
+            \
+            --disable-shared \
+            --enable-static \
+            --disable-nls \
 
-        bash "${WORK_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}/configure" \
-          --prefix="${INSTALL_FOLDER_PATH}" \
-          \
-          --build=${BUILD} \
-          --host=${HOST} \
-          --target=${TARGET} \
-          \
-          --disable-shared \
-          --enable-static \
-          --disable-nls \
-        | tee "${INSTALL_FOLDER_PATH}/configure-libiconv-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-libiconv-log.txt
-
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-libiconv-log.txt
+        ) | tee "${INSTALL_FOLDER_PATH}/configure-libiconv-output.txt"
       fi
 
-      echo
-      echo "Running libiconv make..."
-
       (
+        echo
+        echo "Running libiconv make..."
+
         # Build.
         make ${JOBS}
         make install-strip
@@ -656,36 +651,37 @@ function do_xz()
 
       if [ ! -f "config.status" ]
       then 
+        (
+          echo
+          echo "Running xz configure..."
 
-        echo
-        echo "Running xz configure..."
+          bash "${WORK_FOLDER_PATH}/${XZ_FOLDER_NAME}/configure" --help
 
-        bash "${WORK_FOLDER_PATH}/${XZ_FOLDER_NAME}/configure" --help
+          export CFLAGS="${EXTRA_CFLAGS} -Wno-implicit-fallthrough"
+          export CPPFLAGS="${EXTRA_CPPFLAGS}"
+          export LDFLAGS="${EXTRA_LDFLAGS}"
 
-        export CFLAGS="${EXTRA_CFLAGS} -Wno-implicit-fallthrough"
-        export CPPFLAGS="${EXTRA_CPPFLAGS}"
-        export LDFLAGS="${EXTRA_LDFLAGS}"
+          bash "${WORK_FOLDER_PATH}/${XZ_FOLDER_NAME}/configure" \
+            --prefix="${INSTALL_FOLDER_PATH}" \
+            \
+            --build=${BUILD} \
+            --host=${HOST} \
+            --target=${TARGET} \
+            \
+            --disable-shared \
+            --enable-static \
+            --disable-rpath \
+            --disable-nls \
 
-        bash "${WORK_FOLDER_PATH}/${XZ_FOLDER_NAME}/configure" \
-          --prefix="${INSTALL_FOLDER_PATH}" \
-          \
-          --build=${BUILD} \
-          --host=${HOST} \
-          --target=${TARGET} \
-          \
-          --disable-shared \
-          --enable-static \
-          --disable-rpath \
-          --disable-nls \
-        | tee "${INSTALL_FOLDER_PATH}/configure-xz-output.txt"
-        cp "config.log" "${INSTALL_FOLDER_PATH}"/config-xz-log.txt
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-xz-log.txt
+        ) | tee "${INSTALL_FOLDER_PATH}/configure-xz-output.txt"
 
       fi
 
-      echo
-      echo "Running xz make..."
-
       (
+        echo
+        echo "Running xz make..."
+
         # Build.
         make ${JOBS}
         make install-strip

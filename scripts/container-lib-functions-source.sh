@@ -149,7 +149,7 @@ function do_gmp()
           --disable-shared \
           --enable-static \
           --enable-cxx \
-          --disable-nls \
+          \
         | tee "${INSTALL_FOLDER_PATH}/configure-gmp-output.txt"
         cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gmp-log.txt
 
@@ -224,7 +224,7 @@ function do_mpfr()
           --disable-warnings \
           --disable-shared \
           --enable-static \
-          --disable-nls \
+          \
         | tee "${INSTALL_FOLDER_PATH}/configure-mpfr-output.txt"
         cp "config.log" "${INSTALL_FOLDER_PATH}"/config-mpfr-log.txt
 
@@ -299,7 +299,7 @@ function do_mpc()
           \
           --disable-shared \
           --enable-static \
-          --disable-nls \
+          \
         | tee "${INSTALL_FOLDER_PATH}/configure-mpc-output.txt"
         cp "config.log" "${INSTALL_FOLDER_PATH}"/config-mpc-log.txt
 
@@ -378,7 +378,7 @@ function do_isl()
           \
           --disable-shared \
           --enable-static \
-          --disable-nls \
+          \
         | tee "${INSTALL_FOLDER_PATH}/configure-isl-output.txt"
         cp "config.log" "${INSTALL_FOLDER_PATH}"/config-isl-log.txt
 
@@ -527,7 +527,7 @@ function do_expat()
           \
           --disable-shared \
           --enable-static \
-          --disable-nls \
+          \
         | tee "${INSTALL_FOLDER_PATH}/configure-expat-output.txt"
         cp "config.log" "${INSTALL_FOLDER_PATH}"/config-expat-log.txt
 

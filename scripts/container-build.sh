@@ -249,7 +249,7 @@ then
   # -static avoids libwinpthread-1.dll; unfortunatelly it interfears
   # with liblto_plugin-0.dll
   # -static-libgcc avoids libgcc_s_sjlj-1.dll 
-  EXTRA_LDFLAGS_APP+=" -static-libgcc -Wl,--gc-sections"
+  EXTRA_LDFLAGS_APP+=" -static -static-libgcc -Wl,--gc-sections"
 fi
 
 export PKG_CONFIG=pkg-config-verbose
@@ -357,7 +357,7 @@ then
   then
     # For version 8.2.1-1.3 and up.
     FIX_LTO_PLUGIN="y"
-    HAS_WINPTHREAD="y"
+    # HAS_WINPTHREAD="y"
 
     GDB_GIT_URL="git://sourceware.org/git/binutils-gdb.git"
     GDB_GIT_BRANCH="master"

@@ -1209,14 +1209,8 @@ function check_binaries()
       check_binary ${bin}
     done
 
-    binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*.exe)
+    binaries=$(find ${APP_PREFIX} -name \*.exe)
     for bin in ${binaries} 
-    do
-      check_binary ${bin}
-    done
-
-    binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \*.exe)
-    for bin in ${binaries}
     do
       check_binary ${bin}
     done

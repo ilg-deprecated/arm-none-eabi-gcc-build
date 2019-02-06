@@ -125,6 +125,7 @@ function do_binutils()
           export LDFLAGS
 
           # ? --without-python --without-curses, --with-expat
+          # ? --with-system-zlib used to work, now it fails.
 
           bash "${WORK_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}/configure" \
             --prefix="${APP_PREFIX}" \
@@ -264,6 +265,8 @@ function do_gcc_first()
 
           # Prefer an explicit libexec folder.
           # --libexecdir="${APP_PREFIX}/lib" 
+
+          # --enable-lto explicit, differs from ARM which uses the default.
 
           bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" \
             --prefix="${APP_PREFIX}"  \

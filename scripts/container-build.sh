@@ -612,7 +612,7 @@ copy_gme_files
 
 final_tunings
 
-if [ \( "${TARGET_OS}" == "_win" \) -a \( ! -z "${HAS_WINPTHREAD}" \)]
+if [ \( "${TARGET_OS}" == "win" \) -a \( ! -z "${HAS_WINPTHREAD}" \)]
 then
   copy_win_libwinpthread_dll
 fi

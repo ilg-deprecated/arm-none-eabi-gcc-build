@@ -145,7 +145,6 @@ function do_binutils()
           --disable-gdb \
           --enable-interwork \
           --enable-plugins \
-          --enable-lto \
           --with-sysroot="${APP_PREFIX}/${GCC_TARGET}" \
           \
           --disable-shared \
@@ -711,7 +710,6 @@ function do_gcc_final()
             --enable-languages=c,c++ \
             ${mingw_wildcard} \
             --enable-plugins \
-            --enable-lto \
             --disable-decimal-float \
             --disable-libffi \
             --disable-libgomp \

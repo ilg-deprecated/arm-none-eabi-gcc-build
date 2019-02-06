@@ -373,6 +373,9 @@ then
        \( "${RELEASE_VERSION}" != "8.2.1-1.3" \) ]
   then
     GCC_PATCH="gcc-8.2.1.patch"
+
+    FIX_LTO_PLUGIN=""
+    HAS_WINPTHREAD=""
   fi
 
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]

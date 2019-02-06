@@ -1037,9 +1037,9 @@ function strip_binaries()
 
       set +e
       if [ "${UNAME}" == "Darwin" ]; then
-        binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm +111 -and ! -type d)
+        binaries=$(find ${APP_PREFIX}/lib*/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm +111 -and ! -type d)
       else
-        binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm /111 -and ! -type d)
+        binaries=$(find ${APP_PREFIX}/lib*/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm /111 -and ! -type d)
       fi
       set -e
 
@@ -1056,13 +1056,8 @@ function strip_binaries()
         strip_binary "${CROSS_COMPILE_PREFIX}"-strip ${bin}
       done
 
-      binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*)
-      for bin in ${binaries} 
-      do
-        strip_binary "${CROSS_COMPILE_PREFIX}"-strip ${bin}
-      done
-
-      binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \*.exe)
+      # Cover both bin and libexec.
+      binaries=$(find ${APP_PREFIX} -name \*.exe)
       for bin in ${binaries} 
       do
         strip_binary "${CROSS_COMPILE_PREFIX}"-strip ${bin}

@@ -585,7 +585,7 @@ fi
 # Task [III-6] /$HOST_NATIVE/gdb/
 # Task [IV-4] /$HOST_MINGW/gdb/
 do_gdb ""
-do_gdb "-py"
+# !!! do_gdb "-py"
 
 # Task [III-7] /$HOST_NATIVE/build-manual
 # Nope, the build process is different.

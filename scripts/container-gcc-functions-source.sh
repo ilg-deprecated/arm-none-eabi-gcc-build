@@ -146,7 +146,6 @@ function do_binutils()
             --disable-gdb \
             --enable-interwork \
             --enable-plugins \
-            --enable-lto \
             --with-sysroot="${APP_PREFIX}/${GCC_TARGET}" \
             \
             --disable-shared \
@@ -266,8 +265,6 @@ function do_gcc_first()
           # Prefer an explicit libexec folder.
           # --libexecdir="${APP_PREFIX}/lib" 
 
-          # --enable-lto explicit, differs from ARM which uses the default.
-
           bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" \
             --prefix="${APP_PREFIX}"  \
             --infodir="${APP_PREFIX_DOC}/info" \
@@ -282,7 +279,6 @@ function do_gcc_first()
             --with-pkgversion="${BRANDING}" \
             \
             --enable-languages=c \
-            --enable-lto \
             --disable-decimal-float \
             --disable-libffi \
             --disable-libgomp \
@@ -675,9 +671,6 @@ function do_gcc_final()
             export CC_FOR_TARGET=${GCC_TARGET}-gcc
             export GCC_FOR_TARGET=${GCC_TARGET}-gcc
             export CXX_FOR_TARGET=${GCC_TARGET}-g++
-
-            # That was the last resort to avoid libwinpthread-1.dll.
-            export LDFLAGS="${EXTRA_LDFLAGS_APP} -static" 
           fi
 
           # https://gcc.gnu.org/install/configure.html
@@ -711,7 +704,6 @@ function do_gcc_final()
               --enable-languages=c,c++ \
               ${mingw_wildcard} \
               --enable-plugins \
-              --enable-lto \
               --disable-decimal-float \
               --disable-libffi \
               --disable-libgomp \
@@ -840,7 +832,7 @@ function do_gcc_final()
           # from the Linux build.
           make ${JOBS} all-gcc
 
-          if [ "${TARGET_OS}" == "win" ]
+          if [ "${TARGET_OS}" == "_win" ]
           then
             (
               cd lto-plugin
@@ -934,12 +926,7 @@ function do_gdb()
           export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}"
           
           export CPPFLAGS="${EXTRA_CPPFLAGS}" 
-          if [ "${TARGET_OS}" == "win" ]
-          then
-            export LDFLAGS="${EXTRA_LDFLAGS_APP} -static" 
-          else
-            export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
-          fi
+          export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
   
           local extra_python_opts="--with-python=no"
           if [ "$1" == "-py" ]

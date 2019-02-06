@@ -1,9 +1,10 @@
 The major changes and releases, in reverse chronological order:
 
-[2019-02-04]
+[2019-02-06]
 
-- v8.2.1-1.4-20190204 released
+- v8.2.1-1.4-20190206 released
 - windows LTO with -g gcc bug patched (libiberty)
+- windows static build again
 
 [2019-02-02]
 

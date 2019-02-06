@@ -249,7 +249,7 @@ then
   # -static avoids libwinpthread-1.dll; unfortunatelly it interfears
   # with liblto_plugin-0.dll
   # -static-libgcc avoids libgcc_s_sjlj-1.dll 
-  EXTRA_LDFLAGS_APP+=" -static-libgcc -Wl,--gc-sections"
+  EXTRA_LDFLAGS_APP+=" -static -static-libgcc -Wl,--gc-sections"
 fi
 
 export PKG_CONFIG=pkg-config-verbose

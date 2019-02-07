@@ -262,6 +262,8 @@ function do_gcc_first()
 
           # --enable-checking=no ???
 
+          # --enable-lto make it explicit, ARM uses the default.
+
           # Prefer an explicit libexec folder.
           # --libexecdir="${APP_PREFIX}/lib" 
 
@@ -279,6 +281,7 @@ function do_gcc_first()
             --with-pkgversion="${BRANDING}" \
             \
             --enable-languages=c \
+            --enable-lto \
             --disable-decimal-float \
             --disable-libffi \
             --disable-libgomp \
@@ -685,6 +688,8 @@ function do_gcc_final()
           # Prefer an explicit libexec folder.
           # --libexecdir="${APP_PREFIX}/lib" \
 
+          # --enable-lto make it explicit, ARM uses the default.
+
           if [ "$1" == "" ]
           then
 
@@ -704,6 +709,7 @@ function do_gcc_final()
               --enable-languages=c,c++ \
               ${mingw_wildcard} \
               --enable-plugins \
+              --enable-lto \
               --disable-decimal-float \
               --disable-libffi \
               --disable-libgomp \

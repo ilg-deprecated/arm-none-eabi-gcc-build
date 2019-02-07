@@ -1031,6 +1031,12 @@ function tidy_up()
 
   find "${APP_PREFIX}" -name "libiberty.a" -exec rm -v '{}' ';'
   find "${APP_PREFIX}" -name '*.la' -exec rm -v '{}' ';'
+
+  if [ "${TARGET_OS}" == "win" ]
+  then
+    find "${APP_PREFIX}" -name "liblto_plugin.a" -exec rm -v '{}' ';'
+    find "${APP_PREFIX}" -name "liblto_plugin.dll.a" -exec rm -v '{}' ';'
+  fi
 }
 
 function strip_binaries()

@@ -35,9 +35,8 @@ bug fixes:
 - GDB was built the Git commit ad0f979c9 from 2019-01-29, to fix the bugs
   affecting C++ LTO projects
   [24145](https://sourceware.org/bugzilla/show_bug.cgi?id=24145)
-- the `-static` option was removed from the Windows build, to allow for 
-  the `liblto_plugin-0.dll` to be created; the `libwinpthread-1.dll` was
-  copied to the `bin` folder
+- by default, the GCC build script fails to create `liblto_plugin-0.dll`
+  for static builds with mingw; code to create the plugin was added
 - the `liblto_plugin` copied/linked to the `lib/bdf-plugins` for `ar`
   to find it and be able to process archives with LTO objects
 - a patch was applied to gcc to fix the Windows LTO with -g bug

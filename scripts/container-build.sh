@@ -379,7 +379,6 @@ then
   then
     GCC_PATCH="gcc-8.2.1.patch"
 
-    FIX_LTO_PLUGIN=""
     HAS_WINPTHREAD=""
   fi
 

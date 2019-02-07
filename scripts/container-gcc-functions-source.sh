@@ -841,6 +841,37 @@ function do_gcc_final()
           # For Windows build only the GCC binaries, the libraries were copied 
           # from the Linux build.
           make ${JOBS} all-gcc
+
+          if [ \( "${TARGET_OS}" == "win" \) -a \( ! -f "lto-plugin/${LTO_PLUGIN_ORIGINAL_NAME}" \) ]
+          then
+            (
+              cd lto-plugin
+
+              # The LTO plugin fails to create the DLL if --disable-shared or
+              # -static are used.
+              # So do it again, enabling shared and without -static.
+              export LDFLAGS="$(echo ${EXTRA_LDFLAGS_APP} | sed -e 's/ -static / /')"
+
+              (
+                bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/lto-plugin/configure" --help
+
+                bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/lto-plugin/configure" \
+                  --prefix="${APP_PREFIX}"  \
+                  \
+                  --build=${BUILD} \
+                  --host=${HOST} \
+                  --target=${GCC_TARGET} \
+                  \
+                  --enable-shared \
+                  --with-gnu-ld \
+                  
+              ) | tee "${INSTALL_FOLDER_PATH}/configure-lto-plugin-output.txt"
+              cp "config.log" "${INSTALL_FOLDER_PATH}"/config-lto-plugin-log.txt
+
+              make clean all
+            )
+          fi
+
           make install-gcc
 
           if [ "${WITH_PDF}" == "y" ]

@@ -249,6 +249,7 @@ then
   # -static avoids libwinpthread-1.dll; unfortunatelly it interfears
   # with liblto_plugin-0.dll
   # -static-libgcc avoids libgcc_s_sjlj-1.dll 
+  # Warning: to simplify later sed, -static must be surrounded by spaces.
   EXTRA_LDFLAGS_APP+=" -static -static-libgcc -Wl,--gc-sections"
 fi
 
@@ -271,10 +272,20 @@ CFLAGS_OPTIMIZATIONS_FOR_TARGET="-ffunction-sections -fdata-sections -O2"
 
 # For the main GCC version, check gcc/BASE-VER.
 
+# -----------------------------------------------------------------------------
+# Defaults. Must be present.
+
 # Redefine to existing file names to enable patches.
 BINUTILS_PATCH=""
 GCC_PATCH=""
 GDB_PATCH=""
+HAS_WINPTHREAD=""
+
+# Redefine to actual URL if the build should use the Git sources.
+# Also be sure GDB_GIT_BRANCH and GDB_GIT_COMMIT are defined
+GDB_GIT_URL=""
+
+# -----------------------------------------------------------------------------
 
 BINUTILS_SRC_FOLDER_NAME="binutils"
 GCC_SRC_FOLDER_NAME="gcc"
@@ -296,12 +307,6 @@ then
   LTO_PLUGIN_ORIGINAL_NAME="liblto_plugin-0.dll"
   LTO_PLUGIN_BFD_PATH="lib/bfd-plugins/liblto_plugin-0.dll"
 fi
-
-HAS_WINPTHREAD=""
-
-# Redefine to actual URL if the build should use the Git sources.
-# Also be sure GDB_GIT_BRANCH and GDB_GIT_COMMIT are defined
-GDB_GIT_URL=""
 
 # Redfine it to a version based name and create new files.
 README_OUT_FILE_NAME="README-out.md"

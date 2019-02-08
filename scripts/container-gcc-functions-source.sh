@@ -125,7 +125,6 @@ function do_binutils()
           bash "${WORK_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}/configure" --help
 
           # ? --without-python --without-curses, --with-expat
-          # --with-system-zlib used to work, now it fails
 
           bash "${WORK_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}/configure" \
             --prefix="${APP_PREFIX}" \
@@ -152,6 +151,7 @@ function do_binutils()
             --enable-static \
             --enable-build-warnings=no \
             --disable-rpath \
+            --with-system-zlib \
             
           cp "config.log" "${INSTALL_FOLDER_PATH}"/config-binutils-log.txt
         ) | tee "${INSTALL_FOLDER_PATH}/configure-binutils-output.txt"
@@ -948,8 +948,6 @@ function do_gdb()
             fi
           fi
 
-          # --with-system-zlib used to work, now it fails
-
           bash "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}/configure" \
             --prefix="${APP_PREFIX}"  \
             --infodir="${APP_PREFIX_DOC}/info" \
@@ -983,6 +981,7 @@ function do_gdb()
             --disable-werror \
             --enable-build-warnings=no \
             --disable-rpath \
+            --with-system-zlib \
             --without-guile \
             --without-babeltrace \
             --without-libunwind-ia64 \

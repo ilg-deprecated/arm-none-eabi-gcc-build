@@ -639,6 +639,13 @@ function do_gcc_final()
       export CPPFLAGS="${EXTRA_CPPFLAGS}" 
       export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
 
+      local optimize="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}"
+      if [ "$1" == "-nano" ]
+      then
+        # For newlib-nano optimize for size.
+        optimize="$(echo ${optimize} | sed -e 's/-O2/-Os/')"
+      fi
+
       # Note the intentional `-g`.
       export CFLAGS_FOR_TARGET="${optimize} -g" 
       export CXXFLAGS_FOR_TARGET="${optimize} -fno-exceptions -g" 
@@ -664,13 +671,6 @@ function do_gcc_final()
 
           # Do not add CRT_glob.o here, it will fail with already defined,
           # since it is already handled by --enable-mingw-wildcard.
-
-          local optimize="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}"
-          if [ "$1" == "-nano" ]
-          then
-            # For newlib-nano optimize for size.
-            optimize="$(echo ${optimize} | sed -e 's/-O2/-Os/')"
-          fi
 
           mingw_wildcard="--disable-mingw-wildcard"
 

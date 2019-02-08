@@ -44,7 +44,9 @@ function do_zlib()
 
       xbb_activate
 
+      export CFLAGS="${EXTRA_CFLAGS} -Wno-shift-negative-value"
       # export LDFLAGS="${EXTRA_LDFLAGS}"
+
       if [ "${TARGET_OS}" != "win" ]
       then
         (
@@ -53,7 +55,6 @@ function do_zlib()
 
           bash "./configure" --help
 
-          export CFLAGS="${EXTRA_CFLAGS} -Wno-shift-negative-value"
           bash "./configure" \
             --prefix="${INSTALL_FOLDER_PATH}" \
             \
@@ -123,6 +124,11 @@ function do_gmp()
 
       xbb_activate
 
+      export CFLAGS="-Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare -Wno-overflow"
+      export CPPFLAGS="${EXTRA_CPPFLAGS}"
+      export LDFLAGS="${EXTRA_LDFLAGS}"
+      export ABI="${TARGET_BITS}"
+        
       if [ ! -f "config.status" ]
       then 
         (
@@ -134,11 +140,6 @@ function do_gmp()
 
           bash "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}/configure" --help
 
-          export CFLAGS="-Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare -Wno-overflow"
-          export CPPFLAGS="${EXTRA_CPPFLAGS}"
-          export LDFLAGS="${EXTRA_LDFLAGS}"
-          export ABI="${TARGET_BITS}"
-        
           bash "${WORK_FOLDER_PATH}/${GMP_FOLDER_NAME}/configure" \
             --prefix="${INSTALL_FOLDER_PATH}" \
             \
@@ -201,6 +202,10 @@ function do_mpfr()
 
       xbb_activate
 
+      export CFLAGS="${EXTRA_CFLAGS}"
+      export CPPFLAGS="${EXTRA_CPPFLAGS}"
+      export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
+
       if [ ! -f "config.status" ]
       then 
         (
@@ -208,10 +213,6 @@ function do_mpfr()
           echo "Running mpfr configure..."
 
           bash "${WORK_FOLDER_PATH}/${MPFR_FOLDER_NAME}/configure" --help
-
-          export CFLAGS="${EXTRA_CFLAGS}"
-          export CPPFLAGS="${EXTRA_CPPFLAGS}"
-          export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
 
           bash "${WORK_FOLDER_PATH}/${MPFR_FOLDER_NAME}/configure" \
             --prefix="${INSTALL_FOLDER_PATH}" \
@@ -276,6 +277,10 @@ function do_mpc()
 
       xbb_activate
 
+      export CFLAGS="${EXTRA_CFLAGS} -Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare"
+      export CPPFLAGS="${EXTRA_CPPFLAGS}"
+      export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
+
       if [ ! -f "config.status" ]
       then 
         (
@@ -283,10 +288,6 @@ function do_mpc()
           echo "Running mpc configure..."
         
           bash "${WORK_FOLDER_PATH}/${MPC_FOLDER_NAME}/configure" --help
-
-          export CFLAGS="${EXTRA_CFLAGS} -Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare"
-          export CPPFLAGS="${EXTRA_CPPFLAGS}"
-          export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
 
           bash "${WORK_FOLDER_PATH}/${MPC_FOLDER_NAME}/configure" \
             --prefix="${INSTALL_FOLDER_PATH}" \
@@ -354,6 +355,10 @@ function do_isl()
 
       xbb_activate
 
+      export CFLAGS="${EXTRA_CFLAGS} -Wno-dangling-else -Wno-header-guard"
+      export CPPFLAGS="${EXTRA_CPPFLAGS}"
+      export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
+
       if [ ! -f "config.status" ]
       then 
         (
@@ -361,10 +366,6 @@ function do_isl()
           echo "Running isl configure..."
 
           bash "${WORK_FOLDER_PATH}/${ISL_FOLDER_NAME}/configure" --help
-
-          export CFLAGS="${EXTRA_CFLAGS} -Wno-dangling-else -Wno-header-guard"
-          export CPPFLAGS="${EXTRA_CPPFLAGS}"
-          export LDFLAGS="${EXTRA_LDFLAGS_LIB}"
 
           bash "${WORK_FOLDER_PATH}/${ISL_FOLDER_NAME}/configure" \
             --prefix="${INSTALL_FOLDER_PATH}" \
@@ -423,6 +424,10 @@ function do_libelf()
 
       xbb_activate
 
+      export CFLAGS="${EXTRA_CFLAGS} -Wno-tautological-compare"
+      export CPPFLAGS="${EXTRA_CPPFLAGS}"
+      export LDFLAGS="${EXTRA_LDFLAGS}"
+
       if [ ! -f "config.status" ]
       then 
         (
@@ -430,10 +435,6 @@ function do_libelf()
           echo "Running libelf configure..."
 
           bash "${WORK_FOLDER_PATH}/${LIBELF_FOLDER_NAME}/configure" --help
-
-          export CFLAGS="${EXTRA_CFLAGS} -Wno-tautological-compare"
-          export CPPFLAGS="${EXTRA_CPPFLAGS}"
-          export LDFLAGS="${EXTRA_LDFLAGS}"
 
           bash "${WORK_FOLDER_PATH}/${LIBELF_FOLDER_NAME}/configure" \
             --prefix="${INSTALL_FOLDER_PATH}" \
@@ -503,6 +504,10 @@ function do_expat()
 
       xbb_activate
 
+      export CFLAGS="${EXTRA_CFLAGS}"
+      export CPPFLAGS="${EXTRA_CPPFLAGS}"
+      export LDFLAGS="${EXTRA_LDFLAGS}"
+
       if [ ! -f "config.status" ]
       then 
         (
@@ -510,10 +515,6 @@ function do_expat()
           echo "Running expat configure..."
 
           bash "${WORK_FOLDER_PATH}/${EXPAT_FOLDER_NAME}/configure" --help
-
-          export CFLAGS="${EXTRA_CFLAGS}"
-          export CPPFLAGS="${EXTRA_CPPFLAGS}"
-          export LDFLAGS="${EXTRA_LDFLAGS}"
 
           bash "${WORK_FOLDER_PATH}/${EXPAT_FOLDER_NAME}/configure" \
             --prefix="${INSTALL_FOLDER_PATH}" \
@@ -575,6 +576,12 @@ function do_libiconv()
 
       xbb_activate
 
+      # -fgnu89-inline fixes "undefined reference to `aliases2_lookup'"
+      #  https://savannah.gnu.org/bugs/?47953
+      export CFLAGS="${EXTRA_CFLAGS} -fgnu89-inline -Wno-tautological-compare -Wno-parentheses-equality -Wno-static-in-inline -Wno-pointer-to-int-cast"
+      export CPPFLAGS="${EXTRA_CPPFLAGS}"
+      export LDFLAGS="${EXTRA_LDFLAGS}"
+
       if [ ! -f "config.status" ]
       then 
         (
@@ -582,12 +589,6 @@ function do_libiconv()
           echo "Running libiconv configure..."
 
           bash "${WORK_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}/configure" --help
-
-          # -fgnu89-inline fixes "undefined reference to `aliases2_lookup'"
-          #  https://savannah.gnu.org/bugs/?47953
-          export CFLAGS="${EXTRA_CFLAGS} -fgnu89-inline -Wno-tautological-compare -Wno-parentheses-equality -Wno-static-in-inline -Wno-pointer-to-int-cast"
-          export CPPFLAGS="${EXTRA_CPPFLAGS}"
-          export LDFLAGS="${EXTRA_LDFLAGS}"
 
           bash "${WORK_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}/configure" \
             --prefix="${INSTALL_FOLDER_PATH}" \
@@ -649,6 +650,10 @@ function do_xz()
 
       xbb_activate
 
+      export CFLAGS="${EXTRA_CFLAGS} -Wno-implicit-fallthrough"
+      export CPPFLAGS="${EXTRA_CPPFLAGS}"
+      export LDFLAGS="${EXTRA_LDFLAGS}"
+
       if [ ! -f "config.status" ]
       then 
         (
@@ -656,10 +661,6 @@ function do_xz()
           echo "Running xz configure..."
 
           bash "${WORK_FOLDER_PATH}/${XZ_FOLDER_NAME}/configure" --help
-
-          export CFLAGS="${EXTRA_CFLAGS} -Wno-implicit-fallthrough"
-          export CPPFLAGS="${EXTRA_CPPFLAGS}"
-          export LDFLAGS="${EXTRA_LDFLAGS}"
 
           bash "${WORK_FOLDER_PATH}/${XZ_FOLDER_NAME}/configure" \
             --prefix="${INSTALL_FOLDER_PATH}" \

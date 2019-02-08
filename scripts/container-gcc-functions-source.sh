@@ -106,6 +106,16 @@ function do_binutils()
 
       xbb_activate
 
+      export CFLAGS="${EXTRA_CFLAGS} -Wno-deprecated-declarations -Wno-implicit-function-declaration -Wno-parentheses -Wno-format-nonliteral -Wno-shift-count-overflow -Wno-shift-negative-value -Wno-format -Wno-implicit-fallthrough"
+      export CXXFLAGS="${EXTRA_CXXFLAGS} -Wno-format-nonliteral -Wno-format-security -Wno-deprecated -Wno-c++11-narrowing"
+      export CPPFLAGS="${EXTRA_CPPFLAGS}"
+      LDFLAGS="${EXTRA_LDFLAGS_APP}" 
+      if [ "${TARGET_OS}" == "win" ]
+      then
+        LDFLAGS="${LDFLAGS} -Wl,${XBB_FOLDER}/${CROSS_COMPILE_PREFIX}/lib/CRT_glob.o"
+      fi
+      export LDFLAGS
+
       if [ ! -f "config.status" ]
       then
         (
@@ -113,16 +123,6 @@ function do_binutils()
           echo "Running binutils configure..."
       
           bash "${WORK_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}/configure" --help
-
-          export CFLAGS="${EXTRA_CFLAGS} -Wno-deprecated-declarations -Wno-implicit-function-declaration -Wno-parentheses -Wno-format-nonliteral -Wno-shift-count-overflow -Wno-shift-negative-value -Wno-format -Wno-implicit-fallthrough"
-          export CXXFLAGS="${EXTRA_CXXFLAGS} -Wno-format-nonliteral -Wno-format-security -Wno-deprecated -Wno-c++11-narrowing"
-          export CPPFLAGS="${EXTRA_CPPFLAGS}"
-          LDFLAGS="${EXTRA_LDFLAGS_APP}" 
-          if [ "${TARGET_OS}" == "win" ]
-          then
-            LDFLAGS="${LDFLAGS} -Wl,${XBB_FOLDER}/${CROSS_COMPILE_PREFIX}/lib/CRT_glob.o"
-          fi
-          export LDFLAGS
 
           # ? --without-python --without-curses, --with-expat
           # --with-system-zlib used to work, now it fails
@@ -233,6 +233,16 @@ function do_gcc_first()
 
       xbb_activate
 
+      export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unused-value -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-unused-but-set-variable -Wno-shift-negative-value -Wno-misleading-indentation"
+      export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
+      export GCC_WARN_CXXFLAGS="-Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-array-bounds -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-format-security -Wno-suggest-attribute=format -Wno-format-extra-args -Wno-format -Wno-varargs -Wno-shift-count-overflow -Wno-ignored-attributes -Wno-tautological-compare -Wno-unused-label -Wno-unused-parameter -Wno-literal-suffix -Wno-expansion-to-defined -Wno-maybe-uninitialized -Wno-shift-negative-value -Wno-memset-elt-size -Wno-dangling-else -Wno-sequence-point -Wno-misleading-indentation -Wno-int-in-bool-context"
+      export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
+      export CPPFLAGS="${EXTRA_CPPFLAGS}" 
+      export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
+
+      export CFLAGS_FOR_TARGET="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}" 
+      export CXXFLAGS_FOR_TARGET="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}" 
+
       if [ ! -f "config.status" ]
       then
         (
@@ -240,16 +250,6 @@ function do_gcc_first()
           echo "Running gcc first stage configure..."
       
           bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" --help
-
-          export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unused-value -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-unused-but-set-variable -Wno-shift-negative-value -Wno-misleading-indentation"
-          export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
-          export GCC_WARN_CXXFLAGS="-Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-array-bounds -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-format-security -Wno-suggest-attribute=format -Wno-format-extra-args -Wno-format -Wno-varargs -Wno-shift-count-overflow -Wno-ignored-attributes -Wno-tautological-compare -Wno-unused-label -Wno-unused-parameter -Wno-literal-suffix -Wno-expansion-to-defined -Wno-maybe-uninitialized -Wno-shift-negative-value -Wno-memset-elt-size -Wno-dangling-else -Wno-sequence-point -Wno-misleading-indentation -Wno-int-in-bool-context"
-          export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
-          export CPPFLAGS="${EXTRA_CPPFLAGS}" 
-          export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
-
-          export CFLAGS_FOR_TARGET="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}" 
-          export CXXFLAGS_FOR_TARGET="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}" 
 
           # https://gcc.gnu.org/install/configure.html
           # --enable-shared[=package[,…]] build shared versions of libraries
@@ -350,6 +350,21 @@ function do_newlib()
       # Add the gcc first stage binaries to the path.
       PATH="${APP_PREFIX}/bin":${PATH}
 
+      local optimize="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}"
+      if [ "$1" == "-nano" ]
+      then
+        # For newlib-nano optimize for size.
+        optimize="$(echo ${optimize} | sed -e 's/-O2/-Os/')"
+      fi
+
+      export CFLAGS="${EXTRA_CFLAGS}"
+      export CXXFLAGS="${EXTRA_CXXFLAGS}"
+      export CPPFLAGS="${EXTRA_CPPFLAGS}" 
+
+      # Note the intentional `-g`.
+      export CFLAGS_FOR_TARGET="${optimize} -g -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-logical-not-parentheses -Wno-implicit-int -Wno-expansion-to-defined" 
+      export CXXFLAGS_FOR_TARGET="${optimize} -g" 
+
       if [ ! -f "config.status" ]
       then
         (
@@ -376,21 +391,6 @@ function do_newlib()
           echo "Running newlib$1 configure..."
       
           bash "${WORK_FOLDER_PATH}/${NEWLIB_SRC_FOLDER_NAME}/configure" --help
-
-          local optimize="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}"
-          if [ "$1" == "-nano" ]
-          then
-            # For newlib-nano optimize for size.
-            optimize="$(echo ${optimize} | sed -e 's/-O2/-Os/')"
-          fi
-
-          export CFLAGS="${EXTRA_CFLAGS}"
-          export CXXFLAGS="${EXTRA_CXXFLAGS}"
-          export CPPFLAGS="${EXTRA_CPPFLAGS}" 
-
-          # Note the intentional `-g`.
-          export CFLAGS_FOR_TARGET="${optimize} -g -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-logical-not-parentheses -Wno-implicit-int -Wno-expansion-to-defined" 
-          export CXXFLAGS_FOR_TARGET="${optimize} -g" 
 
           # I still did not figure out how to define a variable with
           # the list of options, such that it can be extended, so the
@@ -632,6 +632,28 @@ function do_gcc_final()
 
       xbb_activate
 
+      export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unused-value -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-unused-but-set-variable -Wno-shift-negative-value -Wno-expansion-to-defined"
+      export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
+      export GCC_WARN_CXXFLAGS="-Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-array-bounds -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-format-security -Wno-suggest-attribute=format -Wno-format-extra-args -Wno-format -Wno-unused-function -Wno-attributes -Wno-maybe-uninitialized -Wno-expansion-to-defined -Wno-misleading-indentation -Wno-literal-suffix -Wno-int-in-bool-context -Wno-memset-elt-size -Wno-shift-negative-value -Wno-dangling-else -Wno-sequence-point -Wno-nonnull"
+      export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
+      export CPPFLAGS="${EXTRA_CPPFLAGS}" 
+      export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
+
+      # Note the intentional `-g`.
+      export CFLAGS_FOR_TARGET="${optimize} -g" 
+      export CXXFLAGS_FOR_TARGET="${optimize} -fno-exceptions -g" 
+
+      if [ "${TARGET_OS}" == "win" ]
+      then
+        export AR_FOR_TARGET=${GCC_TARGET}-ar
+        export NM_FOR_TARGET=${GCC_TARGET}-nm
+        export OBJDUMP_FOR_TARET=${GCC_TARGET}-objdump
+        export STRIP_FOR_TARGET=${GCC_TARGET}-strip
+        export CC_FOR_TARGET=${GCC_TARGET}-gcc
+        export GCC_FOR_TARGET=${GCC_TARGET}-gcc
+        export CXX_FOR_TARGET=${GCC_TARGET}-g++
+      fi
+
       if [ ! -f "config.status" ]
       then
         (
@@ -639,13 +661,6 @@ function do_gcc_final()
           echo "Running gcc$1 final stage configure..."
       
           bash "${WORK_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" --help
-
-          export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unused-value -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-unused-but-set-variable -Wno-shift-negative-value -Wno-expansion-to-defined"
-          export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}" 
-          export GCC_WARN_CXXFLAGS="-Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-array-bounds -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-format-security -Wno-suggest-attribute=format -Wno-format-extra-args -Wno-format -Wno-unused-function -Wno-attributes -Wno-maybe-uninitialized -Wno-expansion-to-defined -Wno-misleading-indentation -Wno-literal-suffix -Wno-int-in-bool-context -Wno-memset-elt-size -Wno-shift-negative-value -Wno-dangling-else -Wno-sequence-point -Wno-nonnull"
-          export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
-          export CPPFLAGS="${EXTRA_CPPFLAGS}" 
-          export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
 
           # Do not add CRT_glob.o here, it will fail with already defined,
           # since it is already handled by --enable-mingw-wildcard.
@@ -657,23 +672,11 @@ function do_gcc_final()
             optimize="$(echo ${optimize} | sed -e 's/-O2/-Os/')"
           fi
 
-          # Note the intentional `-g`.
-          export CFLAGS_FOR_TARGET="${optimize} -g" 
-          export CXXFLAGS_FOR_TARGET="${optimize} -fno-exceptions -g" 
-
           mingw_wildcard="--disable-mingw-wildcard"
 
           if [ "${TARGET_OS}" == "win" ]
           then
             mingw_wildcard="--enable-mingw-wildcard"
-
-            export AR_FOR_TARGET=${GCC_TARGET}-ar
-            export NM_FOR_TARGET=${GCC_TARGET}-nm
-            export OBJDUMP_FOR_TARET=${GCC_TARGET}-objdump
-            export STRIP_FOR_TARGET=${GCC_TARGET}-strip
-            export CC_FOR_TARGET=${GCC_TARGET}-gcc
-            export GCC_FOR_TARGET=${GCC_TARGET}-gcc
-            export CXX_FOR_TARGET=${GCC_TARGET}-g++
           fi
 
           # https://gcc.gnu.org/install/configure.html
@@ -917,6 +920,15 @@ function do_gdb()
         export GNURM_PYTHON_WIN_DIR="${WORK_FOLDER_PATH}/${PYTHON_WIN}"
       fi
 
+      export GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-maybe-uninitialized -Wno-implicit-fallthrough -Wno-int-in-bool-context -Wno-format-nonliteral -Wno-misleading-indentation"
+      export GCC_WARN_CXXFLAGS="-Wno-deprecated-declarations"
+
+      export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}"
+      export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}"
+          
+      export CPPFLAGS="${EXTRA_CPPFLAGS}" 
+      export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
+  
       if [ ! -f "config.status" ]
       then
         (
@@ -925,15 +937,6 @@ function do_gdb()
       
           bash "${WORK_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}/configure" --help
 
-          export GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-maybe-uninitialized -Wno-implicit-fallthrough -Wno-int-in-bool-context -Wno-format-nonliteral -Wno-misleading-indentation"
-          export GCC_WARN_CXXFLAGS="-Wno-deprecated-declarations"
-
-          export CFLAGS="${EXTRA_CFLAGS} ${GCC_WARN_CFLAGS}"
-          export CXXFLAGS="${EXTRA_CXXFLAGS} ${GCC_WARN_CXXFLAGS}"
-          
-          export CPPFLAGS="${EXTRA_CPPFLAGS}" 
-          export LDFLAGS="${EXTRA_LDFLAGS_APP}" 
-  
           local extra_python_opts="--with-python=no"
           if [ "$1" == "-py" ]
           then

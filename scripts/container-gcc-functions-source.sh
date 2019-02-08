@@ -773,8 +773,8 @@ function do_gcc_final()
               --with-system-zlib \
 
           fi
-          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc$1-last-log.txt
-        ) | tee "${INSTALL_FOLDER_PATH}/configure-gcc$1-last-output.txt"
+          cp "config.log" "${INSTALL_FOLDER_PATH}"/config-gcc$1-final-log.txt
+        ) | tee "${INSTALL_FOLDER_PATH}/configure-gcc$1-final-output.txt"
 
       fi
 
@@ -885,7 +885,7 @@ function do_gcc_final()
 
         fi
 
-      ) | tee "${INSTALL_FOLDER_PATH}/make-gcc-last-output.txt"
+      ) | tee "${INSTALL_FOLDER_PATH}/make-gcc-final-output.txt"
     )
 
     touch "${gcc_final_stamp_file_path}"

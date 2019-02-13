@@ -41,6 +41,8 @@ bug fixes:
   to find it and be able to process archives with LTO objects
 - a patch was applied to gcc to fix the Windows LTO with -g bug
   [89183](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=89183)
+- a patch was applied to gcc to fix the Windows paths with spaces bug
+  [89249](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=89249)
 
 ## Compatibility
 

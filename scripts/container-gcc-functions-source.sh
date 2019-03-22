@@ -56,37 +56,26 @@ function download_python_win()
 
   if [ ! -d "${PYTHON_WIN}" ]
   then
-    # Hack to install a tool able to unpack .MSI setups.
-    # TODO: move to XBB.
-    # https://sourceforge.net/projects/p7zip/files/p7zip/16.02/p7zip_16.02_src_all.tar.bz2/download
-    p7zip_version="16.02"
-    p7zip_folder_name="p7zip_${p7zip_version}"
-    p7zip_archive="${p7zip_folder_name}_src_all.tar.bz2"
-    p7zip_url="https://sourceforge.net/projects/p7zip/files/p7zip/${p7zip_version}/${p7zip_archive}"
+    (
+      xbb_activate
 
-    cd "${BUILD_FOLDER_PATH}"
-    download_and_extract "${p7zip_url}" "${p7zip_archive}" "${p7zip_folder_name}"
+      cd "${SOURCES_FOLDER_PATH}"
+      # Include only the headers and the python library and executable.
+      echo '*.h' >"/tmp/included"
+      echo 'python*.dll' >>"/tmp/included"
+      echo 'python*.lib' >>"/tmp/included"
+      7za x -o"${PYTHON_WIN}" "${DOWNLOAD_FOLDER_PATH}/${PYTHON_WIN_PACK}" -i@"/tmp/included"
 
-    cd "${p7zip_folder_name}"
-    # Test only 7za
-    make test
-
-    cd "${SOURCES_FOLDER_PATH}"
-    # Include only the headers and the python library and executable.
-    echo '*.h' >"/tmp/included"
-    echo 'python*.dll' >>"/tmp/included"
-    echo 'python*.lib' >>"/tmp/included"
-    "${BUILD_FOLDER_PATH}/${p7zip_folder_name}/bin/7za" x -o"${PYTHON_WIN}" "${DOWNLOAD_FOLDER_PATH}/${PYTHON_WIN_PACK}" -i@"/tmp/included"
-
-    # Patch to disable the macro that renames hypot.
-    local patch_path="${BUILD_GIT_PATH}/patches/${PYTHON_WIN}.patch"
-    if [ -f "${patch_path}" ]
-    then
-      (
-        cd "${PYTHON_WIN}"
-        patch -p0 <"${patch_path}" 
-      )
-    fi
+      # Patch to disable the macro that renames hypot.
+      local patch_path="${BUILD_GIT_PATH}/patches/${PYTHON_WIN}.patch"
+      if [ -f "${patch_path}" ]
+      then
+        (
+          cd "${PYTHON_WIN}"
+          patch -p0 <"${patch_path}" 
+        )
+      fi
+    )
   else
     echo "Folder ${PYTHON_WIN} already present."
   fi

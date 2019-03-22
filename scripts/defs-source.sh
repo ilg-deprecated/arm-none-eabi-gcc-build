@@ -1,4 +1,11 @@
 # -----------------------------------------------------------------------------
+# This file is part of the GNU MCU Eclipse distribution.
+#   (https://gnu-mcu-eclipse.github.io)
+# Copyright (c) 2019 Liviu Ionescu.
+#
+# Permission to use, copy, modify, and/or distribute this software 
+# for any purpose is hereby granted, under the terms of the MIT license.
+# -----------------------------------------------------------------------------
 
 # Helper script used in the second edition of the build scripts.
 # As the name implies, it should contain only definitions and should
@@ -23,7 +30,7 @@ BRANDING=${BRANDING:-"${DISTRO_UC_NAME} ARM Embedded GCC"}
 GCC_TARGET=${GCC_TARGET:-"arm-none-eabi"}
 
 CONTAINER_SCRIPT_NAME=${CONTAINER_SCRIPT_NAME:-"container-build.sh"}
-CONTAINER_LIB_FUNCTIONS_SCRIPT_NAME=${CONTAINER_LIB_FUNCTIONS_SCRIPT_NAME:-"container-lib-functions-source.sh"}
+CONTAINER_LIBS_FUNCTIONS_SCRIPT_NAME=${CONTAINER_LIBS_FUNCTIONS_SCRIPT_NAME:-"container-lib-functions-source.sh"}
 CONTAINER_APP_FUNCTIONS_SCRIPT_NAME=${CONTAINER_APP_FUNCTIONS_SCRIPT_NAME:-"container-gcc-functions-source.sh"}
 
 # -----------------------------------------------------------------------------

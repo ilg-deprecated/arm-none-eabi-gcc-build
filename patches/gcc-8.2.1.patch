@@ -1,5 +1,5 @@
---- gcc/libiberty/simple-object.c	2018-04-13 19:52:10.000000000 +0300
-+++ gcc/libiberty/simple-object.c.patched	2019-02-04 12:01:37.000000000 +0200
+--- libiberty/simple-object.c	2018-04-13 19:52:10.000000000 +0300
++++ libiberty/simple-object-patched.c	2019-02-04 12:01:37.000000000 +0200
 @@ -44,6 +44,10 @@
  #define SEEK_SET 0
  #endif
@@ -20,8 +20,8 @@
    if (outfd == -1)
      {
        *err = errno;
---- gcc/gcc/gcc.c	2018-02-09 13:52:37.000000000 +0200
-+++ gcc/gcc/gcc.c.patched	2019-02-13 16:08:05.000000000 +0200
+--- gcc/gcc.c	2018-02-09 13:52:37.000000000 +0200
++++ gcc/gcc-patched.c	2019-02-13 16:08:05.000000000 +0200
 @@ -7738,7 +7738,11 @@
  				    X_OK, false);
    if (lto_wrapper_file)

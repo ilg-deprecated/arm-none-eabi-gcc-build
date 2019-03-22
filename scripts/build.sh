@@ -127,7 +127,8 @@ else
 
   if [ "${DO_BUILD_WIN64}" == "y" ]
   then
-    if [ ! -f "${HOST_WORK_FOLDER_PATH}/install/linux-x64/${APP_LC_NAME}/bin/${GCC_TARGET}-gcc" ]
+    linux_install_relative_path="linux-x64/install/${APP_LC_NAME}"
+    if [ ! -f "${HOST_WORK_FOLDER_PATH}/${linux_install_relative_path}/bin/${GCC_TARGET}-gcc" ]
     then
       host_build_target "Creating the GNU/Linux 64-bit distribution..." \
         --script "${CONTAINER_WORK_FOLDER_PATH}/${CONTAINER_BUILD_SCRIPT_REL_PATH}" \
@@ -140,7 +141,7 @@ else
         ${rest[@]-}
     fi
 
-    if [ ! -f "${HOST_WORK_FOLDER_PATH}/install/${linux_distribution}64/${APP_LC_NAME}/bin/${GCC_TARGET}-gcc" ]
+    if [ ! -f "${HOST_WORK_FOLDER_PATH}/${linux_install_relative_path}/bin/${GCC_TARGET}-gcc" ]
     then
       echo "Mandatory GNU/Linux binaries missing."
       exit 1
@@ -154,7 +155,7 @@ else
       --target-bits 64 \
       --docker-image "${docker_linux64_image}" \
       -- \
-      --linux-install-path "install/${linux_distribution}64/${APP_LC_NAME}" \
+      --linux-install-path "${linux_install_relative_path}" \
       ${rest[@]-}
   fi
 
@@ -178,7 +179,8 @@ else
   # Since the actual container is a 32-bit, use the debian32 binaries.
   if [ "${DO_BUILD_WIN32}" == "y" ]
   then
-    if [ ! -f "${HOST_WORK_FOLDER_PATH}/install/linux-x32/${APP_LC_NAME}/bin/${GCC_TARGET}-gcc" ]
+    linux_install_relative_path="linux-x32/install/${APP_LC_NAME}"
+    if [ ! -f "${HOST_WORK_FOLDER_PATH}/${linux_install_relative_path}/bin/${GCC_TARGET}-gcc" ]
     then
       host_build_target "Creating the GNU/Linux 32-bit distribution..." \
         --script "${CONTAINER_WORK_FOLDER_PATH}/${CONTAINER_BUILD_SCRIPT_REL_PATH}" \
@@ -191,7 +193,7 @@ else
         ${rest[@]-}
     fi
 
-    if [ ! -f "${HOST_WORK_FOLDER_PATH}/install/${linux_distribution}32/${APP_LC_NAME}/bin/${GCC_TARGET}-gcc" ]
+    if [ ! -f "${HOST_WORK_FOLDER_PATH}/${linux_install_relative_path}/bin/${GCC_TARGET}-gcc" ]
     then
       echo "Mandatory GNU/Linux binaries missing."
       exit 1
@@ -205,7 +207,7 @@ else
       --target-bits 32 \
       --docker-image "${docker_linux32_image}" \
       -- \
-      --linux-install-path "install/${linux_distribution}32/${APP_LC_NAME}" \
+      --linux-install-path "${linux_install_relative_path}" \
       ${rest[@]-}
   fi
 

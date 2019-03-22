@@ -91,7 +91,7 @@ function do_zlib()
             prefix="${LIBS_INSTALL_FOLDER_PATH}" \
             CFLAGS="${XBB_CFLAGS} -Wp,-D_FORTIFY_SOURCE=2 -fexceptions --param=ssp-buffer-size=4"
           make -f win32/Makefile.gcc install \
-            DESTDIR="${INSTALL_FOLDER_PATH}/" \
+            DESTDIR="${LIBS_INSTALL_FOLDER_PATH}/" \
             INCLUDE_PATH="include" \
             LIBRARY_PATH="lib" \
             BINARY_PATH="bin"

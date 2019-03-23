@@ -1091,57 +1091,58 @@ function tidy_up()
 
 function strip_binaries()
 {
+  local folder_path
+  if [ $# -ge 1 ]
+  then
+    folder_path="$1"
+  else
+    folder_path="${APP_PREFIX}"
+  fi
+
   if [ "${WITH_STRIP}" == "y" ]
   then
+    (
+      xbb_activate
 
-    echo
-    echo "Stripping binaries..."
+      echo
+      echo "Stripping binaries..."
 
-    if [ "${TARGET_PLATFORM}" != "win32" ]
-    then
+      local binaries
+      if [ "${TARGET_PLATFORM}" == "win32" ]
+      then
 
-      local binaries=$(find "${INSTALL_FOLDER_PATH}/bin" -name ${GCC_TARGET}-\*)
-      for bin in ${binaries} 
-      do
-        strip_binary strip "${bin}"
-      done
+        binaries=$(find "${folder_path}" -name \*.exe)
+        for bin in ${binaries} 
+        do
+          strip_binary "${CROSS_COMPILE_PREFIX}"-strip "${bin}"
+        done
 
-      binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*)
-      for bin in ${binaries} 
-      do
-        strip_binary strip "${bin}"
-      done
+      elif [ "${TARGET_PLATFORM}" == "darwin" ]
+      then
 
-      set +e
-      if [ "${CONTAINER_UNAME}" == "Darwin" ]; then
-        binaries=$(find ${APP_PREFIX}/lib*/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm +111 -and ! -type d)
-      else
-        binaries=$(find ${APP_PREFIX}/lib*/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm /111 -and ! -type d)
+        binaries=$(find "${folder_path}" -name \* -perm +111 -and ! -type d)
+        for bin in ${binaries} 
+        do
+          if is_elf "${bin}"
+          then
+            strip_binary strip "${bin}"
+          fi
+        done
+
+      elif [ "${TARGET_PLATFORM}" == "linux" ]
+      then
+
+        binaries=$(find "${folder_path}" -name \* -perm /111 -and ! -type d)
+        for bin in ${binaries} 
+        do
+          if is_elf "${bin}"
+          then
+            strip_binary strip "${bin}"
+          fi
+        done
+
       fi
-      set -e
-
-      for bin in ${binaries} 
-      do
-        strip_binary strip "${bin}"
-      done
-
-    else
-
-      local binaries=$(find "${INSTALL_FOLDER_PATH}/bin" -name ${GCC_TARGET}-\*.exe)
-      for bin in ${binaries} 
-      do
-        strip_binary "${CROSS_COMPILE_PREFIX}"-strip "${bin}"
-      done
-
-      # Cover both bin and libexec.
-      binaries=$(find ${APP_PREFIX} -name \*.exe)
-      for bin in ${binaries} 
-      do
-        strip_binary "${CROSS_COMPILE_PREFIX}"-strip "${bin}"
-      done
-
-    fi
-
+    )
   fi
 }
 

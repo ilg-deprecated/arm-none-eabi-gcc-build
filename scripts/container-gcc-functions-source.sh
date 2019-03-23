@@ -75,6 +75,11 @@ function download_python_win()
           patch -p0 <"${patch_path}" 
         )
       fi
+
+      # From here it'll be copied as dependency.
+      /usr/bin/install -v -c -m 644 "${PYTHON_WIN}/python27.dll" \
+        "${LIBS_INSTALL_FOLDER_PATH}/bin/"
+
     )
   else
     echo "Folder ${PYTHON_WIN} already present."

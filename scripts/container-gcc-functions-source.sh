@@ -911,14 +911,10 @@ function do_gcc_final()
 
     if [ "$1" == "" ]
     then
-      (
-        xbb_activate
-  
-        run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" --help
-        run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpversion
-        run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpmachine
-        run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpspecs | wc -l
-      )
+      run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" --help
+      run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpversion
+      run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpmachine
+      run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpspecs | wc -l
     fi
 
     touch "${gcc_final_stamp_file_path}"
@@ -1064,13 +1060,13 @@ function do_gdb()
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gdb$1-output.txt"
     )
 
-    (
-      # Required by gdb-py to access the python shared library.
-      xbb_activate
- 
+    if [ "$1" == "-py" -a "${TARGET_PLATFORM}" == "win32" ]
+    then
+      : # Wine is not happy with the python dll.
+    else
       run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gdb$1" --version
       run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gdb$1" --config
-    )
+    fi
 
     touch "${gdb_stamp_file_path}"
   else

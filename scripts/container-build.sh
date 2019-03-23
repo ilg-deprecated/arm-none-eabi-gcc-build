@@ -550,7 +550,11 @@ tidy_up
 
 # Task [III-9] /$HOST_NATIVE/strip_host_objects/
 # Task [IV-6] /$HOST_MINGW/strip_host_objects/
-strip_binaries
+# For unknown reasons, strip damaged linux binaries.
+if [ "${TARGET_PLATFORM}" != "linux" ]
+then
+  strip_binaries
+fi
 
 if [ "${TARGET_PLATFORM}" != "win32" ]
 then

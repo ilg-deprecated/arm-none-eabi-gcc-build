@@ -466,7 +466,16 @@ function do_newlib()
         else
           make
         fi 
-        make install
+
+        # Top make fails with install-strip due to libgloss make.
+        if [ "${WITH_STRIP}" == "y" ]
+        then
+          (cd "${GCC_TARGET}/libgloss"; make install)
+          (cd "${GCC_TARGET}/newlib"; make install-strip)
+        else
+          (cd "${GCC_TARGET}/libgloss"; make install)
+          (cd "${GCC_TARGET}/newlib"; make install)
+        fi
 
         if [ "$1" == "" ]
         then
@@ -793,7 +802,13 @@ function do_gcc_final()
           # This is a workaround. Better approach is have a t-* to set this flag via
           # CRTSTUFF_T_CFLAGS
           make ${JOBS} INHIBIT_LIBC_CFLAGS="-DUSE_TM_CLONE_REGISTRY=0"
-          make install-strip
+
+          if [ "${WITH_STRIP}" == "y" ]
+          then
+            make install-strip
+          else
+            make install
+          fi
 
           prepare_app_folder_libraries "${APP_PREFIX}"
 
@@ -1019,7 +1034,14 @@ function do_gdb()
         echo "Running gdb$1 make..."
 
         make ${JOBS}
-        make install
+
+        # The top make fails with target install-strip.
+        if [ "${WITH_STRIP}" == "y" ]
+        then
+          (cd gdb; make install-strip)
+        else
+          (cd gdb; make install)
+        fi
 
         prepare_app_libraries "${APP_PREFIX}/bin/${GCC_TARGET}-gdb$1"
 

@@ -1235,59 +1235,6 @@ function copy_gme_files()
     "${APP_PREFIX}/README.md"
 }
 
-function check_binaries__()
-{
-  if [ "${TARGET_PLATFORM}" != "win32" ]
-  then
-
-    echo
-    echo "Checking binaries for unwanted shared libraries..."
-
-    local binaries=$(find "${INSTALL_FOLDER_PATH}/bin" -name ${GCC_TARGET}-\*)
-    for bin in ${binaries} 
-    do
-      check_binary "${bin}"
-    done
-
-    binaries=$(find ${APP_PREFIX}/bin -maxdepth 1 -mindepth 1 -name \*)
-    for bin in ${binaries} 
-    do
-      check_binary "${bin}"
-    done
-
-    set +e
-    if [ "${UNAME}" == "Darwin" ]; then
-      binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm +111 -and ! -type d)
-    else
-      binaries=$(find ${APP_PREFIX}/lib/gcc/${GCC_TARGET}/* -maxdepth 1 -name \* -perm /111 -and ! -type d)
-    fi
-    set -e
-
-    for bin in ${binaries}
-    do
-      check_binary "${bin}"
-    done
-
-  else
-
-    echo
-    echo "Checking binaries for unwanted DLLs..."
-
-    local binaries=$(find "${INSTALL_FOLDER_PATH}/bin" -name ${GCC_TARGET}-\*.exe)
-    for bin in ${binaries} 
-    do
-      check_binary "${bin}"
-    done
-
-    binaries=$(find ${APP_PREFIX} -name \*.exe)
-    for bin in ${binaries} 
-    do
-      check_binary "${bin}"
-    done
-
-  fi
-}
-
 function final_tunings()
 {
   # Create the missing LTO plugin links.

@@ -360,8 +360,15 @@ function do_newlib()
       export CPPFLAGS="${XBB_CPPFLAGS}" 
 
       # Note the intentional `-g`.
-      export CFLAGS_FOR_TARGET="${optimize} -g -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-logical-not-parentheses -Wno-implicit-int -Wno-expansion-to-defined" 
-      export CXXFLAGS_FOR_TARGET="${optimize} -g" 
+      CFLAGS_FOR_TARGET="${optimize} -g -Wno-implicit-function-declaration -Wno-incompatible-pointer-types -Wno-int-conversion -Wno-logical-not-parentheses -Wno-implicit-int -Wno-expansion-to-defined" 
+      CXXFLAGS_FOR_TARGET="${optimize} -g" 
+      if [ "${WITH_NEWLIB_LTO}" == "y" ]
+      then
+        CFLAGS_FOR_TARGET+=" -flto"
+        CXXFLAGS_FOR_TARGET+=" -flto"
+      fi
+      export CFLAGS_FOR_TARGET
+      export CXXFLAGS_FOR_TARGET
 
       if [ ! -f "config.status" ]
       then

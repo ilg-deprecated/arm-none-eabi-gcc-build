@@ -86,6 +86,7 @@ WITH_STRIP="y"
 WITHOUT_MULTILIB=""
 WITH_PDF="y"
 WITH_HTML="n"
+WITH_NEWLIB_LTO="n"
 IS_DEVELOP=""
 IS_DEBUG=""
 LINUX_INSTALL_PATH=""
@@ -325,6 +326,7 @@ then
   then
     # Not yet functional.
     WITH_GDB_PY3="y" 
+    WITH_NEWLIB_LTO="y"
 
     GETTEXT_VERSION="0.19.8.1"
   fi

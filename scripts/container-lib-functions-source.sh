@@ -718,3 +718,113 @@ function do_xz()
     echo "Library xz already installed."
   fi
 }
+
+function do_gettext() 
+{
+  # https://www.gnu.org/software/gettext/
+  # http://ftp.gnu.org/pub/gnu/gettext/
+  # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=gettext-git
+  # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=mingw-w64-gettext
+
+  # GETTEXT_VERSION="0.19.5.1"
+  # GETTEXT_VERSION="0.19.8.1" # 2016-06-11
+
+  GETTEXT_SRC_FOLDER_NAME="gettext-${GETTEXT_VERSION}"
+  GETTEXT_FOLDER_NAME="${GETTEXT_SRC_FOLDER_NAME}"
+  local gettext_archive="${GETTEXT_SRC_FOLDER_NAME}.tar.gz"
+  local gettext_url="http://ftp.gnu.org/pub/gnu/gettext/${gettext_archive}"
+
+  local gettext_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gettext-installed"
+  if [ ! -f "${gettext_stamp_file_path}" ]
+  then
+
+    cd "${SOURCES_FOLDER_PATH}"
+
+    download_and_extract "${gettext_url}" "${gettext_archive}" \
+      "${GETTEXT_SRC_FOLDER_NAME}"
+
+    (
+      mkdir -p "${LIBS_BUILD_FOLDER_PATH}/${GETTEXT_FOLDER_NAME}"
+      cd "${LIBS_BUILD_FOLDER_PATH}/${GETTEXT_FOLDER_NAME}"
+
+      xbb_activate
+      xbb_activate_this
+
+      export CFLAGS="${XBB_CFLAGS}"
+      if [ "${TARGET_PLATFORM}" != "darwin" ]
+      then
+        export CFLAGS="${CFLAGS} -Wno-discarded-qualifiers -Wno-incompatible-pointer-types -Wno-attributes -Wno-unknown-warning-option"
+      fi
+      
+      export CPPFLAGS="${XBB_CPPFLAGS}"
+      export LDFLAGS="${XBB_LDFLAGS_LIB}"
+      
+      if [ ! -f "config.status" ]
+      then 
+
+        (
+          echo
+          echo "Running gettext configure..."
+
+          if [ "${TARGET_PLATFORM}" == "win32" ]
+          then
+            THREADS="windows"
+          elif [ "${TARGET_PLATFORM}" == "linux" ]
+          then
+            THREADS="posix"
+          elif [ "${TARGET_PLATFORM}" == "darwin" ]
+          then
+            THREADS="posix"
+          fi
+
+          # Build only the /gettext-runtime folder, attempts to build
+          # the full package fail with a CXX='no' problem.
+          bash "${SOURCES_FOLDER_PATH}/${GETTEXT_SRC_FOLDER_NAME}/gettext-runtime/configure" --help
+
+          #  --enable-nls needed to include libintl
+          bash ${DEBUG} "${SOURCES_FOLDER_PATH}/${GETTEXT_SRC_FOLDER_NAME}/gettext-runtime/configure" \
+            --prefix="${LIBS_INSTALL_FOLDER_PATH}" \
+            \
+            --build=${BUILD} \
+            --host=${HOST} \
+            --target=${TARGET} \
+            \
+            --disable-shared \
+            --enable-static \
+            --enable-threads=${THREADS} \
+            --with-gnu-ld \
+            --disable-installed-tests \
+            --disable-always-build-tests \
+            --enable-nls \
+            --disable-rpath \
+            --disable-java \
+            --disable-native-java \
+            --disable-c++ \
+            --disable-libasprintf
+
+          cp "config.log" "${LOGS_FOLDER_PATH}/config-gettext-log.txt"
+        ) 2>&1 | tee "${LOGS_FOLDER_PATH}/configure-gettext-output.txt"
+
+      fi
+
+      (
+        echo
+        echo "Running gettext make..."
+
+        # Build.
+        make ${JOBS}
+        if [ "${WITH_STRIP}" == "y" ]
+        then
+          make install-strip
+        else
+          make install
+        fi
+      ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gettext-output.txt"
+    )
+
+    touch "${gettext_stamp_file_path}"
+
+  else
+    echo "Library gettext already installed."
+  fi
+}

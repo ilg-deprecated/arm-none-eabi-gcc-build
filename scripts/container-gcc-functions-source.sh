@@ -660,8 +660,15 @@ function do_gcc_final()
       fi
 
       # Note the intentional `-g`.
-      export CFLAGS_FOR_TARGET="${optimize} -g" 
-      export CXXFLAGS_FOR_TARGET="${optimize} -fno-exceptions -g" 
+      CFLAGS_FOR_TARGET="${optimize} -g" 
+      CXXFLAGS_FOR_TARGET="${optimize} -fno-exceptions -g" 
+      if [ "${WITH_LIBS_LTO}" == "y" ]
+      then
+        CFLAGS_FOR_TARGET+=" -flto -ffat-lto-objects"
+        CXXFLAGS_FOR_TARGET+=" -flto -ffat-lto-objects"
+      fi     
+      export CFLAGS_FOR_TARGET
+      export CXXFLAGS_FOR_TARGET
 
       if [ "${TARGET_PLATFORM}" == "win32" ]
       then

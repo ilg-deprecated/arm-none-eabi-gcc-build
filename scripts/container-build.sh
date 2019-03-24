@@ -324,7 +324,7 @@ then
   if [ "${RELEASE_VERSION}" == "8.2.1-1.5" ]
   then
     # Not yet functional.
-    WITH_GDB_PY3="n" 
+    WITH_GDB_PY3="y" 
 
     GETTEXT_VERSION="0.19.8.1"
   fi

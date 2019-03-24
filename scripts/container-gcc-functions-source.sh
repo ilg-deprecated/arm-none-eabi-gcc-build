@@ -476,14 +476,7 @@ function do_newlib()
         fi 
 
         # Top make fails with install-strip due to libgloss make.
-        if [ "${WITH_STRIP}" == "y" ]
-        then
-          (cd "${GCC_TARGET}/libgloss"; make install)
-          (cd "${GCC_TARGET}/newlib"; make install-strip)
-        else
-          (cd "${GCC_TARGET}/libgloss"; make install)
-          (cd "${GCC_TARGET}/newlib"; make install)
-        fi
+        make install
 
         if [ "$1" == "" ]
         then

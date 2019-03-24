@@ -365,8 +365,8 @@ function do_newlib()
       CXXFLAGS_FOR_TARGET="${optimize} -g" 
       if [ "${WITH_NEWLIB_LTO}" == "y" ]
       then
-        CFLAGS_FOR_TARGET+=" -flto"
-        CXXFLAGS_FOR_TARGET+=" -flto"
+        CFLAGS_FOR_TARGET+=" -flto -ffat-lto-objects"
+        CXXFLAGS_FOR_TARGET+=" -flto -ffat-lto-objects"
       fi
       export CFLAGS_FOR_TARGET
       export CXXFLAGS_FOR_TARGET

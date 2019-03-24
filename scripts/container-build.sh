@@ -222,6 +222,7 @@ WITH_GDB_PY3=""
 GDB_GIT_URL=""
 
 MULTILIB_FLAGS=""
+GETTEXT_VERSION=""
 
 # -----------------------------------------------------------------------------
 
@@ -324,6 +325,8 @@ then
   then
     # Not yet functional.
     WITH_GDB_PY3="n" 
+
+    GETTEXT_VERSION="0.19.8.1"
   fi
 
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]
@@ -493,6 +496,11 @@ do_libelf
 do_expat
 do_libiconv
 do_xz
+
+if [ ! -z "${GETTEXT_VERSION}" ]
+then
+  do_gettext
+fi
 
 # -----------------------------------------------------------------------------
 

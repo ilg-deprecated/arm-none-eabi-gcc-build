@@ -226,6 +226,8 @@ GDB_GIT_URL=""
 MULTILIB_FLAGS=""
 GETTEXT_VERSION=""
 
+PYTHON3_VERSION=""
+
 # -----------------------------------------------------------------------------
 
 BINUTILS_SRC_FOLDER_NAME="binutils"
@@ -325,12 +327,18 @@ then
 
   if [ "${RELEASE_VERSION}" == "8.2.1-1.5" ]
   then
-    # Not yet functional.
-    WITH_GDB_PY3="y" 
+    # Not yet functional on Windows.
+    if [ "${TARGET_PLATFORM}" != "win32" ]
+    then
+      WITH_GDB_PY3="y" 
+      PYTHON3_VERSION="3.7.2"
+    fi
+
     WITH_NEWLIB_LTO="y"
     WITH_LIBS_LTO="y"
 
     GETTEXT_VERSION="0.19.8.1"
+
   fi
 
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]
@@ -457,6 +465,8 @@ then
   MULTILIB_FLAGS="--disable-multilib"
 fi
 
+# -----------------------------------------------------------------------------
+
 if [ "${TARGET_BITS}" == "32" ]
 then
   PYTHON_WIN=python-"${PYTHON_WIN_VERSION}"
@@ -464,8 +474,23 @@ else
   PYTHON_WIN=python-"${PYTHON_WIN_VERSION}".amd64
 fi
 
-PYTHON_WIN_PACK="${PYTHON_WIN}".msi
-PYTHON_WIN_URL="https://www.python.org/ftp/python/${PYTHON_WIN_VERSION}/${PYTHON_WIN_PACK}"
+if [ ! -z "${PYTHON3_VERSION}" ]
+then
+  PYTHON3_VERSION_MAJOR=$(echo ${PYTHON3_VERSION} | sed -e 's|\([0-9]\)\..*|\1|')
+  PYTHON3_VERSION_MINOR=$(echo ${PYTHON3_VERSION} | sed -e 's|\([0-9]\)\.\([0-9]\)\..*|\2|')
+
+  if [ "${TARGET_BITS}" == "32" ]
+  then
+    PYTHON3_WIN_EMBED_FOLDER_NAME=python-"${PYTHON3_VERSION}.post1-embed-win32"
+  else
+    PYTHON3_WIN_EMBED_FOLDER_NAME=python-"${PYTHON3_VERSION}.post1-embed-amd64"
+  fi
+
+  export PYTHON3_WIN_EMBED_FOLDER_NAME
+  export PYTHON3_SRC_FOLDER_NAME="Python-${PYTHON3_VERSION}"
+
+fi
+
 
 # -----------------------------------------------------------------------------
 
@@ -480,6 +505,11 @@ if [ "${TARGET_PLATFORM}" == "win32" ]
 then
   # The Windows GDB needs some headers from the Python distribution.
   download_python_win
+
+  if [ ! -z "${PYTHON3_VERSION}" ]
+  then
+    download_python3_win
+  fi
 fi
 
 # -----------------------------------------------------------------------------
@@ -546,8 +576,14 @@ fi
 # Task [IV-4] /$HOST_MINGW/gdb/
 do_gdb ""
 do_gdb "-py"
+
+# For the moment the Windows build fails, it is disabled.
 if [ "${WITH_GDB_PY3}" == "y" ]
 then
+  if [ "${TARGET_PLATFORM}" == "win32" ]
+  then
+    do_python3
+  fi
   do_gdb "-py3"
 fi
 

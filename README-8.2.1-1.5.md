@@ -58,6 +58,8 @@ compatible with most recent systems.
 - macOS: all binaries built with GCC 7.2, running in a custom Homebrew 
   instance on macOS 10.10.5
 
+Partial support for Python3 was added to GDB; not yet available on Windows.
+
 ## Build
 
 The scripts used to build this distribution are in:

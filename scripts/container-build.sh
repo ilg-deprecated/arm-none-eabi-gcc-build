@@ -334,9 +334,6 @@ then
       PYTHON3_VERSION="3.7.2"
     fi
 
-    WITH_NEWLIB_LTO="y"
-    WITH_LIBS_LTO="y"
-
     GETTEXT_VERSION="0.19.8.1"
 
   fi

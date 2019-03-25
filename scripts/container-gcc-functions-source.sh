@@ -189,7 +189,7 @@ function do_binutils()
         # object files: cannot compile".
         copy_dir "${APP_PREFIX}" "${APP_PREFIX_NANO}"
 
-      ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-newlib-output.txt"
+      ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-binutils-output.txt"
     )
 
     run_app "${APP_PREFIX}/bin/${GCC_TARGET}-ar" --version

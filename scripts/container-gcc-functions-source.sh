@@ -1074,7 +1074,9 @@ function do_gdb()
       export CXXFLAGS="${XBB_CXXFLAGS} ${GCC_WARN_CXXFLAGS}"
           
       export CPPFLAGS="${XBB_CPPFLAGS}" 
-      export LDFLAGS="${XBB_LDFLAGS_APP_STATIC}" 
+      export LDFLAGS="${XBB_LDFLAGS_APP_STATIC}"
+      # libiconv is used by Python3.
+      export LIBS="-liconv"
   
       local extra_python_opts="--with-python=no"
       if [ "$1" == "-py" ]
@@ -1127,6 +1129,7 @@ function do_gdb()
             --with-lzma=yes \
             --with-system-gdbinit="${APP_PREFIX}/${GCC_TARGET}/lib/gdbinit" \
             --with-gdb-datadir="${APP_PREFIX}/${GCC_TARGET}/share/gdb" \
+            --with-libiconv-prefix="${LIBS_INSTALL_FOLDER_PATH}" \
             \
             ${extra_python_opts} \
             --program-prefix="${GCC_TARGET}-" \

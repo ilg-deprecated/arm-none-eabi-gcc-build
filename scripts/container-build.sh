@@ -146,12 +146,12 @@ do
       shift
       ;;
 
+    # --- specific
+
     --linux-install-path)
       LINUX_INSTALL_PATH="$2"
       shift 2
       ;;
-
-    # --- specific
 
     --disable-multilib)
       WITHOUT_MULTILIB="y"

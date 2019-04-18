@@ -50,8 +50,8 @@ script_folder_name="$(basename "${script_folder_path}")"
 echo
 echo "GNU MCU Eclipse ARM Embedded GCC distribution build script."
 
-echo
 host_functions_script_path="${script_folder_path}/helper/host-functions-source.sh"
+echo
 echo "Host helper functions source script: \"${host_functions_script_path}\"."
 source "${host_functions_script_path}"
 

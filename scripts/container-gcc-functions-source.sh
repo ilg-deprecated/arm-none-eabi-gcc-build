@@ -281,17 +281,21 @@ function do_binutils()
 
         prepare_app_folder_libraries "${APP_PREFIX}"
 
-        if [ "${WITH_PDF}" == "y" ]
-        then
-          make ${JOBS} pdf
-          make install-pdf
-        fi
+        (
+          xbb_activate_tex
 
-        if [ "${WITH_HTML}" == "y" ]
-        then
-          make ${JOBS} html
-          make install-html
-        fi
+          if [ "${WITH_PDF}" == "y" ]
+          then
+            make pdf
+            make install-pdf
+          fi
+
+          if [ "${WITH_HTML}" == "y" ]
+          then
+            make html
+            make install-html
+          fi
+        )
 
         # Without this copy, the build for the nano version of the GCC second 
         # step fails with unexpected errors, like "cannot compute suffix of 
@@ -601,7 +605,9 @@ function do_newlib()
                 hack_pdfetex
               fi
 
-              make ${JOBS} pdf
+              xbb_activate_tex
+
+              make pdf
             )
 
             /usr/bin/install -v -d "${APP_PREFIX_DOC}/pdf"
@@ -931,20 +937,22 @@ function do_gcc_final()
 
           if [ "$1" == "" ]
           then
+            (
+              xbb_activate_tex
+          
+              # Full build, with documentation.
+              if [ "${WITH_PDF}" == "y" ]
+              then
+                make pdf
+                make install-pdf
+              fi
 
-            # Full build, with documentation.
-            if [ "${WITH_PDF}" == "y" ]
-            then
-              make ${JOBS} pdf
-              make install-pdf
-            fi
-
-            if [ "${WITH_HTML}" == "y" ]
-            then
-              make ${JOBS} html
-              make install-html
-            fi
-
+              if [ "${WITH_HTML}" == "y" ]
+              then
+                make html
+                make install-html
+              fi
+            )
           elif [ "$1" == "-nano" ]
           then
 
@@ -1009,17 +1017,21 @@ function do_gcc_final()
 
           make install-gcc
 
-          if [ "${WITH_PDF}" == "y" ]
-          then
-            make install-pdf-gcc
-          fi
-
           prepare_app_folder_libraries "${APP_PREFIX}"
 
-          if [ "${WITH_HTML}" == "y" ]
-          then
-            make install-html-gcc
-          fi
+          (
+            xbb_activate_tex
+
+            if [ "${WITH_PDF}" == "y" ]
+            then
+              make install-pdf-gcc
+            fi
+
+            if [ "${WITH_HTML}" == "y" ]
+            then
+              make install-html-gcc
+            fi
+          )
 
         fi
 
@@ -1167,19 +1179,21 @@ function do_gdb()
 
         if [ "$1" == "" ]
         then
+          (
+            xbb_activate_tex
 
-          if [ "${WITH_PDF}" == "y" ]
-          then
-            make ${JOBS} pdf
-            make install-pdf
-          fi
+            if [ "${WITH_PDF}" == "y" ]
+            then
+              make ${JOBS} pdf
+              make install-pdf
+            fi
 
-          if [ "${WITH_HTML}" == "y" ]
-          then
-            make ${JOBS} html 
-            make install-html 
-          fi
-          
+            if [ "${WITH_HTML}" == "y" ]
+            then
+              make ${JOBS} html 
+              make install-html 
+            fi
+          )
         fi
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gdb$1-output.txt"
     )

@@ -1290,6 +1290,8 @@ function strip_libs()
   if [ "${WITH_STRIP}" == "y" ]
   then
     (
+      xbb_activate
+
       PATH="${APP_PREFIX}/bin:${PATH}"
 
       echo
@@ -1297,7 +1299,7 @@ function strip_libs()
 
       cd "${WORK_FOLDER_PATH}"
 
-      which "${GCC_TARGET}-objcopy"
+      # which "${GCC_TARGET}-objcopy"
 
       local libs=$(find "${APP_PREFIX}" -name '*.[ao]')
       for lib in ${libs}
@@ -1309,74 +1311,78 @@ function strip_libs()
   fi
 }
 
-function copy_gme_files()
+function copy_distro_files()
 {
-  rm -rf "${APP_PREFIX}/${DISTRO_LC_NAME}"
-  mkdir -p "${APP_PREFIX}/${DISTRO_LC_NAME}"
+  (
+    xbb_activate
 
-  echo
-  echo "Copying license files..."
+    rm -rf "${APP_PREFIX}/${DISTRO_INFO_NAME}"
+    mkdir -p "${APP_PREFIX}/${DISTRO_INFO_NAME}"
 
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${ZLIB_FOLDER_NAME}" \
-    "${ZLIB_FOLDER_NAME}"
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${GMP_FOLDER_NAME}" \
-    "${GMP_FOLDER_NAME}"
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${MPFR_FOLDER_NAME}" \
-    "${MPFR_FOLDER_NAME}"
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${MPC_FOLDER_NAME}" \
-    "${MPC_FOLDER_NAME}"
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${ISL_FOLDER_NAME}" \
-    "${ISL_FOLDER_NAME}"
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${LIBELF_FOLDER_NAME}" \
-    "${LIBELF_FOLDER_NAME}"
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${EXPAT_FOLDER_NAME}" \
-    "${EXPAT_FOLDER_NAME}"
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}" \
-    "${LIBICONV_FOLDER_NAME}"
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${XZ_FOLDER_NAME}" \
-    "${XZ_FOLDER_NAME}"
+    echo
+    echo "Copying license files..."
 
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}" \
-    "${BINUTILS_SRC_FOLDER_NAME}-${BINUTILS_VERSION}"
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}" \
-    "${GCC_SRC_FOLDER_NAME}-${GCC_VERSION}"
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${NEWLIB_SRC_FOLDER_NAME}" \
-    "${NEWLIB_SRC_FOLDER_NAME}-${NEWLIB_VERSION}"
-  copy_license \
-    "${SOURCES_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}" \
-    "${GDB_SRC_FOLDER_NAME}-${GDB_VERSION}"
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${ZLIB_FOLDER_NAME}" \
+      "${ZLIB_FOLDER_NAME}"
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${GMP_FOLDER_NAME}" \
+      "${GMP_FOLDER_NAME}"
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${MPFR_FOLDER_NAME}" \
+      "${MPFR_FOLDER_NAME}"
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${MPC_FOLDER_NAME}" \
+      "${MPC_FOLDER_NAME}"
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${ISL_FOLDER_NAME}" \
+      "${ISL_FOLDER_NAME}"
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${LIBELF_FOLDER_NAME}" \
+      "${LIBELF_FOLDER_NAME}"
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${EXPAT_FOLDER_NAME}" \
+      "${EXPAT_FOLDER_NAME}"
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}" \
+      "${LIBICONV_FOLDER_NAME}"
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${XZ_FOLDER_NAME}" \
+      "${XZ_FOLDER_NAME}"
 
-  copy_build_files
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}" \
+      "${BINUTILS_SRC_FOLDER_NAME}-${BINUTILS_VERSION}"
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}" \
+      "${GCC_SRC_FOLDER_NAME}-${GCC_VERSION}"
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${NEWLIB_SRC_FOLDER_NAME}" \
+      "${NEWLIB_SRC_FOLDER_NAME}-${NEWLIB_VERSION}"
+    copy_license \
+      "${SOURCES_FOLDER_PATH}/${GDB_SRC_FOLDER_NAME}" \
+      "${GDB_SRC_FOLDER_NAME}-${GDB_VERSION}"
 
-  echo
-  echo "Copying ARM files..."
+    copy_build_files
 
-  cd "${SOURCES_FOLDER_PATH}/${GCC_COMBO_FOLDER_NAME}"
+    echo
+    echo "Copying ARM files..."
 
-  /usr/bin/install -v -c -m 644 "readme.txt" \
-    "${APP_PREFIX}/${DISTRO_LC_NAME}/arm-readme.txt"
+    cd "${SOURCES_FOLDER_PATH}/${GCC_COMBO_FOLDER_NAME}"
 
-  /usr/bin/install -v -c -m 644 "release.txt" \
-    "${APP_PREFIX}/${DISTRO_LC_NAME}/arm-release.txt"
+    install -v -c -m 644 "readme.txt" \
+      "${APP_PREFIX}/${DISTRO_INFO_NAME}/arm-readme.txt"
 
-  echo
-  echo "Copying GME files..."
+    install -v -c -m 644 "release.txt" \
+      "${APP_PREFIX}/${DISTRO_INFO_NAME}/arm-release.txt"
 
-  cd "${BUILD_GIT_PATH}"
-  /usr/bin/install -v -c -m 644 "${README_OUT_FILE_NAME}" \
-    "${APP_PREFIX}/README.md"
+    echo
+    echo "Copying GME files..."
+
+    cd "${BUILD_GIT_PATH}"
+    install -v -c -m 644 "${README_OUT_FILE_NAME}" \
+      "${APP_PREFIX}/README.md"
+  )
 }
 
 function final_tunings()

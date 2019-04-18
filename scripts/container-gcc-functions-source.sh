@@ -62,6 +62,7 @@ function download_python_win()
       xbb_activate
 
       cd "${SOURCES_FOLDER_PATH}"
+
       # Include only the headers and the python library and executable.
       echo '*.h' >"/tmp/included"
       echo 'python*.dll' >>"/tmp/included"
@@ -1289,16 +1290,20 @@ function strip_libs()
   if [ "${WITH_STRIP}" == "y" ]
   then
     (
-      PATH="${APP_PREFIX}/bin":${PATH}
+      PATH="${APP_PREFIX}/bin:${PATH}"
 
       echo
       echo "Stripping libraries..."
+
+      cd "${WORK_FOLDER_PATH}"
+
+      which "${GCC_TARGET}-objcopy"
 
       local libs=$(find "${APP_PREFIX}" -name '*.[ao]')
       for lib in ${libs}
       do
         echo "${GCC_TARGET}-objcopy -R ... ${lib}"
-        ${GCC_TARGET}-objcopy -R .comment -R .note -R .debug_info -R .debug_aranges -R .debug_pubnames -R .debug_pubtypes -R .debug_abbrev -R .debug_line -R .debug_str -R .debug_ranges -R .debug_loc ${lib} || true
+        "${GCC_TARGET}-objcopy" -R .comment -R .note -R .debug_info -R .debug_aranges -R .debug_pubnames -R .debug_pubtypes -R .debug_abbrev -R .debug_line -R .debug_str -R .debug_ranges -R .debug_loc ${lib} || true
       done
     )
   fi

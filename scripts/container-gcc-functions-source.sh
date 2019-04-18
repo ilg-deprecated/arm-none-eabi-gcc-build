@@ -80,7 +80,7 @@ function download_python_win()
 
       # From here it'll be copied as dependency.
       mkdir -p "${LIBS_INSTALL_FOLDER_PATH}/bin/"
-      /usr/bin/install -v -c -m 644 "${PYTHON_WIN}/python27.dll" \
+      install -v -c -m 644 "${PYTHON_WIN}/python27.dll" \
         "${LIBS_INSTALL_FOLDER_PATH}/bin/"
 
     )

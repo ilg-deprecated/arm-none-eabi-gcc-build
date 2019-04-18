@@ -595,34 +595,41 @@ tidy_up
 
 # Task [III-9] /$HOST_NATIVE/strip_host_objects/
 # Task [IV-6] /$HOST_MINGW/strip_host_objects/
-# For unknown reasons, strip damaged linux binaries.
-if [ "${TARGET_PLATFORM}" != "linux" ]
+if [ "${WITH_STRIP}" == "_y" ]
 then
-  strip_binaries
+  # For unknown reasons, strip after patchelf damages the binaries.
+  if [ "${TARGET_PLATFORM}" != "linux" ]
+  then
+    strip_binaries
+  fi
 fi
 
-if [ "${TARGET_PLATFORM}" != "win32" ]
+if [ "${WITH_STRIP}" == "y" -a "${TARGET_PLATFORM}" != "win32" ]
 then
   # Task [III-10] /$HOST_NATIVE/strip_target_objects/
   strip_libs
 fi
 
-check_binaries
-
-copy_gme_files
-
 final_tunings
 
-if [ \( "${TARGET_PLATFORM}" == "win32" \) -a \( ! -z "${HAS_WINPTHREAD}" \) ]
-then
-  copy_win_libwinpthread_dll
-fi
+# if [ \( "${TARGET_PLATFORM}" == "win32" \) -a \( ! -z "${HAS_WINPTHREAD}" \) ]
+# then
+#  copy_win_libwinpthread_dll
+# fi
 
 # Task [IV-7] /$HOST_MINGW/installation/
 # Nope, no setup.exe.
 
 # Task [III-11] /$HOST_NATIVE/package_tbz2/
 # Task [IV-8] /Package toolchain in zip format/
+# See create_archive below.
+
+# -----------------------------------------------------------------------------
+
+check_binaries
+
+copy_distro_files
+
 create_archive
 
 # Change ownership to non-root Linux user.

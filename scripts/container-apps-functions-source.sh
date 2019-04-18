@@ -111,9 +111,9 @@ function download_python3_win()
       
     # From here it'll be copied as dependency.
     mkdir -p "${LIBS_INSTALL_FOLDER_PATH}/bin/"
-    /usr/bin/install -v -c -m 644 "python${PYTHON3_VERSION_MAJOR}.dll" \
+    install -v -c -m 644 "python${PYTHON3_VERSION_MAJOR}.dll" \
       "${LIBS_INSTALL_FOLDER_PATH}/bin/"
-    /usr/bin/install -v -c -m 644 "python${PYTHON3_VERSION_MAJOR}${PYTHON3_VERSION_MINOR}.dll" \
+    install -v -c -m 644 "python${PYTHON3_VERSION_MAJOR}${PYTHON3_VERSION_MINOR}.dll" \
       "${LIBS_INSTALL_FOLDER_PATH}/bin/"
   fi
 
@@ -611,13 +611,13 @@ function do_newlib()
               make pdf
             )
 
-            /usr/bin/install -v -d "${APP_PREFIX_DOC}/pdf"
+            install -v -d "${APP_PREFIX_DOC}/pdf"
 
-            /usr/bin/install -v -c -m 644 \
+            install -v -c -m 644 \
               "${GCC_TARGET}/libgloss/doc/porting.pdf" "${APP_PREFIX_DOC}/pdf"
-            /usr/bin/install -v -c -m 644 \
+            install -v -c -m 644 \
               "${GCC_TARGET}/newlib/libc/libc.pdf" "${APP_PREFIX_DOC}/pdf"
-            /usr/bin/install -v -c -m 644 \
+            install -v -c -m 644 \
               "${GCC_TARGET}/newlib/libm/libm.pdf" "${APP_PREFIX_DOC}/pdf"
 
           fi
@@ -627,7 +627,7 @@ function do_newlib()
 
             make ${JOBS} html
 
-            /usr/bin/install -v -d "${APP_PREFIX_DOC}/html"
+            install -v -d "${APP_PREFIX_DOC}/html"
 
             copy_dir "${GCC_TARGET}/newlib/libc/libc.html" "${APP_PREFIX_DOC}/html/libc"
             copy_dir "${GCC_TARGET}/newlib/libm/libm.html" "${APP_PREFIX_DOC}/html/libm"

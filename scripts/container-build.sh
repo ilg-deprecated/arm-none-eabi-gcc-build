@@ -71,9 +71,9 @@ container_libs_functions_script_path="${script_folder_path}/${CONTAINER_LIBS_FUN
 echo "Container lib functions source script: \"${container_libs_functions_script_path}\"."
 source "${container_libs_functions_script_path}"
 
-container_app_functions_script_path="${script_folder_path}/${CONTAINER_APP_FUNCTIONS_SCRIPT_NAME}"
-echo "Container app functions source script: \"${container_app_functions_script_path}\"."
-source "${container_app_functions_script_path}"
+container_apps_functions_script_path="${script_folder_path}/${CONTAINER_APPS_FUNCTIONS_SCRIPT_NAME}"
+echo "Container app functions source script: \"${container_apps_functions_script_path}\"."
+source "${container_apps_functions_script_path}"
 
 # -----------------------------------------------------------------------------
 

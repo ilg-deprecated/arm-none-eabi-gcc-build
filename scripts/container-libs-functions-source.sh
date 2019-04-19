@@ -51,26 +51,29 @@ function do_zlib()
       cd "${LIBS_BUILD_FOLDER_PATH}/${ZLIB_FOLDER_NAME}"
 
       xbb_activate
-
-      export CFLAGS="${XBB_CFLAGS} -Wno-shift-negative-value"
-      # export LDFLAGS="${XBB_LDFLAGS_LIB}"
       xbb_activate_installed_dev
 
       if [ "${TARGET_PLATFORM}" != "win32" ]
       then
-        (
-          echo
-          echo "Running zlib configure..."
 
-          bash "./configure" --help
+        export CFLAGS="${XBB_CFLAGS} -Wno-shift-negative-value"
+        # export LDFLAGS="${XBB_LDFLAGS_LIB}"
 
-          bash ${DEBUG} "./configure" \
-            --prefix="${LIBS_INSTALL_FOLDER_PATH}" \
-            \
-            --static
+        # No config.status left, use the library.
+        if [ ! -f "libz.a" ]
+        then
+          (
+            echo
+            echo "Running zlib configure..."
 
-          cp "configure.log" "${LOGS_FOLDER_PATH}/configure-zlib-log.txt"
-        ) 2>&1 | tee "${LOGS_FOLDER_PATH}/configure-zlib-output.txt"
+            bash "./configure" --help
+
+            bash ${DEBUG} "./configure" \
+              --prefix="${LIBS_INSTALL_FOLDER_PATH}" 
+            
+            cp "configure.log" "${LOGS_FOLDER_PATH}/configure-zlib-log.txt"
+          ) 2>&1 | tee "${LOGS_FOLDER_PATH}/configure-zlib-output.txt"
+        fi
 
         (
           echo
@@ -164,9 +167,9 @@ function do_gmp()
             --host=${HOST} \
             --target=${TARGET} \
             \
-            --disable-shared \
-            --enable-static \
-            --enable-cxx
+            --enable-cxx \
+            --enable-shared \
+            --disable-static
             
           cp "config.log" "${LOGS_FOLDER_PATH}/config-gmp-log.txt"
         ) 2>&1 | tee "${LOGS_FOLDER_PATH}/configure-gmp-output.txt"
@@ -239,9 +242,7 @@ function do_mpfr()
             --host=${HOST} \
             --target=${TARGET} \
             \
-            --disable-warnings \
-            --disable-shared \
-            --enable-static
+            --disable-warnings 
             
           cp "config.log" "${LOGS_FOLDER_PATH}/config-mpfr-log.txt"
         ) 2>&1 | tee "${LOGS_FOLDER_PATH}/configure-mpfr-output.txt"
@@ -317,8 +318,7 @@ function do_mpc()
             --host=${HOST} \
             --target=${TARGET} \
             \
-            --disable-shared \
-            --enable-static
+            --disable-nls
             
           cp "config.log" "${LOGS_FOLDER_PATH}/config-mpc-log.txt"
         ) 2>&1 | tee "${LOGS_FOLDER_PATH}/configure-mpc-output.txt"
@@ -396,8 +396,7 @@ function do_isl()
             --host=${HOST} \
             --target=${TARGET} \
             \
-            --disable-shared \
-            --enable-static
+            --disable-nls
             
           cp "config.log" "${LOGS_FOLDER_PATH}/config-isl-log.txt"
         ) 2>&1 | tee "${LOGS_FOLDER_PATH}/configure-isl-output.txt"
@@ -466,8 +465,6 @@ function do_libelf()
             --host=${HOST} \
             --target=${TARGET} \
             \
-            --disable-shared \
-            --enable-static \
             --disable-nls
 
           cp "config.log" "${LOGS_FOLDER_PATH}/config-libelf-log.txt"
@@ -482,7 +479,6 @@ function do_libelf()
         make -j ${JOBS}
         make install
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-libelf-output.txt"
-
     )
 
     touch "${libelf_stamp_file_path}"
@@ -547,8 +543,7 @@ function do_expat()
             --host=${HOST} \
             --target=${TARGET} \
             \
-            --disable-shared \
-            --enable-static
+            --disable-nls
             
           cp "config.log" "${LOGS_FOLDER_PATH}/config-expat-log.txt"
         ) 2>&1 | tee "${LOGS_FOLDER_PATH}/configure-expat-output.txt"
@@ -622,8 +617,6 @@ function do_libiconv()
             --host=${HOST} \
             --target=${TARGET} \
             \
-            --disable-shared \
-            --enable-static \
             --disable-nls
 
           cp "config.log" "${LOGS_FOLDER_PATH}/config-libiconv-log.txt"
@@ -695,8 +688,6 @@ function do_xz()
             --host=${HOST} \
             --target=${TARGET} \
             \
-            --disable-shared \
-            --enable-static \
             --disable-rpath \
             --disable-nls
 
@@ -721,6 +712,7 @@ function do_xz()
   fi
 }
 
+# Not used.
 function do_gettext() 
 {
   # https://www.gnu.org/software/gettext/

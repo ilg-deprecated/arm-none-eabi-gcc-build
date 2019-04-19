@@ -185,6 +185,9 @@ then
   then
     PATH="${WORK_FOLDER_PATH}/${LINUX_INSTALL_PATH}/bin:${PATH}"
     echo ${PATH}
+
+    export LD_LIBRARY_PATH="${WORK_FOLDER_PATH}/${LINUX_INSTALL_PATH}/bin:${LD_LIBRARY_PATH}"
+    echo ${LD_LIBRARY_PATH}
   fi
 fi
 
@@ -223,11 +226,6 @@ GETTEXT_VERSION=""
 PYTHON3_VERSION=""
 
 # -----------------------------------------------------------------------------
-
-BINUTILS_SRC_FOLDER_NAME="binutils"
-GCC_SRC_FOLDER_NAME="gcc"
-NEWLIB_SRC_FOLDER_NAME="newlib"
-GDB_SRC_FOLDER_NAME="gdb"
 
 # Redefine to "y" to create the LTO plugin links.
 FIX_LTO_PLUGIN=""
@@ -449,6 +447,14 @@ else
   exit 1
 fi
 
+# -----------------------------------------------------------------------------
+
+# No versioning here, the inner archives use simple names.
+BINUTILS_SRC_FOLDER_NAME="binutils"
+GCC_SRC_FOLDER_NAME="gcc"
+NEWLIB_SRC_FOLDER_NAME="newlib"
+GDB_SRC_FOLDER_NAME="gdb"
+
 # Note: The 5.x build failed with various messages.
 
 if [ "${WITHOUT_MULTILIB}" == "y" ]
@@ -598,6 +604,10 @@ then
   fi
 fi
 
+run_binutils
+run_gcc
+run_gdb
+
 if [ "${WITH_STRIP}" == "y" -a "${TARGET_PLATFORM}" != "win32" ]
 then
   # Task [III-10] /$HOST_NATIVE/strip_target_objects/
@@ -628,6 +638,18 @@ create_archive
 
 # Change ownership to non-root Linux user.
 fix_ownership
+
+# -----------------------------------------------------------------------------
+
+# Final checks.
+run_binutils
+run_gcc
+run_gdb
+
+if [  "${TARGET_PLATFORM}" != "win32" ]
+then
+  run_gdb "-py"
+fi
 
 # -----------------------------------------------------------------------------
 

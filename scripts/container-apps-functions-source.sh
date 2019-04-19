@@ -225,7 +225,7 @@ function do_binutils()
       export CFLAGS="${XBB_CFLAGS} -Wno-deprecated-declarations -Wno-implicit-function-declaration -Wno-parentheses -Wno-format-nonliteral -Wno-shift-count-overflow -Wno-shift-negative-value -Wno-format -Wno-implicit-fallthrough"
       export CXXFLAGS="${XBB_CXXFLAGS} -Wno-format-nonliteral -Wno-format-security -Wno-deprecated -Wno-c++11-narrowing"
       export CPPFLAGS="${XBB_CPPFLAGS}"
-      LDFLAGS="${XBB_LDFLAGS_APP_STATIC}" 
+      LDFLAGS="${XBB_LDFLAGS_APP}" 
       if [ "${TARGET_PLATFORM}" == "win32" ]
       then
         LDFLAGS="${LDFLAGS} -Wl,${XBB_FOLDER}/${CROSS_COMPILE_PREFIX}/lib/CRT_glob.o"
@@ -263,8 +263,6 @@ function do_binutils()
             --enable-plugins \
             --with-sysroot="${APP_PREFIX}/${GCC_TARGET}" \
             \
-            --disable-shared \
-            --enable-static \
             --enable-build-warnings=no \
             --disable-rpath \
             --with-system-zlib \
@@ -313,6 +311,19 @@ function do_binutils()
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-binutils-output.txt"
     )
 
+    run_binutils
+
+    touch "${binutils_stamp_file_path}"
+  else
+    echo "Component binutils already installed."
+  fi
+}
+
+function run_binutils()
+{
+  (
+    xbb_activate_installed_bin
+
     run_app "${APP_PREFIX}/bin/${GCC_TARGET}-ar" --version
     run_app "${APP_PREFIX}/bin/${GCC_TARGET}-as" --version
     run_app "${APP_PREFIX}/bin/${GCC_TARGET}-ld" --version
@@ -324,10 +335,7 @@ function do_binutils()
     run_app "${APP_PREFIX}/bin/${GCC_TARGET}-strings" --version
     run_app "${APP_PREFIX}/bin/${GCC_TARGET}-strip" --version
 
-    touch "${binutils_stamp_file_path}"
-  else
-    echo "Component binutils already installed."
-  fi
+  )
 }
 
 function do_gcc_first()
@@ -355,7 +363,7 @@ function do_gcc_first()
       export GCC_WARN_CXXFLAGS="-Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-array-bounds -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-format-security -Wno-suggest-attribute=format -Wno-format-extra-args -Wno-format -Wno-varargs -Wno-shift-count-overflow -Wno-ignored-attributes -Wno-tautological-compare -Wno-unused-label -Wno-unused-parameter -Wno-literal-suffix -Wno-expansion-to-defined -Wno-maybe-uninitialized -Wno-shift-negative-value -Wno-memset-elt-size -Wno-dangling-else -Wno-sequence-point -Wno-misleading-indentation -Wno-int-in-bool-context"
       export CXXFLAGS="${XBB_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
       export CPPFLAGS="${XBB_CPPFLAGS}" 
-      export LDFLAGS="${XBB_LDFLAGS_APP_STATIC}" 
+      export LDFLAGS="${XBB_LDFLAGS_APP}" 
 
       export CFLAGS_FOR_TARGET="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}" 
       export CXXFLAGS_FOR_TARGET="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}" 
@@ -407,7 +415,6 @@ function do_gcc_first()
             --disable-libssp \
             --disable-libstdcxx-pch \
             --disable-nls \
-            --disable-shared \
             --disable-threads \
             --disable-tls \
             --with-newlib \
@@ -471,7 +478,7 @@ function do_newlib()
       xbb_activate_installed_dev
 
       # Add the gcc first stage binaries to the path.
-      PATH="${APP_PREFIX}/bin":${PATH}
+      PATH="${APP_PREFIX}/bin:${PATH}"
 
       local optimize="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}"
       if [ "$1" == "-nano" ]
@@ -582,6 +589,7 @@ function do_newlib()
             echo "Unsupported do_newlib arg $1"
             exit 1
           fi
+
           cp "config.log" "${LOGS_FOLDER_PATH}/config-newlib$1-log.txt"
         ) 2>&1 | tee "${LOGS_FOLDER_PATH}/configure-newlib$1-output.txt"
       fi
@@ -776,7 +784,7 @@ function do_gcc_final()
       export GCC_WARN_CXXFLAGS="-Wno-format-security -Wno-char-subscripts -Wno-deprecated -Wno-array-bounds -Wno-invalid-offsetof -Wno-implicit-fallthrough -Wno-format-security -Wno-suggest-attribute=format -Wno-format-extra-args -Wno-format -Wno-unused-function -Wno-attributes -Wno-maybe-uninitialized -Wno-expansion-to-defined -Wno-misleading-indentation -Wno-literal-suffix -Wno-int-in-bool-context -Wno-memset-elt-size -Wno-shift-negative-value -Wno-dangling-else -Wno-sequence-point -Wno-nonnull"
       export CXXFLAGS="${XBB_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
       export CPPFLAGS="${XBB_CPPFLAGS}" 
-      export LDFLAGS="${XBB_LDFLAGS_APP_STATIC}" 
+      export LDFLAGS="${XBB_LDFLAGS_APP}" 
 
       local optimize="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}"
       if [ "$1" == "-nano" ]
@@ -818,7 +826,7 @@ function do_gcc_final()
           # Do not add CRT_glob.o here, it will fail with already defined,
           # since it is already handled by --enable-mingw-wildcard.
 
-          mingw_wildcard="--disable-mingw-wildcard"
+          local mingw_wildcard="--disable-mingw-wildcard"
 
           if [ "${TARGET_PLATFORM}" == "win32" ]
           then
@@ -867,7 +875,6 @@ function do_gcc_final()
               --disable-libssp \
               --disable-libstdcxx-pch \
               --disable-nls \
-              --disable-shared \
               --disable-threads \
               --disable-tls \
               --with-gnu-as \
@@ -880,9 +887,10 @@ function do_gcc_final()
               \
               --disable-rpath \
               --disable-build-format-warnings \
-              --with-system-zlib \
+              --with-system-zlib
 
-          else
+          elif [ "$1" == "-nano" ]
+          then
 
             bash ${DEBUG} "${SOURCES_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" \
               --prefix="${APP_PREFIX_NANO}"  \
@@ -903,7 +911,6 @@ function do_gcc_final()
               --disable-libstdcxx-pch \
               --disable-libstdcxx-verbose \
               --disable-nls \
-              --disable-shared \
               --disable-threads \
               --disable-tls \
               --with-gnu-as \
@@ -916,7 +923,7 @@ function do_gcc_final()
               \
               --disable-rpath \
               --disable-build-format-warnings \
-              --with-system-zlib \
+              --with-system-zlib
 
           fi
           cp "config.log" "${LOGS_FOLDER_PATH}/config-gcc$1-final-log.txt"
@@ -1000,7 +1007,7 @@ function do_gcc_final()
           # make -j ${JOBS} all-gcc
           make all-gcc
 
-          if [ \( "${TARGET_PLATFORM}" == "win32" \) -a \( ! -f "lto-plugin/${LTO_PLUGIN_ORIGINAL_NAME}" \) ]
+          if false # [ \( "${TARGET_PLATFORM}" == "win32" \) -a \( ! -f "lto-plugin/${LTO_PLUGIN_ORIGINAL_NAME}" \) ]
           then
             (
               cd lto-plugin
@@ -1008,7 +1015,7 @@ function do_gcc_final()
               # The LTO plugin fails to create the DLL if --disable-shared or
               # -static are used.
               # So do it again, enabling shared and without -static.
-              export LDFLAGS="$(echo ${XBB_LDFLAGS_APP_STATIC} | sed -e 's/ -static / /')"
+              export LDFLAGS="$(echo ${XBB_LDFLAGS_APP} | sed -e 's/ -static / /')"
 
               (
                 bash "${SOURCES_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/lto-plugin/configure" --help
@@ -1055,16 +1062,26 @@ function do_gcc_final()
 
     if [ "$1" == "" ]
     then
-      run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" --help
-      run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpversion
-      run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpmachine
-      run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpspecs | wc -l
+      run_gcc
     fi
 
     touch "${gcc_final_stamp_file_path}"
   else
     echo "Component gcc$1 final stage already installed."
   fi
+}
+
+function run_gcc()
+{
+  (
+    xbb_activate
+
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" --help
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpversion
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpmachine
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -print-multi-lib
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpspecs | wc -l
+  )
 }
 
 # Called multile times, with and without python support.
@@ -1101,7 +1118,7 @@ function do_gdb()
       export CXXFLAGS="${XBB_CXXFLAGS} ${GCC_WARN_CXXFLAGS}"
           
       export CPPFLAGS="${XBB_CPPFLAGS}" 
-      export LDFLAGS="${XBB_LDFLAGS_APP_STATIC}"
+      export LDFLAGS="${XBB_LDFLAGS_APP}"
       # libiconv is used by Python3.
       export LIBS="-liconv"
   
@@ -1156,21 +1173,18 @@ function do_gdb()
             --with-lzma=yes \
             --with-system-gdbinit="${APP_PREFIX}/${GCC_TARGET}/lib/gdbinit" \
             --with-gdb-datadir="${APP_PREFIX}/${GCC_TARGET}/share/gdb" \
-            --with-libiconv-prefix="${LIBS_INSTALL_FOLDER_PATH}" \
             \
             ${extra_python_opts} \
             --program-prefix="${GCC_TARGET}-" \
             --program-suffix="$1" \
             \
-            --disable-shared \
-            --enable-static \
             --disable-werror \
             --enable-build-warnings=no \
             --disable-rpath \
             --with-system-zlib \
             --without-guile \
             --without-babeltrace \
-            --without-libunwind-ia64 \
+            --without-libunwind-ia64
 
           cp "config.log" "${LOGS_FOLDER_PATH}/config-gdb$1-log.txt"
         ) 2>&1 | tee "${LOGS_FOLDER_PATH}/configure-gdb$1-output.txt"
@@ -1212,12 +1226,9 @@ function do_gdb()
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gdb$1-output.txt"
     )
 
-    if [ "$1" == "-py" -a "${TARGET_PLATFORM}" == "win32" ]
+    if [ "$1" == "" -o "${TARGET_PLATFORM}" != "win32" ]
     then
-      : # Wine is not happy with the python dll.
-    else
-      run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gdb$1" --version
-      run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gdb$1" --config
+      run_gdb "$1"
     fi
 
     touch "${gdb_stamp_file_path}"
@@ -1226,21 +1237,43 @@ function do_gdb()
   fi
 }
 
-function tidy_up() 
+function run_gdb()
 {
-  echo
-  echo "Tidying up..."
-
-  find "${APP_PREFIX}" -name "libiberty.a" -exec rm -v '{}' ';'
-  find "${APP_PREFIX}" -name '*.la' -exec rm -v '{}' ';'
-
-  if [ "${TARGET_PLATFORM}" == "win32" ]
+  local suffix=""
+  if [ $# -ge 1 ]
   then
-    find "${APP_PREFIX}" -name "liblto_plugin.a" -exec rm -v '{}' ';'
-    find "${APP_PREFIX}" -name "liblto_plugin.dll.a" -exec rm -v '{}' ';'
+    suffix="$1"
   fi
+
+  (
+    # Required by gdb-py to access the python shared library.
+    xbb_activate_installed_bin
+
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gdb${suffix}" --version
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gdb${suffix}" --config
+  )
 }
 
+function tidy_up() 
+{
+  (
+    xbb_activate
+
+    echo
+    echo "Tidying up..."
+
+    find "${APP_PREFIX}" -name "libiberty.a" -exec rm -v '{}' ';'
+    find "${APP_PREFIX}" -name '*.la' -exec rm -v '{}' ';'
+
+    if [ "${TARGET_PLATFORM}" == "win32" ]
+    then
+      find "${APP_PREFIX}" -name "liblto_plugin.a" -exec rm -v '{}' ';'
+      find "${APP_PREFIX}" -name "liblto_plugin.dll.a" -exec rm -v '{}' ';'
+    fi
+  )
+}
+
+# Unused.
 function strip_binaries()
 {
   local folder_path
@@ -1390,7 +1423,7 @@ function copy_distro_files()
       "${APP_PREFIX}/${DISTRO_INFO_NAME}/arm-release.txt"
 
     echo
-    echo "Copying GME files..."
+    echo "Copying distro files..."
 
     cd "${BUILD_GIT_PATH}"
     install -v -c -m 644 "${README_OUT_FILE_NAME}" \

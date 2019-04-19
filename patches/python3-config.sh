@@ -32,9 +32,10 @@ do
 
     --includes|--cflags)
       cflags="-I${SOURCES_FOLDER_PATH}/${PYTHON3_SRC_FOLDER_NAME}/Include"
+
       if [ "${opt}" == "--cflags" ]
       then
-        cflags="${cflags} ${CFLAGS}"
+        cflags+=" ${CFLAGS}"
       fi
       echo ${cflags}
       ;;

@@ -319,7 +319,8 @@ then
 
   if [ "${RELEASE_VERSION}" == "8.2.1-1.5" ]
   then
-    # Not yet functional on Windows.
+    # GDB 8.2 with Python3 not yet functional on Windows.
+    # GDB does not know the Python3 API when compiled with mingw.
     if [ "${TARGET_PLATFORM}" != "win32" ]
     then
       WITH_GDB_PY3="y" 
@@ -327,7 +328,6 @@ then
     fi
 
     GETTEXT_VERSION="0.19.8.1"
-
   fi
 
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]
@@ -485,6 +485,7 @@ then
 
   export PYTHON3_WIN_EMBED_FOLDER_NAME
   export PYTHON3_SRC_FOLDER_NAME="Python-${PYTHON3_VERSION}"
+  export PYTHON3_FOLDER_NAME="Python-${PYTHON3_VERSION}"
 
 fi
 
@@ -503,7 +504,7 @@ then
   # The Windows GDB needs some headers from the Python distribution.
   download_python_win
 
-  if [ ! -z "${PYTHON3_VERSION}" ]
+  if [ "${WITH_GDB_PY3}" == "y" ]
   then
     download_python3_win
   fi
@@ -574,13 +575,8 @@ fi
 do_gdb ""
 do_gdb "-py"
 
-# For the moment the Windows build fails, it is disabled.
 if [ "${WITH_GDB_PY3}" == "y" ]
 then
-  if [ "${TARGET_PLATFORM}" == "win32" ]
-  then
-    do_python3
-  fi
   do_gdb "-py3"
 fi
 
@@ -649,6 +645,11 @@ run_gdb
 if [  "${TARGET_PLATFORM}" != "win32" ]
 then
   run_gdb "-py"
+
+  if [ "${WITH_GDB_PY3}" == "y" ]
+  then
+    run_gdb "-py3"
+  fi
 fi
 
 # -----------------------------------------------------------------------------

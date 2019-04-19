@@ -96,25 +96,30 @@ function download_python3_win()
   # https://www.python.org/downloads/release/python-372/
   # https://www.python.org/ftp/python/3.7.2/python-3.7.2.post1-embed-win32.zip
   # https://www.python.org/ftp/python/3.7.2/python-3.7.2.post1-embed-amd64.zip
+  # https://www.python.org/ftp/python/3.7.2/python-3.7.2.exe
+  # https://www.python.org/ftp/python/3.7.2/python-3.7.2-amd64.exe
   # https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tar.xz
 
-  PYTHON3_WIN_EMBED_PACK="${PYTHON3_WIN_EMBED_FOLDER_NAME}".zip
+  PYTHON3_WIN_EMBED_PACK="${PYTHON3_WIN_EMBED_FOLDER_NAME}.zip"
   PYTHON3_WIN_EMBED_URL="https://www.python.org/ftp/python/${PYTHON3_VERSION}/${PYTHON3_WIN_EMBED_PACK}"
 
   if [ ! -d "${SOURCES_FOLDER_PATH}/${PYTHON3_WIN_EMBED_FOLDER_NAME}" ]
   then
-    mkdir -p "${SOURCES_FOLDER_PATH}/${PYTHON3_WIN_EMBED_FOLDER_NAME}"
-    cd "${SOURCES_FOLDER_PATH}/${PYTHON3_WIN_EMBED_FOLDER_NAME}"
+    (
+      xbb_activate
 
-    download_and_extract "${PYTHON3_WIN_EMBED_URL}" "${PYTHON3_WIN_EMBED_PACK}" \
-      "${PYTHON3_WIN_EMBED_FOLDER_NAME}"
+      mkdir -p "${SOURCES_FOLDER_PATH}/${PYTHON3_WIN_EMBED_FOLDER_NAME}"
+      cd "${SOURCES_FOLDER_PATH}/${PYTHON3_WIN_EMBED_FOLDER_NAME}"
+
+      download_and_extract "${PYTHON3_WIN_EMBED_URL}" "${PYTHON3_WIN_EMBED_PACK}" "${PYTHON3_WIN_EMBED_FOLDER_NAME}"
       
-    # From here it'll be copied as dependency.
-    mkdir -p "${LIBS_INSTALL_FOLDER_PATH}/bin/"
-    install -v -c -m 644 "python${PYTHON3_VERSION_MAJOR}.dll" \
-      "${LIBS_INSTALL_FOLDER_PATH}/bin/"
-    install -v -c -m 644 "python${PYTHON3_VERSION_MAJOR}${PYTHON3_VERSION_MINOR}.dll" \
-      "${LIBS_INSTALL_FOLDER_PATH}/bin/"
+      # From here it'll be copied as dependency.
+      mkdir -p "${LIBS_INSTALL_FOLDER_PATH}/bin/"
+      install -v -c -m 644 "python${PYTHON3_VERSION_MAJOR}.dll" \
+        "${LIBS_INSTALL_FOLDER_PATH}/bin/"
+      install -v -c -m 644 "python${PYTHON3_VERSION_MAJOR}${PYTHON3_VERSION_MINOR}.dll" \
+        "${LIBS_INSTALL_FOLDER_PATH}/bin/"
+    )
   fi
 
   PYTHON3_ARCHIVE="${PYTHON3_SRC_FOLDER_NAME}.tar.xz"
@@ -128,72 +133,13 @@ function download_python3_win()
 
     download_and_extract "${PYTHON3_URL}" "${PYTHON3_ARCHIVE}" \
       "${PYTHON3_SRC_FOLDER_NAME}"
+
+    # The source archive includes only the pyconfig.h.in, which needs
+    # to be configured, which is not an easy task. Thus add the file copied 
+    # from a Windows install.
+    cp "${BUILD_GIT_PATH}/patches/pyconfig-${PYTHON3_VERSION}.h" Include/pyconfig.h
   fi
-}
 
-# Not functional, configure does not pass on mingw; not used.
-function do_python3()
-{
-  PYTHON3_SRC_FOLDER_NAME="Python-${PYTHON3_VERSION}"
-  PYTHON3_ARCHIVE="${PYTHON3_SRC_FOLDER_NAME}.tar.xz"
-  PYTHON3_URL="https://www.python.org/ftp/python/${PYTHON3_VERSION}/${PYTHON3_ARCHIVE}"
-
-  PYTHON3_FOLDER_NAME="python-${PYTHON3_VERSION}"
-  local python3_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-python3-${PYTHON3_VERSION}-installed"
-
-  if [ ! -f "${python3_stamp_file_path}" ]
-  then
-
-    cd "${SOURCES_FOLDER_PATH}"
-
-    download_and_extract "${PYTHON3_URL}" "${PYTHON3_ARCHIVE}" \
-      "${PYTHON3_SRC_FOLDER_NAME}"
-
-    (
-      mkdir -p "${BUILD_FOLDER_PATH}/${PYTHON3_FOLDER_NAME}"
-      cd "${BUILD_FOLDER_PATH}/${PYTHON3_FOLDER_NAME}"
-
-      xbb_activate
-      # xbb_activate_installed_dev
-
-      export CFLAGS="${XBB_CFLAGS}"
-      export CXXFLAGS="${XBB_CXXFLAGS}"
-      export CPPFLAGS="${XBB_CPPFLAGS}"
-      export LDFLAGS="${XBB_LDFLAGS_APP}" 
-
-      if [ ! -f "config.status" ]
-      then
-        (
-          echo
-          echo "Running python3 configure..."
-      
-          bash "${SOURCES_FOLDER_PATH}/${PYTHON3_SRC_FOLDER_NAME}/configure" --help
-
-          bash ${DEBUG} "${SOURCES_FOLDER_PATH}/${PYTHON3_SRC_FOLDER_NAME}/configure" \
-            --prefix="${LIBS_INSTALL_FOLDER_PATH}" \
-            \
-            --build=${BUILD} \
-            --host=${HOST} \
-            --target=${TARGET}
-            
-          cp "config.log" "${LOGS_FOLDER_PATH}/config-python3-log.txt"
-        ) 2>&1 | tee "${LOGS_FOLDER_PATH}/configure-python3-output.txt"
-      fi
-
-      (
-        echo
-        echo "Running python3 make..."
-      
-        make -j ${JOBS} build_all
-        make install
-
-      ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-python3-output.txt"
-    )
-
-    touch "${python3_stamp_file_path}"
-  else
-    echo "Component python3 already installed."
-  fi
 }
 
 
@@ -1135,7 +1081,7 @@ function do_gdb()
       then
         if [ "${TARGET_PLATFORM}" == "win32" ]
         then
-          extra_python_opts="--with-python=${BUILD_GIT_PATH}/scripts/python3-config.sh"
+          extra_python_opts="--with-python=${BUILD_GIT_PATH}/patches/python3-config.sh"
         else
           extra_python_opts="--with-python=$(which python3)"
         fi

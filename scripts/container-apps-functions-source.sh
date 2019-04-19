@@ -139,9 +139,9 @@ function do_python3()
   PYTHON3_URL="https://www.python.org/ftp/python/${PYTHON3_VERSION}/${PYTHON3_ARCHIVE}"
 
   PYTHON3_FOLDER_NAME="python-${PYTHON3_VERSION}"
-  local python3_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-python3-installed"
+  local python3_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-python3-${PYTHON3_VERSION}-installed"
 
-  if [ ! -f "${python3_stamp_file_path}" -o ! -d "${BUILD_FOLDER_PATH}/${PYTHON3_FOLDER_NAME}" ]
+  if [ ! -f "${python3_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -204,9 +204,9 @@ function do_binutils()
   # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=gdb-git
 
   BINUTILS_FOLDER_NAME="binutils-${BINUTILS_VERSION}"
-  local binutils_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-binutils-installed"
+  local binutils_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-binutils-${BINUTILS_VERSION}-installed"
 
-  if [ ! -f "${binutils_stamp_file_path}" -o ! -d "${BUILD_FOLDER_PATH}/${BINUTILS_FOLDER_NAME}" ]
+  if [ ! -f "${binutils_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -333,9 +333,9 @@ function do_binutils()
 function do_gcc_first()
 {
   local gcc_first_folder_name="gcc-${GCC_VERSION}-first"
-  local gcc_first_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gcc-first-installed"
+  local gcc_first_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gcc-${GCC_VERSION}-first-installed"
 
-  if [ ! -f "${gcc_first_stamp_file_path}" -o ! -d "${BUILD_FOLDER_PATH}/${gcc_first_folder_name}" ]
+  if [ ! -f "${gcc_first_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -454,9 +454,9 @@ function do_gcc_first()
 function do_newlib()
 {
   local newlib_folder_name="newlib-${NEWLIB_VERSION}$1"
-  local newlib_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-newlib$1-installed"
+  local newlib_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-newlib$1-${NEWLIB_VERSION}-installed"
 
-  if [ ! -f "${newlib_stamp_file_path}" -o ! -d "${BUILD_FOLDER_PATH}/${newlib_folder_name}" ]
+  if [ ! -f "${newlib_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -754,9 +754,9 @@ function copy_linux_libs()
 function do_gcc_final()
 {
   local gcc_final_folder_name="gcc-${GCC_VERSION}-final$1"
-  local gcc_final_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gcc$1-final-installed"
+  local gcc_final_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gcc$1-final-${GCC_VERSION}-installed"
 
-  if [ ! -f "${gcc_final_stamp_file_path}" -o ! -d "${BUILD_FOLDER_PATH}/${gcc_final_folder_name}" ]
+  if [ ! -f "${gcc_final_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -1072,9 +1072,9 @@ function do_gcc_final()
 function do_gdb()
 {
   local gdb_folder_name="gdb-${GDB_VERSION}$1"
-  local gdb_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gdb$1-installed"
+  local gdb_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gdb$1-${GDB_VERSION}-installed"
 
-  if [ ! -f "${gdb_stamp_file_path}" -o ! -d "${BUILD_FOLDER_PATH}/${gdb_folder_name}" ]
+  if [ ! -f "${gdb_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"

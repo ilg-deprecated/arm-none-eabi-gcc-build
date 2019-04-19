@@ -32,8 +32,8 @@ function do_zlib()
   # local zlib_url="http://zlib.net/fossils/${zlib_archive}"
   local zlib_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${zlib_archive}"
 
-  local zlib_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-zlib-installed"
-  if [ ! -f "${zlib_stamp_file_path}" -o ! -d "${LIBS_BUILD_FOLDER_PATH}/${ZLIB_FOLDER_NAME}" ]
+  local zlib_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-zlib-${ZLIB_VERSION}-installed"
+  if [ ! -f "${zlib_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -123,8 +123,8 @@ function do_gmp()
   # local gmp_url="https://gmplib.org/download/gmp/${gmp_archive}"
   local gmp_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${gmp_archive}"
 
-  local gmp_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gmp-installed"
-  if [ ! -f "${gmp_stamp_file_path}" -o ! -d "${LIBS_BUILD_FOLDER_PATH}/${GMP_FOLDER_NAME}" ]
+  local gmp_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gmp-${GMP_VERSION}-installed"
+  if [ ! -f "${gmp_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -205,8 +205,8 @@ function do_mpfr()
   # local mpfr_url="http://www.mpfr.org/${MPFR_FOLDER_NAME}/${mpfr_archive}"
   local mpfr_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${mpfr_archive}"
 
-  local mpfr_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-mpfr-installed"
-  if [ ! -f "${mpfr_stamp_file_path}" -o ! -d "${LIBS_BUILD_FOLDER_PATH}/${MPFR_FOLDER_NAME}" ]
+  local mpfr_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-mpfr-${MPFR_VERSION}-installed"
+  if [ ! -f "${mpfr_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -283,8 +283,8 @@ function do_mpc()
     mpc_url="http://www.multiprecision.org/downloads/${mpc_archive}"
   fi
 
-  local mpc_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-mpc-installed"
-  if [ ! -f "${mpc_stamp_file_path}" -o ! -d "${LIBS_BUILD_FOLDER_PATH}/${MPC_FOLDER_NAME}" ]
+  local mpc_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-mpc-${MPC_VERSION}-installed"
+  if [ ! -f "${mpc_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -362,8 +362,8 @@ function do_isl()
   # local isl_url="http://isl.gforge.inria.fr/${isl_archive}"
   local isl_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${isl_archive}"
 
-  local isl_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-isl-installed"
-  if [ ! -f "${isl_stamp_file_path}" -o ! -d "${LIBS_BUILD_FOLDER_PATH}/${ISL_FOLDER_NAME}" ]
+  local isl_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-isl-${ISL_VERSION}-installed"
+  if [ ! -f "${isl_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -432,8 +432,8 @@ function do_libelf()
   # local libelf_url="http://www.mr511.de/software/${libelf_archive}"
   local libelf_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${libelf_archive}"
 
-  local libelf_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-libelf-installed"
-  if [ ! -f "${libelf_stamp_file_path}" -o ! -d "${LIBS_BUILD_FOLDER_PATH}/${LIBELF_FOLDER_NAME}" ]
+  local libelf_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-libelf-${LIBELF_VERSION}-installed"
+  if [ ! -f "${libelf_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -513,8 +513,8 @@ function do_expat()
   local expat_release="R_$(echo ${EXPAT_VERSION} | sed -e 's|[.]|_|g')"
   local expat_url="https://github.com/libexpat/libexpat/releases/download/${expat_release}/${expat_archive}"
 
-  local expat_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-expat-installed"
-  if [ ! -f "${expat_stamp_file_path}" -o ! -d "${LIBS_BUILD_FOLDER_PATH}/${EXPAT_FOLDER_NAME}" ]
+  local expat_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-expat-${EXPAT_VERSION}-installed"
+  if [ ! -f "${expat_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -586,8 +586,8 @@ function do_libiconv()
   local libiconv_archive="${LIBICONV_FOLDER_NAME}.tar.gz"
   local libiconv_url="https://ftp.gnu.org/pub/gnu/libiconv/${libiconv_archive}"
 
-  local libiconv_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-libiconv-installed"
-  if [ ! -f "${libiconv_stamp_file_path}" -o ! -d "${LIBS_BUILD_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}" ]
+  local libiconv_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-libiconv-${LIBICONV_VERSION}-installed"
+  if [ ! -f "${libiconv_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -661,8 +661,8 @@ function do_xz()
   # local xz_url="https://sourceforge.net/projects/lzmautils/files/${xz_archive}"
   local xz_url="https://github.com/gnu-mcu-eclipse/files/raw/master/libs/${xz_archive}"
 
-  local xz_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-xz-installed"
-  if [ ! -f "${xz_stamp_file_path}" -o ! -d "${LIBS_BUILD_FOLDER_PATH}/${XZ_FOLDER_NAME}" ]
+  local xz_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-xz-${XZ_VERSION}-installed"
+  if [ ! -f "${xz_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"
@@ -736,8 +736,8 @@ function do_gettext()
   local gettext_archive="${GETTEXT_SRC_FOLDER_NAME}.tar.gz"
   local gettext_url="http://ftp.gnu.org/pub/gnu/gettext/${gettext_archive}"
 
-  local gettext_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gettext-installed"
-  if [ ! -f "${gettext_stamp_file_path}" -o ! -d "${LIBS_BUILD_FOLDER_PATH}/${GETTEXT_FOLDER_NAME}" ]
+  local gettext_stamp_file_path="${INSTALL_FOLDER_PATH}/stamp-gettext-${GETTEXT_VERSION}-installed"
+  if [ ! -f "${gettext_stamp_file_path}" ]
   then
 
     cd "${SOURCES_FOLDER_PATH}"

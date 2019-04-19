@@ -184,7 +184,7 @@ function do_python3()
         echo
         echo "Running python3 make..."
       
-        make ${JOBS} build_all
+        make -j ${JOBS} build_all
         make install
 
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-python3-output.txt"
@@ -277,8 +277,15 @@ function do_binutils()
         echo
         echo "Running binutils make..."
       
-        make ${JOBS} 
-        make install
+        make -j ${JOBS} 
+
+        if [ "${WITH_STRIP}" == "y" ]
+        then
+          # For -strip, readline needs a patch.
+          make install-strip
+        else
+          make install
+        fi
 
         prepare_app_folder_libraries "${APP_PREFIX}"
 
@@ -425,9 +432,12 @@ function do_gcc_first()
         echo "Running gcc first stage make..."
 
         # No need to make 'all', 'all-gcc' is enough to compile the libraries.
-        # Parallel build failed once on win32.
-        make ${JOBS} all-gcc
+        # Parallel builds fail.
+        # make -j ${JOBS} all-gcc
+        make all-gcc
         make install-gcc
+
+        # Strip?
 
         prepare_app_folder_libraries "${APP_PREFIX}"
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gcc-first-output.txt"
@@ -584,7 +594,7 @@ function do_newlib()
         # Parallel build failed on CentOS XBB
         if [ "${TARGET_PLATFORM}" == "darwin" ]
         then
-          make ${JOBS}
+          make -j ${JOBS}
         else
           make
         fi 
@@ -625,7 +635,7 @@ function do_newlib()
           if [ "${WITH_HTML}" == "y" ]
           then
 
-            make ${JOBS} html
+            make -j ${JOBS} html
 
             install -v -d "${APP_PREFIX_DOC}/html"
 
@@ -925,7 +935,10 @@ function do_gcc_final()
           # transactional memory related code in crtbegin.o.
           # This is a workaround. Better approach is have a t-* to set this flag via
           # CRTSTUFF_T_CFLAGS
-          make ${JOBS} INHIBIT_LIBC_CFLAGS="-DUSE_TM_CLONE_REGISTRY=0"
+
+          # Parallel builds fail.
+          # make -j ${JOBS} INHIBIT_LIBC_CFLAGS="-DUSE_TM_CLONE_REGISTRY=0"
+          make INHIBIT_LIBC_CFLAGS="-DUSE_TM_CLONE_REGISTRY=0"
 
           if [ "${WITH_STRIP}" == "y" ]
           then
@@ -984,7 +997,8 @@ function do_gcc_final()
 
           # For Windows build only the GCC binaries, the libraries were copied 
           # from the Linux build.
-          make ${JOBS} all-gcc
+          # make -j ${JOBS} all-gcc
+          make all-gcc
 
           if [ \( "${TARGET_PLATFORM}" == "win32" \) -a \( ! -f "lto-plugin/${LTO_PLUGIN_ORIGINAL_NAME}" \) ]
           then
@@ -1166,15 +1180,14 @@ function do_gdb()
         echo
         echo "Running gdb$1 make..."
 
-        make ${JOBS}
+        # Parallel builds fail.
+        # make -j ${JOBS}
+        make 
 
-        # The top make fails with target install-strip.
-        if [ "${WITH_STRIP}" == "y" ]
-        then
-          (cd gdb; make install-strip)
-        else
-          (cd gdb; make install)
-        fi
+        # install-strip fails, not only because of readline has no install-strip
+        # but even after patching it tries to strip a non elf file
+        # strip:.../install/riscv-none-gcc/bin/_inst.672_: file format not recognized
+        make install
 
         prepare_app_libraries "${APP_PREFIX}/bin/${GCC_TARGET}-gdb$1"
 
@@ -1185,13 +1198,13 @@ function do_gdb()
 
             if [ "${WITH_PDF}" == "y" ]
             then
-              make ${JOBS} pdf
+              make pdf
               make install-pdf
             fi
 
             if [ "${WITH_HTML}" == "y" ]
             then
-              make ${JOBS} html 
+              make html 
               make install-html 
             fi
           )

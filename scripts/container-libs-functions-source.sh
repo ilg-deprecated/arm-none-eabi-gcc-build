@@ -77,7 +77,7 @@ function do_zlib()
           echo "Running zlib make..."
 
           # Build.
-          make ${JOBS}
+          make -j ${JOBS}
           make install
         ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-zlib-output.txt"
       else    
@@ -177,7 +177,7 @@ function do_gmp()
         echo "Running gmp make..."
 
         # Build.
-        make ${JOBS}
+        make -j ${JOBS}
         make install-strip
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gmp-output.txt"
     )
@@ -252,7 +252,9 @@ function do_mpfr()
         echo "Running mpfr make..."
 
         # Build.
-        make ${JOBS}
+        # Parallel builds fail.
+        # make -j ${JOBS}
+        make 
         make install-strip
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-mpfr-output.txt"
     )
@@ -327,7 +329,7 @@ function do_mpc()
         echo "Running mpc make..."
 
         # Build.
-        make ${JOBS}
+        make -j ${JOBS}
         make install-strip
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-mpc-output.txt"
     )
@@ -406,7 +408,7 @@ function do_isl()
         echo "Running isl make..."
 
         # Build.
-        make ${JOBS}
+        make -j ${JOBS}
         make install-strip
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-isl-output.txt"
 
@@ -477,7 +479,7 @@ function do_libelf()
         echo "Running libelf make..."
 
         # Build.
-        make ${JOBS}
+        make -j ${JOBS}
         make install
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-libelf-output.txt"
 
@@ -557,7 +559,7 @@ function do_expat()
         echo "Running expat make..."
 
         # Build.
-        make ${JOBS}
+        make -j ${JOBS}
         make install
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-expat-output.txt"
     )
@@ -633,7 +635,7 @@ function do_libiconv()
         echo "Running libiconv make..."
 
         # Build.
-        make ${JOBS}
+        make -j ${JOBS}
         make install-strip
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-libiconv-output.txt"
     )
@@ -707,7 +709,7 @@ function do_xz()
         echo "Running xz make..."
 
         # Build.
-        make ${JOBS}
+        make -j ${JOBS}
         make install-strip
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-xz-output.txt"
     )
@@ -812,7 +814,7 @@ function do_gettext()
         echo "Running gettext make..."
 
         # Build.
-        make ${JOBS}
+        make -j ${JOBS}
         if [ "${WITH_STRIP}" == "y" ]
         then
           make install-strip

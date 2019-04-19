@@ -51,10 +51,10 @@ function do_zlib()
       cd "${LIBS_BUILD_FOLDER_PATH}/${ZLIB_FOLDER_NAME}"
 
       xbb_activate
-      xbb_activate_this
 
       export CFLAGS="${XBB_CFLAGS} -Wno-shift-negative-value"
       # export LDFLAGS="${XBB_LDFLAGS_LIB}"
+      xbb_activate_installed_dev
 
       if [ "${TARGET_PLATFORM}" != "win32" ]
       then
@@ -136,7 +136,7 @@ function do_gmp()
       cd "${LIBS_BUILD_FOLDER_PATH}/${GMP_FOLDER_NAME}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       export CFLAGS="-Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare -Wno-overflow"
       export CPPFLAGS="${XBB_CPPFLAGS}"
@@ -218,7 +218,7 @@ function do_mpfr()
       cd "${LIBS_BUILD_FOLDER_PATH}/${MPFR_FOLDER_NAME}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       export CFLAGS="${XBB_CFLAGS}"
       export CPPFLAGS="${XBB_CPPFLAGS}"
@@ -296,7 +296,7 @@ function do_mpc()
       cd "${LIBS_BUILD_FOLDER_PATH}/${MPC_FOLDER_NAME}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       export CFLAGS="${XBB_CFLAGS} -Wno-unused-value -Wno-empty-translation-unit -Wno-tautological-compare"
       export CPPFLAGS="${XBB_CPPFLAGS}"
@@ -375,7 +375,7 @@ function do_isl()
       cd "${LIBS_BUILD_FOLDER_PATH}/${ISL_FOLDER_NAME}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       export CFLAGS="${XBB_CFLAGS} -Wno-dangling-else -Wno-header-guard"
       export CPPFLAGS="${XBB_CPPFLAGS}"
@@ -445,7 +445,7 @@ function do_libelf()
       cd "${LIBS_BUILD_FOLDER_PATH}/${LIBELF_FOLDER_NAME}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       export CFLAGS="${XBB_CFLAGS} -Wno-tautological-compare"
       export CPPFLAGS="${XBB_CPPFLAGS}"
@@ -526,7 +526,7 @@ function do_expat()
       cd "${LIBS_BUILD_FOLDER_PATH}/${EXPAT_FOLDER_NAME}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       export CFLAGS="${XBB_CFLAGS}"
       export CPPFLAGS="${XBB_CPPFLAGS}"
@@ -599,7 +599,7 @@ function do_libiconv()
       cd "${LIBS_BUILD_FOLDER_PATH}/${LIBICONV_FOLDER_NAME}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       # -fgnu89-inline fixes "undefined reference to `aliases2_lookup'"
       #  https://savannah.gnu.org/bugs/?47953
@@ -674,7 +674,7 @@ function do_xz()
       cd "${LIBS_BUILD_FOLDER_PATH}/${XZ_FOLDER_NAME}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       export CFLAGS="${XBB_CFLAGS} -Wno-implicit-fallthrough"
       export CPPFLAGS="${XBB_CPPFLAGS}"
@@ -750,7 +750,7 @@ function do_gettext()
       cd "${LIBS_BUILD_FOLDER_PATH}/${GETTEXT_FOLDER_NAME}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       export CFLAGS="${XBB_CFLAGS}"
       if [ "${TARGET_PLATFORM}" != "darwin" ]

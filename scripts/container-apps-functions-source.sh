@@ -154,7 +154,7 @@ function do_python3()
       cd "${BUILD_FOLDER_PATH}/${PYTHON3_FOLDER_NAME}"
 
       xbb_activate
-      # xbb_activate_this
+      # xbb_activate_installed_dev
 
       export CFLAGS="${XBB_CFLAGS}"
       export CXXFLAGS="${XBB_CXXFLAGS}"
@@ -220,7 +220,7 @@ function do_binutils()
       cd "${BUILD_FOLDER_PATH}/${BINUTILS_FOLDER_NAME}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       export CFLAGS="${XBB_CFLAGS} -Wno-deprecated-declarations -Wno-implicit-function-declaration -Wno-parentheses -Wno-format-nonliteral -Wno-shift-count-overflow -Wno-shift-negative-value -Wno-format -Wno-implicit-fallthrough"
       export CXXFLAGS="${XBB_CXXFLAGS} -Wno-format-nonliteral -Wno-format-security -Wno-deprecated -Wno-c++11-narrowing"
@@ -348,7 +348,7 @@ function do_gcc_first()
       cd "${BUILD_FOLDER_PATH}/${gcc_first_folder_name}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unused-value -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-unused-but-set-variable -Wno-shift-negative-value -Wno-misleading-indentation"
       export CFLAGS="${XBB_CFLAGS} ${GCC_WARN_CFLAGS}" 
@@ -468,7 +468,7 @@ function do_newlib()
       cd "${BUILD_FOLDER_PATH}/${newlib_folder_name}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       # Add the gcc first stage binaries to the path.
       PATH="${APP_PREFIX}/bin":${PATH}
@@ -769,7 +769,7 @@ function do_gcc_final()
       cd "${BUILD_FOLDER_PATH}/${gcc_final_folder_name}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       export GCC_WARN_CFLAGS="-Wno-tautological-compare -Wno-deprecated-declarations -Wno-unused-value -Wno-implicit-fallthrough -Wno-implicit-function-declaration -Wno-unused-but-set-variable -Wno-shift-negative-value -Wno-expansion-to-defined"
       export CFLAGS="${XBB_CFLAGS} ${GCC_WARN_CFLAGS}" 
@@ -1086,7 +1086,7 @@ function do_gdb()
       cd "${BUILD_FOLDER_PATH}/${gdb_folder_name}"
 
       xbb_activate
-      xbb_activate_this
+      xbb_activate_installed_dev
 
       if [ "${TARGET_PLATFORM}" == "win32" ]
       then

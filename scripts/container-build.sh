@@ -331,7 +331,7 @@ then
 
     GETTEXT_VERSION="0.19.8.1"
 
-    if [ "${TARGET_PLATFORM}" == "linux" -a "${TARGET_ARCH}" == "x32" ]
+    if [ "${TARGET_PLATFORM}" == "win32" -a "${TARGET_ARCH}" == "x32" ]
     then
       BINUTILS_SRC_FOLDER_NAME=${BINUTILS_SRC_FOLDER_NAME:-"${BINUTILS_PROJECT_NAME}.git"}
 

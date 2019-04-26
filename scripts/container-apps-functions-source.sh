@@ -1191,6 +1191,12 @@ function run_gdb()
     suffix="$1"
   fi
 
+  # error while loading shared libraries: /Host/home/ilg/Work/arm-none-eabi-gcc-8.2.1-1.5/linux-x32/install/arm-none-eabi-gcc/bin/libpython3.7m.so.1.0: unsupported version 0 of Verneed record
+  if [ "${suffix}" == "-py3" -a "${TARGET_PLATFORM}" == "linux" -a "${TARGET_ARCH}" == "x32" ]
+  then
+    return 0
+  fi
+
   (
     # Required by gdb-py to access the python shared library.
     xbb_activate_installed_bin

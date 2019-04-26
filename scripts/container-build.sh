@@ -331,8 +331,9 @@ then
 
     GETTEXT_VERSION="0.19.8.1"
 
-    if [ "${TARGET_PLATFORM}" == "win32" -a "${TARGET_ARCH}" == "x32" ]
+    if false # [ "${TARGET_PLATFORM}" == "win32" -a "${TARGET_ARCH}" == "x32" ]
     then
+      BINUTILS_VERSION="2.32"
       BINUTILS_SRC_FOLDER_NAME=${BINUTILS_SRC_FOLDER_NAME:-"${BINUTILS_PROJECT_NAME}.git"}
 
       BINUTILS_GIT_URL=${BINUTILS_GIT_URL:-"git://sourceware.org/git/binutils-gdb.git"}

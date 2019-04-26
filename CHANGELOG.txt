@@ -1,15 +1,20 @@
 The major changes and releases, in reverse chronological order:
 
+[2019-04-26]
+
+- v8.2.2-1.5 released
+
 [2019-03-25]
 
 - v8.2.2-1.5 pre-release
 - add Python3 support for GNU/Linux & macOS
+- with Windows LTO fixed
 
 [2019-02-14]
 
 - v8.2.1-1.4-20190214 released
-- windows LTO with -g gcc bug patched (libiberty)
-- windows with spaces in path bug patched
+- Windows LTO with -g gcc bug patched (libiberty)
+- Windows with spaces in path bug patched
 
 [2019-02-02]
 

@@ -61,8 +61,8 @@ The result should look similar to:
 ```console
 $ docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-ilegeul/centos32    6-xbb-v1            f695dd6cb46e        2 weeks ago         2.92GB
-ilegeul/centos      6-xbb-v1            294dd5ee82f3        2 weeks ago         3.09GB
+ilegeul/centos      6-xbb-v2.1          3644716694e8        2 weeks ago         2.99GB
+ilegeul/centos32    6-xbb-v2.1          921d03805e50        2 weeks ago         2.91GB
 hello-world         latest              f2a91732366c        2 months ago        1.85kB
 ```
 
@@ -122,11 +122,11 @@ and Windows binaries on a GNU/Linux system and the macOS binary separately.
 ### Build the GNU/Linux and Windows binaries
 
 The current platform for GNU/Linux and Windows production builds is an 
-Ubuntu 17.10 VirtualBox image running on a macMini with 16 GB of RAM 
+Ubuntu 18 LTS VirtualBox image running on a macMini with 16 GB of RAM 
 and a fast SSD.
 
 ```console
-$ ssh ilg@ilg-ud17-docker.local
+$ ssh ilg@ilg-ud18-xbb.local
 ```
 
 If the virtual machine runs on a macOS, to be sure it does not go
@@ -143,17 +143,7 @@ build selectively, use `--linux64 --win64` or `--linux32 --win32` (GNU/Linux
 can be built alone; Windows also requires the GNU/Linux build).
 
 ```console
-$ screen bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
-```
-
-Use Ctrl-a Ctrl-d to detach (Ctrl-a ? for help), and `screen -r` to reconnect.
-
-To build one of the previous versions:
-
-```console
-$ RELEASE_VERSION=6.3.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
-$ RELEASE_VERSION=7.2.1-1.1 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
-$ RELEASE_VERSION=8.2.1-1.3 bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
+$ bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 ```
 
 Several hours later, the output of the build script is a set of 4 files and 
@@ -193,16 +183,7 @@ To build the latest macOS version, with the same timestamp as the previous
 build:
 
 ```console
-$ screen caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
-```
-Use Ctrl-a Ctrl-d to detach (Ctrl-a ? for help), and `screen -r` to reconnect.
-
-To build one of the previous macOS versions:
-
-```console
-$ RELEASE_VERSION=6.3.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
-$ RELEASE_VERSION=7.2.1-1.1 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
-$ RELEASE_VERSION=8.2.1-1.3 caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
+$ caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
 ```
 
 For consistency reasons, the date should be the same as the GNU/Linux and 

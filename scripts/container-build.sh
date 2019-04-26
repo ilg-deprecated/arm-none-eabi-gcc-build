@@ -215,6 +215,7 @@ GDB_PATCH=""
 HAS_WINPTHREAD=""
 
 WITH_GDB_PY3=""
+PYTHON3_VERSION=""
 
 # Redefine to actual URL if the build should use the Git sources.
 # Also be sure GDB_GIT_BRANCH and GDB_GIT_COMMIT are defined
@@ -222,8 +223,6 @@ GDB_GIT_URL=""
 
 MULTILIB_FLAGS=""
 GETTEXT_VERSION=""
-
-PYTHON3_VERSION=""
 
 # -----------------------------------------------------------------------------
 

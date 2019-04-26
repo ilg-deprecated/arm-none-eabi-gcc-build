@@ -30,19 +30,24 @@ Compared to the ARM distribution, the build procedure is more or less the
 same and there should be no functional differences, except the following 
 bug fixes:
 
+- [Issue:[#3](https://github.com/gnu-mcu-eclipse/arm-none-eabi-gcc-build/issues/3)]
+  due to a problem in the GCC configure script and the specifics of the static
+  build, LTO was not effective on Windows, and the initial workaround proved 
+  not effective either; in the new build environment the configure script is
+  enables LTO and it is functional on windows too;
 - a patch was applied to binutils to fix the 32-bit objcopy bug 
-  [24065](https://sourceware.org/bugzilla/show_bug.cgi?id=24065)
+  [24065](https://sourceware.org/bugzilla/show_bug.cgi?id=24065);
 - GDB was built the Git commit ad0f979c9 from 2019-01-29, to fix the bugs
   affecting C++ LTO projects
-  [24145](https://sourceware.org/bugzilla/show_bug.cgi?id=24145)
+  [24145](https://sourceware.org/bugzilla/show_bug.cgi?id=24145);
 - by default, the GCC build script fails to create `liblto_plugin-0.dll`
-  for static builds with mingw; code to create the plugin was added
+  for static builds with mingw; code to create the plugin was added;
 - the `liblto_plugin` copied/linked to the `lib/bdf-plugins` for `ar`
-  to find it and be able to process archives with LTO objects
+  to find it and be able to process archives with LTO objects;
 - a patch was applied to gcc to fix the Windows LTO with -g bug
-  [89183](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=89183)
+  [89183](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=89183);
 - a patch was applied to gcc to fix the Windows paths with spaces bug
-  [89249](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=89249)
+  [89249](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=89249).
 
 ## Compatibility
 
@@ -51,14 +56,15 @@ The binaries were built using
 of build environments based on slightly older distributions, that should be 
 compatible with most recent systems.
 
-- GNU/Linux: all binaries built with GCC 7.2, running in a CentOS 6 
+- GNU/Linux: all binaries built with GCC 7.4, running in a CentOS 6 
   Docker container
-- Windows: all binaries built with mingw-w64 GCC 7.2, running in a 
+- Windows: all binaries built with mingw-w64 GCC 7.4, running in a 
   CentOS 6 Docker container 
-- macOS: all binaries built with GCC 7.2, running in a custom Homebrew 
+- macOS: all binaries built with GCC 7.4, running in a custom Homebrew 
   instance on macOS 10.10.5
 
-Partial support for Python3 was added to GDB; not yet available on Windows.
+Partial support for Python3 was added to GDB for GNU/Linux and macOS; 
+not yet available on Windows ([24469](https://sourceware.org/bugzilla/show_bug.cgi?id=24469)).
 
 ## Build
 

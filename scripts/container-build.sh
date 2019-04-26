@@ -338,6 +338,8 @@ then
       BINUTILS_GIT_URL=${BINUTILS_GIT_URL:-"git://sourceware.org/git/binutils-gdb.git"}
       BINUTILS_GIT_BRANCH=${BINUTILS_GIT_BRANCH:"binutils-2_32-branch"}
       BINUTILS_GIT_COMMIT=${BINUTILS_GIT_COMMIT:-"binutils-2_32"}
+
+      BINUTILS_PATCH="binutils-gdb-2.32.patch"
     fi
   fi
 

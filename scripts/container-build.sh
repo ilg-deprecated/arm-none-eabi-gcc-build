@@ -214,6 +214,9 @@ GCC_PATCH=""
 GDB_PATCH=""
 HAS_WINPTHREAD=""
 
+BINUTILS_PROJECT_NAME="binutils-gdb"
+BINUTILS_GIT_URL=""
+
 WITH_GDB_PY3=""
 PYTHON3_VERSION=""
 
@@ -327,6 +330,15 @@ then
     fi
 
     GETTEXT_VERSION="0.19.8.1"
+
+    if [ "${TARGET_PLATFORM}" == "linux" -a "${TARGET_ARCH}" == "x32" ]
+    then
+      BINUTILS_SRC_FOLDER_NAME=${BINUTILS_SRC_FOLDER_NAME:-"${BINUTILS_PROJECT_NAME}.git"}
+
+      BINUTILS_GIT_URL=${BINUTILS_GIT_URL:-"git://sourceware.org/git/binutils-gdb.git"}
+      BINUTILS_GIT_BRANCH=${BINUTILS_GIT_BRANCH:"binutils-2_32-branch"}
+      BINUTILS_GIT_COMMIT=${BINUTILS_GIT_COMMIT:-"binutils-2_32"}
+    fi
   fi
 
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]
@@ -449,7 +461,8 @@ fi
 # -----------------------------------------------------------------------------
 
 # No versioning here, the inner archives use simple names.
-BINUTILS_SRC_FOLDER_NAME="binutils"
+BINUTILS_SRC_FOLDER_NAME=${BINUTILS_SRC_FOLDER_NAME:-"binutils"}
+
 GCC_SRC_FOLDER_NAME="gcc"
 NEWLIB_SRC_FOLDER_NAME="newlib"
 GDB_SRC_FOLDER_NAME="gdb"

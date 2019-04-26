@@ -142,6 +142,26 @@ function download_python3_win()
 
 }
 
+function download_binutils() 
+{
+  if [ ! -d "${SOURCES_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}" ]
+  then
+    (
+      cd "${SOURCES_FOLDER_PATH}"
+      if [ -n "${BINUTILS_GIT_URL}" ]
+      then
+        git_clone "${BINUTILS_GIT_URL}" "${BINUTILS_GIT_BRANCH}" \
+          "${BINUTILS_GIT_COMMIT}" "${BINUTILS_SRC_FOLDER_NAME}"
+        cd "${BINUTILS_SRC_FOLDER_NAME}"
+        do_patch "${BINUTILS_PATCH}"
+      else
+        # Note: define BINUTILS_PATCH to the patch file name.
+        extract "${GCC_COMBO_FOLDER_NAME}/src/binutils.tar.bz2" \
+          "${BINUTILS_SRC_FOLDER_NAME}" "${BINUTILS_PATCH}"
+      fi
+    )
+  fi
+}
 
 function do_binutils()
 {
@@ -155,11 +175,7 @@ function do_binutils()
   if [ ! -f "${binutils_stamp_file_path}" ]
   then
 
-    cd "${SOURCES_FOLDER_PATH}"
-
-    # Note: define BINUTILS_PATCH to the patch file name.
-    extract "${GCC_COMBO_FOLDER_NAME}/src/binutils.tar.bz2" \
-      "${BINUTILS_SRC_FOLDER_NAME}" "${BINUTILS_PATCH}"
+    download_binutils
 
     (
       mkdir -p "${BUILD_FOLDER_PATH}/${BINUTILS_FOLDER_NAME}"

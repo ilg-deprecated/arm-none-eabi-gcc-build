@@ -971,36 +971,6 @@ function do_gcc_final()
           # make -j ${JOBS} all-gcc
           make all-gcc
 
-          if false # [ \( "${TARGET_PLATFORM}" == "win32" \) -a \( ! -f "lto-plugin/${LTO_PLUGIN_ORIGINAL_NAME}" \) ]
-          then
-            (
-              cd lto-plugin
-
-              # The LTO plugin fails to create the DLL if --disable-shared or
-              # -static are used.
-              # So do it again, enabling shared and without -static.
-              export LDFLAGS="$(echo ${XBB_LDFLAGS_APP} | sed -e 's/ -static / /')"
-
-              (
-                bash "${SOURCES_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/lto-plugin/configure" --help
-
-                bash ${DEBUG} "${SOURCES_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/lto-plugin/configure" \
-                  --prefix="${APP_PREFIX}"  \
-                  \
-                  --build=${BUILD} \
-                  --host=${HOST} \
-                  --target=${GCC_TARGET} \
-                  \
-                  --enable-shared \
-                  --with-gnu-ld \
-                  
-              ) 2>&1 | tee "${LOGS_FOLDER_PATH}/configure-lto-plugin-output.txt"
-              cp "config.log" "${LOGS_FOLDER_PATH}/config-lto-plugin-log.txt"
-
-              make clean all
-            )
-          fi
-
           make install-gcc
 
           prepare_app_folder_libraries "${APP_PREFIX}"

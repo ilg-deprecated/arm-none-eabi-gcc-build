@@ -178,18 +178,19 @@ prepare_xbb_extras
 
 # -----------------------------------------------------------------------------
 
-if [ ! -z "${LINUX_INSTALL_PATH}" ]
-then
-  # Windows builds reuse the GNU/Linux binaries.
-  if [ -x "${WORK_FOLDER_PATH}/${LINUX_INSTALL_PATH}/bin/${GCC_TARGET}-gcc" ]
-  then
-    PATH="${WORK_FOLDER_PATH}/${LINUX_INSTALL_PATH}/bin:${PATH}"
-    echo ${PATH}
+function add_linux_install_path()
+{
+  # Verify that the compiler is there.
+  "${WORK_FOLDER_PATH}/${LINUX_INSTALL_PATH}/bin/${GCC_TARGET}-gcc" --version
 
-    export LD_LIBRARY_PATH="${WORK_FOLDER_PATH}/${LINUX_INSTALL_PATH}/bin:${LD_LIBRARY_PATH}"
-    echo ${LD_LIBRARY_PATH}
-  fi
-fi
+  export PATH="${WORK_FOLDER_PATH}/${LINUX_INSTALL_PATH}/bin:${PATH}"
+  echo ${PATH}
+
+  export LD_LIBRARY_PATH="${WORK_FOLDER_PATH}/${LINUX_INSTALL_PATH}/bin:${LD_LIBRARY_PATH}"
+  echo ${LD_LIBRARY_PATH}
+}
+
+# -----------------------------------------------------------------------------
 
 APP_PREFIX_NANO="${INSTALL_FOLDER_PATH}/${APP_LC_NAME}-nano"
 
@@ -330,18 +331,6 @@ then
     fi
 
     GETTEXT_VERSION="0.19.8.1"
-
-    if false # [ "${TARGET_PLATFORM}" == "win32" -a "${TARGET_ARCH}" == "x32" ]
-    then
-      BINUTILS_VERSION="2.32"
-      BINUTILS_SRC_FOLDER_NAME=${BINUTILS_SRC_FOLDER_NAME:-"${BINUTILS_PROJECT_NAME}.git"}
-
-      BINUTILS_GIT_URL=${BINUTILS_GIT_URL:-"git://sourceware.org/git/binutils-gdb.git"}
-      BINUTILS_GIT_BRANCH=${BINUTILS_GIT_BRANCH:"binutils-2_32-branch"}
-      BINUTILS_GIT_COMMIT=${BINUTILS_GIT_COMMIT:-""}
-
-      BINUTILS_PATCH="binutils-gdb-2.32.patch"
-    fi
   fi
 
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]

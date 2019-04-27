@@ -768,6 +768,8 @@ function do_gcc_final()
 
       if [ "${TARGET_PLATFORM}" == "win32" ]
       then
+        add_linux_install_path
+
         export AR_FOR_TARGET=${GCC_TARGET}-ar
         export NM_FOR_TARGET=${GCC_TARGET}-nm
         export OBJDUMP_FOR_TARET=${GCC_TARGET}-objdump

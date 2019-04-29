@@ -34,15 +34,3 @@
        lto_wrapper_spec = lto_wrapper_file;
        obstack_init (&collect_obstack);
        obstack_grow (&collect_obstack, "COLLECT_LTO_WRAPPER=",
-@@ -8330,7 +8334,11 @@
- 		fatal_error (input_location,
- 			     "-fuse-linker-plugin, but %s not found",
- 			     LTOPLUGINSONAME);
-+#if defined (__MINGW32__)
-+	      linker_plugin_file_spec = temp_spec;
-+#else
- 	      linker_plugin_file_spec = convert_white_space (temp_spec);
-+#endif
- 	    }
- #endif
- 	  lto_gcc_spec = argv0;

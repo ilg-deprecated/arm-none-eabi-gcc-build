@@ -56,11 +56,11 @@ function download_python_win()
 
   download "${PYTHON_WIN_URL}" "${PYTHON_WIN_PACK}"
 
-  if [ ! -d "${PYTHON_WIN}" ]
-  then
-    (
-      xbb_activate
+  (
+    xbb_activate
 
+    if [ ! -d "${PYTHON_WIN}" ]
+    then
       cd "${SOURCES_FOLDER_PATH}"
 
       # Include only the headers and the python library and executable.
@@ -78,16 +78,16 @@ function download_python_win()
           patch -p0 <"${patch_path}" 
         )
       fi
+    else
+      echo "Folder ${PYTHON_WIN} already present."
+    fi
 
-      # From here it'll be copied as dependency.
-      mkdir -p "${LIBS_INSTALL_FOLDER_PATH}/bin/"
-      install -v -c -m 644 "${PYTHON_WIN}/python27.dll" \
-        "${LIBS_INSTALL_FOLDER_PATH}/bin/"
-
-    )
-  else
-    echo "Folder ${PYTHON_WIN} already present."
-  fi
+    echo "Copying python27.dll..."
+    # From here it'll be copied as dependency.
+    mkdir -p "${LIBS_INSTALL_FOLDER_PATH}/bin/"
+    install -v -c -m 644 "${PYTHON_WIN}/python27.dll" \
+      "${LIBS_INSTALL_FOLDER_PATH}/bin/"
+  )
 }
 
 function download_python3_win() 
@@ -103,24 +103,27 @@ function download_python3_win()
   PYTHON3_WIN_EMBED_PACK="${PYTHON3_WIN_EMBED_FOLDER_NAME}.zip"
   PYTHON3_WIN_EMBED_URL="https://www.python.org/ftp/python/${PYTHON3_VERSION}/${PYTHON3_WIN_EMBED_PACK}"
 
-  if [ ! -d "${SOURCES_FOLDER_PATH}/${PYTHON3_WIN_EMBED_FOLDER_NAME}" ]
-  then
-    (
-      xbb_activate
+  (
+    xbb_activate
 
+    if [ ! -d "${SOURCES_FOLDER_PATH}/${PYTHON3_WIN_EMBED_FOLDER_NAME}" ]
+    then
       mkdir -p "${SOURCES_FOLDER_PATH}/${PYTHON3_WIN_EMBED_FOLDER_NAME}"
       cd "${SOURCES_FOLDER_PATH}/${PYTHON3_WIN_EMBED_FOLDER_NAME}"
 
       download_and_extract "${PYTHON3_WIN_EMBED_URL}" "${PYTHON3_WIN_EMBED_PACK}" "${PYTHON3_WIN_EMBED_FOLDER_NAME}"
+    else
+      echo "Folder ${PYTHON3_WIN_EMBED_FOLDER_NAME} already present."
+    fi
       
-      # From here it'll be copied as dependency.
-      mkdir -p "${LIBS_INSTALL_FOLDER_PATH}/bin/"
-      install -v -c -m 644 "python${PYTHON3_VERSION_MAJOR}.dll" \
-        "${LIBS_INSTALL_FOLDER_PATH}/bin/"
-      install -v -c -m 644 "python${PYTHON3_VERSION_MAJOR}${PYTHON3_VERSION_MINOR}.dll" \
-        "${LIBS_INSTALL_FOLDER_PATH}/bin/"
-    )
-  fi
+    echo "Copying python${PYTHON3_VERSION_MAJOR}${PYTHON3_VERSION_MINOR}.dll..."
+    # From here it'll be copied as dependency.
+    mkdir -p "${LIBS_INSTALL_FOLDER_PATH}/bin/"
+    install -v -c -m 644 "python${PYTHON3_VERSION_MAJOR}.dll" \
+      "${LIBS_INSTALL_FOLDER_PATH}/bin/"
+    install -v -c -m 644 "python${PYTHON3_VERSION_MAJOR}${PYTHON3_VERSION_MINOR}.dll" \
+      "${LIBS_INSTALL_FOLDER_PATH}/bin/"
+  )
 
   PYTHON3_ARCHIVE="${PYTHON3_SRC_FOLDER_NAME}.tar.xz"
   PYTHON3_URL="https://www.python.org/ftp/python/${PYTHON3_VERSION}/${PYTHON3_ARCHIVE}"
@@ -139,7 +142,6 @@ function download_python3_win()
     # from a Windows install.
     cp "${BUILD_GIT_PATH}/patches/pyconfig-${PYTHON3_VERSION}.h" Include/pyconfig.h
   fi
-
 }
 
 function download_binutils() 
@@ -147,6 +149,8 @@ function download_binutils()
   if [ ! -d "${SOURCES_FOLDER_PATH}/${BINUTILS_SRC_FOLDER_NAME}" ]
   then
     (
+      xbb_activate
+
       cd "${SOURCES_FOLDER_PATH}"
       if [ -n "${BINUTILS_GIT_URL}" ]
       then

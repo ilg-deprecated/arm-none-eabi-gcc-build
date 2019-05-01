@@ -408,6 +408,7 @@ function do_gcc_first()
         # Parallel builds fail.
         # make -j ${JOBS} all-gcc
         make all-gcc
+        # No -strip available here.
         make install-gcc
 
         # Strip?
@@ -751,6 +752,8 @@ function do_gcc_final()
       export CXXFLAGS="${XBB_CXXFLAGS} ${GCC_WARN_CXXFLAGS}" 
       export CPPFLAGS="${XBB_CPPFLAGS}" 
       export LDFLAGS="${XBB_LDFLAGS_APP}" 
+      # Do not add CRT_glob.o here, it will fail with already defined,
+      # since it is already handled by --enable-mingw-wildcard.
 
       local optimize="${CFLAGS_OPTIMIZATIONS_FOR_TARGET}"
       if [ "$1" == "-nano" ]
@@ -770,9 +773,13 @@ function do_gcc_final()
       export CFLAGS_FOR_TARGET
       export CXXFLAGS_FOR_TARGET
 
+      local mingw_wildcard="--disable-mingw-wildcard"
+
       if [ "${TARGET_PLATFORM}" == "win32" ]
       then
         add_linux_install_path
+
+        mingw_wildcard="--enable-mingw-wildcard"
 
         export AR_FOR_TARGET=${GCC_TARGET}-ar
         export NM_FOR_TARGET=${GCC_TARGET}-nm
@@ -790,16 +797,6 @@ function do_gcc_final()
           echo "Running gcc$1 final stage configure..."
       
           bash "${SOURCES_FOLDER_PATH}/${GCC_SRC_FOLDER_NAME}/configure" --help
-
-          # Do not add CRT_glob.o here, it will fail with already defined,
-          # since it is already handled by --enable-mingw-wildcard.
-
-          local mingw_wildcard="--disable-mingw-wildcard"
-
-          if [ "${TARGET_PLATFORM}" == "win32" ]
-          then
-            mingw_wildcard="--enable-mingw-wildcard"
-          fi
 
           # https://gcc.gnu.org/install/configure.html
           # --enable-shared[=package[,…]] build shared versions of libraries
@@ -975,6 +972,7 @@ function do_gcc_final()
           # make -j ${JOBS} all-gcc
           make all-gcc
 
+          # No -strip here.
           make install-gcc
 
           prepare_app_folder_libraries "${APP_PREFIX}"

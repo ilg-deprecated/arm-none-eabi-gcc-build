@@ -1,12 +1,16 @@
 The major changes and releases, in reverse chronological order:
 
+[2019-05-02]
+
+- v8.2.1-1.6 released
+
 [2019-04-26]
 
-- v8.2.2-1.5 released
+- v8.2.1-1.5 released
 
 [2019-03-25]
 
-- v8.2.2-1.5 pre-release
+- v8.2.1-1.5 pre-release
 - add Python3 support for GNU/Linux & macOS
 - with Windows LTO fixed
 

@@ -20,17 +20,3 @@
    if (outfd == -1)
      {
        *err = errno;
---- gcc/gcc.c	2018-02-09 13:52:37.000000000 +0200
-+++ gcc/gcc-patched.c	2019-02-13 16:08:05.000000000 +0200
-@@ -7738,7 +7738,11 @@
- 				    X_OK, false);
-   if (lto_wrapper_file)
-     {
-+#if defined (__MINGW32__)
-+      // Win32 fails to CreateProcess if spaces are escaped.
-+#else
-       lto_wrapper_file = convert_white_space (lto_wrapper_file);
-+#endif
-       lto_wrapper_spec = lto_wrapper_file;
-       obstack_init (&collect_obstack);
-       obstack_grow (&collect_obstack, "COLLECT_LTO_WRAPPER=",

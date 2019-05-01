@@ -320,7 +320,8 @@ then
     HAS_WINPTHREAD=""
   fi
 
-  if [ "${RELEASE_VERSION}" == "8.2.1-1.5" ]
+  if [ "${RELEASE_VERSION}" == "8.2.1-1.5" -a \
+       "${RELEASE_VERSION}" == "8.2.1-1.6" ]
   then
     # GDB 8.2 with Python3 not yet functional on Windows.
     # GDB does not know the Python3 API when compiled with mingw.

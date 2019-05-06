@@ -1017,6 +1017,52 @@ function run_gcc()
     run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpmachine
     run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -print-multi-lib
     run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -dumpspecs | wc -l
+    
+    local tmp=$(mktemp /tmp/gcc-test.XXXXX)
+    rm -rf "${tmp}"
+
+    mkdir -p "${tmp}"
+    cd "${tmp}"
+
+    # Note: __EOF__ is quoted to prevent substitutions here.
+    cat <<'__EOF__' > hello.c
+#include <stdio.h>
+
+int
+main(int argc, char* argv[])
+{
+  printf("Hello World\n");
+}
+__EOF__
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -o hello-c.elf -specs=nosys.specs hello.c
+
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -o hello.c.o -c -flto hello.c
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gcc" -o hello-c-lto.elf -specs=nosys.specs -flto -v hello.c.o
+
+    # Note: __EOF__ is quoted to prevent substitutions here.
+    cat <<'__EOF__' > hello.cpp
+#include <iostream>
+
+int
+main(int argc, char* argv[])
+{
+  std::cout << "Hello World" << std::endl;
+}
+
+extern "C" void __sync_synchronize();
+
+void 
+__sync_synchronize()
+{
+}
+__EOF__
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-g++" -o hello-cpp.elf -specs=nosys.specs hello.cpp
+
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-g++" -o hello.cpp.o -c -flto hello.cpp
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-g++" -o hello-cpp-lto.elf -specs=nosys.specs -flto -v hello.cpp.o
+
+    cd ..
+    rm -rf "${tmp}"
   )
 }
 
@@ -1193,6 +1239,9 @@ function run_gdb()
 
     run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gdb${suffix}" --version
     run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gdb${suffix}" --config
+
+    # This command is known to fail with 'Abort trap: 6' (SIGABRT)
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gdb${suffix}" --nh --nx -ex='show language' -ex='set language auto' -ex='quit'
   )
 }
 

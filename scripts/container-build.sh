@@ -457,9 +457,9 @@ fi
 # No versioning here, the inner archives use simple names.
 BINUTILS_SRC_FOLDER_NAME=${BINUTILS_SRC_FOLDER_NAME:-"binutils"}
 
-GCC_SRC_FOLDER_NAME="gcc"
-NEWLIB_SRC_FOLDER_NAME="newlib"
-GDB_SRC_FOLDER_NAME="gdb"
+GCC_SRC_FOLDER_NAME=${GCC_SRC_FOLDER_NAME:-"gcc"}
+NEWLIB_SRC_FOLDER_NAME=${NEWLIB_SRC_FOLDER_NAME:-"newlib"}
+GDB_SRC_FOLDER_NAME=${GDB_SRC_FOLDER_NAME:-"gdb"}
 
 # Note: The 5.x build failed with various messages.
 

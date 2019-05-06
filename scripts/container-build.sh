@@ -218,6 +218,7 @@ HAS_WINPTHREAD=""
 BINUTILS_PROJECT_NAME="binutils-gdb"
 BINUTILS_GIT_URL=""
 
+WITH_GDB_PY="y"
 WITH_GDB_PY3=""
 PYTHON3_VERSION=""
 
@@ -578,7 +579,11 @@ fi
 # Task [III-6] /$HOST_NATIVE/gdb/
 # Task [IV-4] /$HOST_MINGW/gdb/
 do_gdb ""
-do_gdb "-py"
+
+if [ "${WITH_GDB_PY}" == "y" ]
+then
+  do_gdb "-py"
+fi
 
 if [ "${WITH_GDB_PY3}" == "y" ]
 then
@@ -649,7 +654,10 @@ run_gdb
 
 if [  "${TARGET_PLATFORM}" != "win32" ]
 then
-  run_gdb "-py"
+  if [ "${WITH_GDB_PY}" == "y" ]
+  then
+    run_gdb "-py"
+  fi
 
   if [ "${WITH_GDB_PY3}" == "y" ]
   then

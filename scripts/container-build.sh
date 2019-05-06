@@ -293,15 +293,19 @@ then
   if [ "${RELEASE_VERSION}" != "8.2.1-1.1" ]
   then
     # For version 8.2.1-1.2 and up.
+
     BINUTILS_PATCH="binutils-2.31.patch"
   fi
 
-  if [ \( "${RELEASE_VERSION}" != "8.2.1-1.1" \) -a \
-       \( "${RELEASE_VERSION}" != "8.2.1-1.2" \) ]
+  if [[ ! "${RELEASE_VERSION}" =~ 8\.2\.1-1\.[12] ]]
   then
     # For version 8.2.1-1.3 and up.
+
     FIX_LTO_PLUGIN="y"
     HAS_WINPTHREAD="y"
+
+    # Use a more recnt GDB to avoid
+    # https://sourceware.org/bugzilla/show_bug.cgi?id=24145
 
     GDB_GIT_URL="git://sourceware.org/git/binutils-gdb.git"
     GDB_GIT_BRANCH="master"
@@ -312,18 +316,19 @@ then
     README_OUT_FILE_NAME="README-${RELEASE_VERSION}.md"
   fi
 
-  if [ \( "${RELEASE_VERSION}" != "8.2.1-1.1" \) -a \
-       \( "${RELEASE_VERSION}" != "8.2.1-1.2" \) -a \
-       \( "${RELEASE_VERSION}" != "8.2.1-1.3" \) ]
+  if [[ ! "${RELEASE_VERSION}" =~ 8\.2\.1-1\.[123] ]]
   then
+    # For version 8.2.1-1.4 and up.
+
     GCC_PATCH="gcc-8.2.1.patch"
 
     HAS_WINPTHREAD=""
   fi
 
-  if [ "${RELEASE_VERSION}" == "8.2.1-1.5" -a \
-       "${RELEASE_VERSION}" == "8.2.1-1.6" ]
+  if [[ ! "${RELEASE_VERSION}" =~ 8\.2\.1-1\.[1234] ]]
   then
+    # For version 8.2.1-1.5 and up.
+
     # GDB 8.2 with Python3 not yet functional on Windows.
     # GDB does not know the Python3 API when compiled with mingw.
     if [ "${TARGET_PLATFORM}" != "win32" ]
@@ -333,6 +338,17 @@ then
     fi
 
     GETTEXT_VERSION="0.19.8.1"
+  fi
+
+  if [[ ! "${RELEASE_VERSION}" =~ 8\.2\.1-1\.[12345] ]]
+  then
+    # For version 8.2.1-1.6 and up.
+
+    GDB_GIT_URL="git://sourceware.org/git/binutils-gdb.git"
+    GDB_GIT_BRANCH="gdb-8.2-branch"
+    # Latest commit from 2019-02-27.
+    GDB_GIT_COMMIT="07d117342c8d967b730a7193e2f879f22c60e88c"
+    GDB_SRC_FOLDER_NAME="gdb-${GDB_VERSION}.git"
   fi
 
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]

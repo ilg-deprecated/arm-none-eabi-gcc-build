@@ -365,6 +365,26 @@ $ /Users/ilg/Library/xPacks/\@gnu-mcu-eclipse/arm-none-eabi-gcc/7.2.1-1.1/.conte
 arm-none-eabi-gcc (GNU MCU Eclipse ARM Embedded GCC, 64-bit) 7.2.1 20170904 (release) [ARM/embedded-7-branch revision 255204]
 ```
 
+## Pitfalls
+
+### Parallel build
+
+For various reasons, parallel builds for some components
+fail with errors like 'vfork: insufficient resources'. Thus,
+occasionally parallel build are disabled.
+
+### Building GDB on macOS
+
+GDB uses a complex and custom logic to unwind the stack when processing
+exceptions; macOS also uses a custom logic to organize memory and process
+exceptions; the result is that when compiling GDB with GCC on older macOS
+systems (like 10.10), some details do not match and the resulting GDB 
+crashes with an assertion on the first `set language` command (most 
+probably many other commands).
+
+The workaround was to compile GDB with Apple clang, which resulted in 
+functional binaries, even on the old macOS 10.10.
+
 ## More build details
 
 The build process is split into several scripts. The build starts on the 

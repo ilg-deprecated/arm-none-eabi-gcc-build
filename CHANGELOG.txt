@@ -1,8 +1,9 @@
 The major changes and releases, in reverse chronological order:
 
-[2019-05-02]
+[2019-05-09]
 
 - v8.2.1-1.6 released
+- use Git GDB gdb-8.2-branch, 2019-02-27
 
 [2019-04-26]
 

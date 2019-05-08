@@ -34,6 +34,8 @@ function download_gdb()
     then
       git_clone "${GDB_GIT_URL}" "${GDB_GIT_BRANCH}" \
         "${GDB_GIT_COMMIT}" "${GDB_SRC_FOLDER_NAME}"
+      cd "${GDB_SRC_FOLDER_NAME}"
+      do_patch "${GDB_PATCH}"
     elif [ -n "${GDB_ARCHIVE_URL}" ]
     then
       extract "${GCC_COMBO_FOLDER_NAME}/src/gdb.tar.bz2" \
@@ -1093,8 +1095,17 @@ function do_gdb()
         export GNURM_PYTHON_WIN_DIR="${SOURCES_FOLDER_PATH}/${PYTHON_WIN}"
       fi
 
-      export GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-maybe-uninitialized -Wno-implicit-fallthrough -Wno-int-in-bool-context -Wno-format-nonliteral -Wno-misleading-indentation"
-      export GCC_WARN_CXXFLAGS="-Wno-deprecated-declarations"
+      GCC_WARN_CFLAGS="-Wno-implicit-function-declaration -Wno-parentheses -Wno-format -Wno-deprecated-declarations -Wno-implicit-fallthrough -Wno-format-nonliteral"
+      GCC_WARN_CXXFLAGS="-Wno-deprecated-declarations"
+      if [ "${TARGET_PLATFORM}" == "darwin" ]
+      then
+        GCC_WARN_CXXFLAGS+=" -Wno-c++11-narrowing"
+      else
+        GCC_WARN_CFLAGS+=" -Wno-maybe-uninitialized -Wno-int-in-bool-context -Wno-misleading-indentation"
+      fi
+
+      export GCC_WARN_CFLAGS
+      export GCC_WARN_CXXFLAGS
 
       export CFLAGS="${XBB_CFLAGS} ${GCC_WARN_CFLAGS}"
       export CXXFLAGS="${XBB_CXXFLAGS} ${GCC_WARN_CXXFLAGS}"
@@ -1103,7 +1114,15 @@ function do_gdb()
       export LDFLAGS="${XBB_LDFLAGS_APP}"
       # libiconv is used by Python3.
       export LIBS="-liconv"
-  
+
+      if [ "${TARGET_PLATFORM}" == "darwin" ]
+      then
+        # When compiled with GCC-7 it fails to run, due to
+        # some problems with exceptions unwind.
+        export CC=clang
+        export CXX=clang++
+      fi
+
       local extra_python_opts="--with-python=no"
       if [ "$1" == "-py" ]
       then

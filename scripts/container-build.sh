@@ -349,6 +349,8 @@ then
     # Latest commit from 2019-02-27.
     GDB_GIT_COMMIT="07d117342c8d967b730a7193e2f879f22c60e88c"
     GDB_SRC_FOLDER_NAME="gdb-${GDB_VERSION}.git"
+
+    GDB_PATCH="gdb-8.2.patch"
   fi
 
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]

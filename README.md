@@ -354,7 +354,7 @@ need to run a setup and do not require an uninstall.
 ## Test
 
 A simple test is performed by the script at the end, by launching the 
-executable to check if all shared/dynamic libraries are correctly used.
+executables to check if all shared/dynamic libraries are correctly used.
 
 For a true test you need to first install the package and then run the 
 program from the final location. For example on macOS the output should 

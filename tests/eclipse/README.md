@@ -1,4 +1,4 @@
-# Simple builds 
+# Simple toolchain use tests
 
 ## f4b-fs
 
@@ -10,6 +10,7 @@ the link with LTO).
 Build all three configurations:
 
 - Debug
+- Debug-lto
 - Release
 - Release-lto
 
@@ -80,10 +81,11 @@ Finished building target: libstatic-lib-lto.a
 
 ### Quick test
 
-If the debug session fails to start, start the GDB client in the Debug folder:
+If the debug session fails to start, start the GDB client in the Debug folder,
+and pass as many commands as needed:
 
 ```
-.../bin/arm-none-eabi-gdb --nh --nx --iex='set language auto'
+.../bin/arm-none-eabi-gdb --nh --nx --ex='set language auto'
 ```
 
 ### Elaborate test
@@ -91,7 +93,10 @@ If the debug session fails to start, start the GDB client in the Debug folder:
 For a more realistic test, first start a GDB server, like QEMU:
 
 ```
-.../bin/qemu-system-gnuarmeclipse --verbose --board STM32F4-Discovery --gdb tcp::1234 -d unimp,guest_errors --nographic --semihosting-config enable=on,target=native --semihosting-cmdline f4b-fs
+.../bin/qemu-system-gnuarmeclipse --verbose --board STM32F4-Discovery \
+--gdb tcp::1234 -d unimp,guest_errors --nographic \
+--semihosting-config enable=on,target=native \
+--semihosting-cmdline f4b-fs
 ```
 
 Then start the GDB client in the Debug folder, and issue MI commands:

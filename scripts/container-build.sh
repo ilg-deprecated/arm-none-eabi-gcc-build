@@ -344,13 +344,14 @@ then
   then
     # For version 8.2.1-1.6 and up.
 
+    GDB_VERSION="8.3.50"
     GDB_GIT_URL="git://sourceware.org/git/binutils-gdb.git"
-    GDB_GIT_BRANCH="gdb-8.2-branch"
-    # Latest commit from 2019-02-27.
-    GDB_GIT_COMMIT="07d117342c8d967b730a7193e2f879f22c60e88c"
+    GDB_GIT_BRANCH="master"
+    # Latest commit from 2019-05-09.
+    GDB_GIT_COMMIT="bda678b9e5e4a343a9bb2b0fd20cf52035bad78e"
     GDB_SRC_FOLDER_NAME="gdb-${GDB_VERSION}.git"
 
-    GDB_PATCH="gdb-8.2.patch"
+    # GDB_PATCH="gdb-${GDB_VERSION}.patch"
   fi
 
 elif [[ "${RELEASE_VERSION}" =~ 7\.3\.1-* ]]

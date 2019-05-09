@@ -47,9 +47,10 @@ bug fixes:
 - a patch was applied to gcc to fix the Windows LTO with -g bug
   [89183](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=89183);
 
-GDB was built with the Git commit 07d117342 from 2019-02-27, to fix
+GDB was built with the latest Git commit bda678b9 from 2019-05-09, 
+corresponding to GDB 8.3.50, to fix
 the bugs affecting C++ LTO projects
-[24145](https://sourceware.org/bugzilla/show_bug.cgi?id=24145).
+[24145](https://sourceware.org/bugzilla/show_bug.cgi?id=24145)
 
 ## Compatibility
 

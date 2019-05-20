@@ -415,7 +415,9 @@ function do_gcc_first()
 
         # Strip?
 
-        prepare_app_folder_libraries "${APP_PREFIX}"
+        # Do not prepare here, the final stage make install gets confused
+        # by the shared libraries.
+        # prepare_app_folder_libraries "${APP_PREFIX}"
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gcc-first-output.txt"
     )
 
@@ -623,7 +625,7 @@ function do_newlib()
 
         fi
 
-      ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gcc-first-output.txt"
+      ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-newlib$1-output.txt"
     )
 
     touch "${newlib_stamp_file_path}"
@@ -921,27 +923,7 @@ function do_gcc_final()
             make install
           fi
 
-          prepare_app_folder_libraries "${APP_PREFIX}"
-
-          if [ "$1" == "" ]
-          then
-            (
-              xbb_activate_tex
-          
-              # Full build, with documentation.
-              if [ "${WITH_PDF}" == "y" ]
-              then
-                make pdf
-                make install-pdf
-              fi
-
-              if [ "${WITH_HTML}" == "y" ]
-              then
-                make html
-                make install-html
-              fi
-            )
-          elif [ "$1" == "-nano" ]
+          if [ "$1" == "-nano" ]
           then
 
             local target_gcc=""
@@ -966,7 +948,7 @@ function do_gcc_final()
               "${APP_PREFIX}/${GCC_TARGET}/include/newlib-nano/newlib.h"
 
           fi
-
+          
         else
 
           # For Windows build only the GCC binaries, the libraries were copied 
@@ -977,23 +959,33 @@ function do_gcc_final()
           # No -strip here.
           make install-gcc
 
-          prepare_app_folder_libraries "${APP_PREFIX}"
+          # Strip?
 
+        fi
+
+        if [ "$1" == "" ]
+        then
           (
             xbb_activate_tex
 
+            # Full build, with documentation.
             if [ "${WITH_PDF}" == "y" ]
             then
-              make install-pdf-gcc
+              make pdf
+              make install-pdf
             fi
 
             if [ "${WITH_HTML}" == "y" ]
             then
-              make install-html-gcc
+              make html
+              make install-html
             fi
           )
-
         fi
+
+        # Must be done after make install, otherwise some wrong links
+        # are created in libexec.
+        prepare_app_folder_libraries "${APP_PREFIX}"
 
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gcc$1-final-output.txt"
     )

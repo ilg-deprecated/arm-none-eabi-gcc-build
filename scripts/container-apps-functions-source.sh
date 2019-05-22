@@ -253,8 +253,6 @@ function do_binutils()
           make install
         fi
 
-        prepare_app_folder_libraries "${APP_PREFIX}"
-
         (
           xbb_activate_tex
 
@@ -415,9 +413,6 @@ function do_gcc_first()
 
         # Strip?
 
-        # Do not prepare here, the final stage make install gets confused
-        # by the shared libraries.
-        # prepare_app_folder_libraries "${APP_PREFIX}"
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gcc-first-output.txt"
     )
 
@@ -983,10 +978,6 @@ function do_gcc_final()
           )
         fi
 
-        # Must be done after make install, otherwise some wrong links
-        # are created in libexec.
-        prepare_app_folder_libraries "${APP_PREFIX}"
-
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gcc$1-final-output.txt"
     )
 
@@ -1195,8 +1186,6 @@ function do_gdb()
         # but even after patching it tries to strip a non elf file
         # strip:.../install/riscv-none-gcc/bin/_inst.672_: file format not recognized
         make install
-
-        prepare_app_libraries "${APP_PREFIX}/bin/${GCC_TARGET}-gdb$1"
 
         if [ "$1" == "" ]
         then

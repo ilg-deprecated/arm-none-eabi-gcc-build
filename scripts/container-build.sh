@@ -632,6 +632,11 @@ fi
 run_binutils
 run_gcc
 run_gdb
+# Must be done after gcc 2 make install, otherwise some wrong links
+# are created in libexec.
+# Must also be done after strip binaries, since strip after patchelf
+# damages the binaries.
+prepare_app_folder_libraries "${APP_PREFIX}"
 
 if [ "${WITH_STRIP}" == "y" -a "${TARGET_PLATFORM}" != "win32" ]
 then

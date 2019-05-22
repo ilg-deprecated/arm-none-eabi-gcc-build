@@ -131,10 +131,6 @@ The current platform for GNU/Linux and Windows production builds is an
 Ubuntu 18 LTS VirtualBox image running on a macMini with 16 GB of RAM 
 and a fast SSD.
 
-```console
-$ ssh ilg@ilg-ud18-xbb.local
-```
-
 If the virtual machine runs on a macOS, to be sure it does not go
 to sleep, run a `caffeinate bash`.
 
@@ -181,10 +177,6 @@ $ scp * ilg@ilg-mbp.local:Downloads/gme-binaries/arm
 
 The current platform for macOS production builds is a macOS 10.10.5 VirtualBox 
 image running on the same macMini with 16 GB of RAM and a fast SSD.
-
-```console
-$ ssh ilg@ilg-mac-xbb.local
-```
 
 To build the latest macOS version, with the same timestamp as the previous 
 build:

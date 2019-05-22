@@ -149,6 +149,7 @@ build selectively, use `--linux64 --win64` or `--linux32 --win32` (GNU/Linux
 can be built alone; Windows also requires the GNU/Linux build).
 
 ```console
+$ sudo rm -rf "${HOME}/Work"/arm-none-eabi-gcc-*
 $ bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --all
 ```
 
@@ -189,6 +190,7 @@ To build the latest macOS version, with the same timestamp as the previous
 build:
 
 ```console
+$ sudo rm -rf "${HOME}/Work"/arm-none-eabi-gcc-*
 $ caffeinate bash ~/Downloads/arm-none-eabi-gcc-build.git/scripts/build.sh --osx --date YYYYMMDD-HHMM
 ```
 

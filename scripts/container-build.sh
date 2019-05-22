@@ -629,7 +629,7 @@ fi
 # are created in libexec.
 # Must also be done after strip binaries, since strip after patchelf
 # damages the binaries.
-prepare_app_folder_libraries "${APP_PREFIX}"
+prepare_app_folder_libraries
 
 if [ "${WITH_STRIP}" == "y" -a "${TARGET_PLATFORM}" != "win32" ]
 then

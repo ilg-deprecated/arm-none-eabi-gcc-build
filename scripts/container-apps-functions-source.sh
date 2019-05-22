@@ -277,8 +277,6 @@ function do_binutils()
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-binutils-output.txt"
     )
 
-    run_binutils
-
     touch "${binutils_stamp_file_path}"
   else
     echo "Component binutils already installed."
@@ -1208,11 +1206,6 @@ function do_gdb()
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gdb$1-output.txt"
     )
 
-    if [ "$1" == "" -o "${TARGET_PLATFORM}" != "win32" ]
-    then
-      run_gdb "$1"
-    fi
-
     touch "${gdb_stamp_file_path}"
   else
     echo "Component gdb$1 already installed."
@@ -1241,7 +1234,12 @@ function run_gdb()
     run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gdb${suffix}" --config
 
     # This command is known to fail with 'Abort trap: 6' (SIGABRT)
-    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gdb${suffix}" --nh --nx -ex='show language' -ex='set language auto' -ex='quit'
+    run_app "${APP_PREFIX}/bin/${GCC_TARGET}-gdb${suffix}" \
+      --nh \
+      --nx \
+      -ex='show language' \
+      -ex='set language auto' \
+      -ex='quit'
   )
 }
 

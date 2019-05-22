@@ -622,11 +622,7 @@ tidy_up
 # Task [IV-6] /$HOST_MINGW/strip_host_objects/
 if [ "${WITH_STRIP}" == "y" ]
 then
-  # For unknown reasons, strip after patchelf damages the binaries.
-  if [ "${TARGET_PLATFORM}" != "linux" ]
-  then
-    strip_binaries
-  fi
+  strip_binaries
 fi
 
 # Must be done after gcc 2 make install, otherwise some wrong links
@@ -642,11 +638,6 @@ then
 fi
 
 final_tunings
-
-# if [ \( "${TARGET_PLATFORM}" == "win32" \) -a \( ! -z "${HAS_WINPTHREAD}" \) ]
-# then
-#  copy_win_libwinpthread_dll
-# fi
 
 # Task [IV-7] /$HOST_MINGW/installation/
 # Nope, no setup.exe.

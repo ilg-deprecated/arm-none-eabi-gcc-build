@@ -1262,15 +1262,12 @@ function tidy_up()
   )
 }
 
-# Unused.
 function strip_binaries()
 {
-  local folder_path
+  local folder_path="${APP_PREFIX}"
   if [ $# -ge 1 ]
   then
     folder_path="$1"
-  else
-    folder_path="${APP_PREFIX}"
   fi
 
   if [ "${WITH_STRIP}" == "y" ]
@@ -1288,7 +1285,7 @@ function strip_binaries()
         binaries=$(find "${folder_path}" -name \*.exe)
         for bin in ${binaries} 
         do
-          strip_binary "${CROSS_COMPILE_PREFIX}"-strip "${bin}"
+          strip_binary2 "${CROSS_COMPILE_PREFIX}"-strip "${bin}"
         done
 
       elif [ "${TARGET_PLATFORM}" == "darwin" ]
@@ -1299,7 +1296,7 @@ function strip_binaries()
         do
           if is_elf "${bin}"
           then
-            strip_binary strip "${bin}"
+            strip_binary2 strip "${bin}"
           fi
         done
 
@@ -1311,7 +1308,7 @@ function strip_binaries()
         do
           if is_elf "${bin}"
           then
-            strip_binary strip "${bin}"
+            strip_binary2 strip "${bin}"
           fi
         done
 

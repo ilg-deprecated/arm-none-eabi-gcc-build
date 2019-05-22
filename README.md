@@ -25,7 +25,6 @@ $ curl -L https://github.com/gnu-mcu-eclipse/arm-none-eabi-gcc-build/raw/master/
 
 which issues the following two commands:
 
-
 ```console
 $ rm -rf ~/Downloads/arm-none-eabi-gcc-build.git
 $ git clone --recurse-submodules https://github.com/gnu-mcu-eclipse/arm-none-eabi-gcc-build.git \

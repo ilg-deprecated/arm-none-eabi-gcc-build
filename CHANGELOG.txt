@@ -1,5 +1,11 @@
 The major changes and releases, in reverse chronological order:
 
+[2019-05-24]
+
+- v8.2.1-1.7 released
+- reorder patch & strip, to avoid the bug in gcc make that
+  creates illegal links
+
 [2019-05-10]
 
 - v8.2.1-1.6 released

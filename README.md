@@ -20,6 +20,13 @@ To download it, clone the
 Git repo, including submodules. 
 
 ```console
+$ curl -L https://github.com/gnu-mcu-eclipse/arm-none-eabi-gcc-build/raw/master/scripts/git-clone.sh | bash
+```
+
+which issues the following two commands:
+
+
+```console
 $ rm -rf ~/Downloads/arm-none-eabi-gcc-build.git
 $ git clone --recurse-submodules https://github.com/gnu-mcu-eclipse/arm-none-eabi-gcc-build.git \
   ~/Downloads/arm-none-eabi-gcc-build.git

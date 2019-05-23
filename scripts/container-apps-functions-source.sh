@@ -979,11 +979,6 @@ function do_gcc_final()
       ) 2>&1 | tee "${LOGS_FOLDER_PATH}/make-gcc$1-final-output.txt"
     )
 
-    if [ "$1" == "" ]
-    then
-      run_gcc
-    fi
-
     touch "${gcc_final_stamp_file_path}"
   else
     echo "Component gcc$1 final stage already installed."
